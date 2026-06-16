@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { dashboard } from '@/routes';
+import TopNavLayout from '@/layouts/top-nav-layout';
 
 export default function Dashboard() {
     return (
@@ -26,11 +27,9 @@ export default function Dashboard() {
     );
 }
 
-Dashboard.layout = {
-    breadcrumbs: [
-        {
-            title: 'Dashboard',
-            href: dashboard(),
-        },
-    ],
-};
+// Ganti bagian paling bawah file menjadi seperti ini:
+Dashboard.layout = (page: any) => (
+    <TopNavLayout>
+        {page}
+    </TopNavLayout>
+);

@@ -39,10 +39,41 @@ type Props = {
     breadcrumbs?: BreadcrumbItem[];
 };
 
-const mainNavItems: NavItem[] = [
+const commonNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
+        icon: LayoutGrid,
+    },
+];
+
+const adminNavItems: NavItem[] = [
+    {
+        title: 'Kelola Berita',
+        href: '#', // Nanti kita isi dengan route berita
+        icon: BookOpen, 
+    },
+    {
+        title: 'Persetujuan Ijin',
+        href: '#',
+        icon: Folder,
+    },
+];
+
+const guruNavItems: NavItem[] = [
+    {
+        title: 'Pengajuan Ijin',
+        href: '#',
+        icon: Folder,
+    },
+    {
+        title: 'Jurnal Refleksi',
+        href: '#',
+        icon: BookOpen,
+    },
+    {
+        title: 'Laporan Kegiatan',
+        href: '#',
         icon: LayoutGrid,
     },
 ];
@@ -65,9 +96,17 @@ const activeItemStyles =
 
 export function AppHeader({ breadcrumbs = [] }: Props) {
     const page = usePage();
-    const { auth } = page.props;
+    const { auth } = page.props as any; // Tambahkan as any jika ada error typescript (opsional)
     const getInitials = useInitials();
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
+
+    // 👇 TAMBAHKAN 2 BARIS INI 👇
+    const role = auth.user?.role; 
+    const navItems = [
+        ...commonNavItems,
+        ...(role === 'admin' ? adminNavItems : []),
+        ...(role === 'guru' ? guruNavItems : []),
+    ];
 
     return (
         <>
@@ -98,7 +137,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
                                         <div className="flex flex-col space-y-4">
-                                            {mainNavItems.map((item) => (
+                                            {navItems.map((item) => (
                                                 <Link
                                                     key={item.title}
                                                     href={item.href}
@@ -141,12 +180,15 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                     >
                         <AppLogo />
                     </Link>
-
+{/* 👇 TAMBAHAN SEMENTARA UNTUK CEK DATA 👇 */}
+                    <span className="ml-4 font-bold text-red-500 bg-red-100 px-2 py-1 rounded">
+                        Cek Role: {auth.user?.role || 'KOSONG / TIDAK TERBACA'}
+                    </span>
                     {/* Desktop Navigation */}
                     <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
                         <NavigationMenu className="flex h-full items-stretch">
                             <NavigationMenuList className="flex h-full items-stretch space-x-2">
-                                {mainNavItems.map((item, index) => (
+                                {navItems.map((item, index) => (
                                     <NavigationMenuItem
                                         key={index}
                                         className="relative flex h-full items-center"
