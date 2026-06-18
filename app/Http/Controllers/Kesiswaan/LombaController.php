@@ -173,4 +173,73 @@ class LombaController extends Controller
 
         return redirect()->to("/kesiswaan/lomba/{$id}")->with('success', 'Data rekaman lomba berhasil diperbarui!');
     }
+
+    // Fungsi Hapus Massal (Bulk Delete) khusus Admin
+    public function bulkDelete(Request $request)
+    {
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $request->validate([
+            'ids' => 'required|array'
+        ]);
+
+        $lomba = KesiswaanLomba::whereIn('id', $request->ids)->get();
+
+        foreach ($lomba as $item) {
+            if ($item->bukti_gambar) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($item->bukti_gambar);
+            }
+            $item->delete();
+        }
+
+        return redirect()->back()->with('success', count($request->ids) . ' data lomba berhasil dihapus massal!');
+    }
+
+    // Fungsi Export ke CSV / Excel
+    public function export()
+    {
+        $lomba = KesiswaanLomba::with('user')->latest()->get();
+        $fileName = 'Laporan_Kesiswaan_Lomba.csv';
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function () use ($lomba) {
+            $file = fopen('php://output', 'w');
+
+            // Header Kolom Excel
+            fputcsv($file, ['ID', 'Tanggal', 'Nama Lomba', 'Prestasi', 'Daftar Kelas & Siswa', 'Catatan Refleksi', 'Penginput', 'Status']);
+
+            foreach ($lomba as $row) {
+                // Susun teks peserta agar rapi di excel
+                $pesertaText = '';
+                if ($row->peserta && is_array($row->peserta)) {
+                    foreach ($row->peserta as $k) {
+                        $pesertaText .= "[" . $k['kelas'] . ": " . implode(', ', $k['siswa']) . "] ";
+                    }
+                }
+
+                fputcsv($file, [
+                    $row->id,
+                    $row->tanggal,
+                    $row->jenis_lomba,
+                    $row->prestasi,
+                    $pesertaText,
+                    $row->refleksi,
+                    $row->user ? $row->user->name : '-',
+                    $row->status
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

@@ -64,7 +64,7 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
                                             <Link href="/kesiswaan/lomba" className="block px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black uppercase tracking-wide">
                                                 - Kegiatan Lomba
                                             </Link>
-                                            <Link href="#" className="block px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black uppercase tracking-wide">
+                                            <Link href="/kesiswaan/kegiatan" className="block px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black uppercase tracking-wide">
                                                 - Kegiatan Kesiswaan
                                             </Link>
                                         </div>
