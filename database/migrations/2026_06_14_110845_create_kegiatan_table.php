@@ -13,11 +13,17 @@ return new class extends Migration
     {
         Schema::create('kegiatan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete(); // Siapa penanggung jawab/yang input
             $table->date('tanggal');
-            $table->enum('kategori', ['kesiswaan', 'kurikulum', 'humas', 'sarpras', 'umum']); // Pengganti banyak tabel
+            $table->enum('kategori', ['kesiswaan', 'kurikulum', 'humas', 'sarpras', 'umum']);
             $table->string('nama_kegiatan');
-            $table->text('refleksi');
+            $table->text('refleksi'); // Laporan atau catatan evaluasi kegiatan
+
+            // 👇 KITA TAMBAHKAN KEBUTUHAN UTK FILE DAN FOTO DOKUMENTASI
+            $table->string('bukti_gambar')->nullable(); // Foto dokumentasi kegiatan
+            $table->string('lampiran')->nullable(); // File proposal/rundown PDF/Word
+            $table->string('nama_file_asli')->nullable();
+
             $table->enum('status', ['pending', 'disetujui'])->default('pending');
             $table->timestamps();
         });
