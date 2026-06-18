@@ -7,6 +7,7 @@ export default function BeritaEdit({ berita }: { berita: any }) {
         judul: berita.judul,
         isi: berita.isi,
         gambar: null as File | null,
+        lampiran: null as File | null,
     });
 
     const submit = (e: React.FormEvent) => {
@@ -66,25 +67,40 @@ export default function BeritaEdit({ berita }: { berita: any }) {
                             {errors.isi && <p className="text-red-600 text-xs font-bold mt-2 uppercase">⚠️ {errors.isi}</p>}
                         </div>
 
-                        <div>
-                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-700 mb-2">
-                                Ganti Gambar (Abaikan jika tidak ingin diganti)
-                            </label>
-                            {berita.gambar && (
-                                <div className="mb-4">
-                                    <span className="inline-block bg-gray-100 text-gray-600 text-[10px] font-bold uppercase px-2 py-1 border border-gray-300 mb-2">
-                                        Gambar Saat Ini:
-                                    </span>
-                                    <img src={`/storage/${berita.gambar}`} alt="Current" className="w-48 h-32 object-cover border-2 border-gray-200" />
-                                </div>
-                            )}
-                            <input
-                                type="file"
-                                accept="image/*"
-                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-wider file:bg-gray-900 file:text-white hover:file:bg-gray-800 file:cursor-pointer border-2 border-dashed border-gray-300 p-4 bg-gray-50"
-                                onChange={(e) => setData('gambar', e.target.files ? e.target.files[0] : null)}
-                            />
-                            {errors.gambar && <p className="text-red-600 text-xs font-bold mt-2 uppercase">⚠️ {errors.gambar}</p>}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* KOLOM KIRI: INPUT KHUSUS GAMBAR SAMPUL */}
+                            <div>
+                                <label className="block text-xs font-black uppercase tracking-widest text-gray-700 mb-2">
+                                    Gambar Sampul Berita (Foto / Gambar)
+                                </label>
+                                <p className="text-[10px] text-gray-400 font-bold uppercase mb-2">
+                                    *Format: JPG, PNG, WEBP (Maksimal 4MB)
+                                </p>
+                                <input 
+                                    type="file" 
+                                    accept="image/*"
+                                    className="w-full border-2 border-gray-300 p-2 text-sm focus:border-gray-900 focus:ring-0 file:mr-4 file:py-1.5 file:px-4 file:border-0 file:text-xs file:font-black file:bg-gray-900 file:text-white hover:file:bg-yellow-500 hover:file:text-black cursor-pointer font-bold"
+                                    onChange={(e) => setData('gambar', e.target.files ? e.target.files[0] : null)}
+                                />
+                                {errors.gambar && <p className="text-red-600 text-[10px] font-bold mt-2 uppercase">⚠️ {errors.gambar}</p>}
+                            </div>
+
+                            {/* KOLOM KANAN: INPUT KHUSUS FILE LAMPIRAN DOKUMEN */}
+                            <div>
+                                <label className="block text-xs font-black uppercase tracking-widest text-gray-700 mb-2">
+                                    File Dokumen Lampiran (Opsional)
+                                </label>
+                                <p className="text-[10px] text-gray-400 font-bold uppercase mb-2">
+                                    *Format: PDF, DOC, DOCX (Maksimal 5MB)
+                                </p>
+                                <input 
+                                    type="file" 
+                                    accept=".pdf, .doc, .docx"
+                                    className="w-full border-2 border-gray-300 p-2 text-sm focus:border-gray-900 focus:ring-0 file:mr-4 file:py-1.5 file:px-4 file:border-0 file:text-xs file:font-black file:bg-blue-900 file:text-white hover:file:bg-yellow-500 hover:file:text-black cursor-pointer font-bold"
+                                    onChange={(e) => setData('lampiran', e.target.files ? e.target.files[0] : null)}
+                                />
+                                {errors.lampiran && <p className="text-red-600 text-[10px] font-bold mt-2 uppercase">⚠️ {errors.lampiran}</p>}
+                            </div>
                         </div>
 
                         <div className="pt-6 border-t-2 border-gray-100 flex justify-end">

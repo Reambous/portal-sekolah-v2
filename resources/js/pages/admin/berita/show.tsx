@@ -52,7 +52,7 @@ export default function BeritaShow({ berita }: { berita: any }) {
                     </div>
 
                     <div className="p-8 md:p-12">
-                        <h1 className="text-3xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter leading-tight mb-6">
+                        <h1 className="text-3xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter leading-tight mb-6 whitespace-pre-wrap break-words">
                             {berita.judul}
                         </h1>
 
@@ -67,17 +67,95 @@ export default function BeritaShow({ berita }: { berita: any }) {
                         </div>
 
                         {berita.gambar && (
-                            <div className="mb-10 border-2 border-gray-200 bg-gray-50 p-2">
-                                <img 
-                                    src={`/storage/${berita.gambar}`} 
-                                    alt={berita.judul} 
-                                    className="w-full h-auto max-h-[500px] object-cover"
-                                />
+                            <div className="mb-10 border-2 border-gray-900 bg-gray-50 p-4">
+                                {(() => {
+                                    const namaFile = berita.gambar;
+                                    const ekstensi = namaFile.split('.').pop().toLowerCase();
+                                    const urlFile = `/storage/${namaFile}`;
+
+                                    // 1. JIKA FORMATNYA GAMBAR (TAMPILKAN LANGSUNG)
+                                    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ekstensi)) {
+                                        return (
+                                            <img 
+                                                src={urlFile} 
+                                                alt={berita.judul} 
+                                                className="w-full h-auto max-h-[500px] object-cover border border-gray-300 shadow-sm"
+                                            />
+                                        );
+                                    } 
+                                    
+                                    // 2. JIKA FORMATNYA PDF
+                                    if (ekstensi === 'pdf') {
+                                        return (
+                                            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-white p-4 border border-gray-300 shadow-sm">
+                                                <span className="text-xs font-black bg-red-100 text-red-700 px-3 py-1.5 uppercase tracking-wider border border-red-300">
+                                                    📄 DOKUMEN PDF
+                                                </span>
+                                                <a 
+                                                    href={urlFile} 
+                                                    target="_blank" 
+                                                    rel="noreferrer" 
+                                                    className="text-xs font-black text-blue-600 hover:text-blue-800 hover:underline uppercase tracking-wide"
+                                                >
+                                                    Klik untuk Buka / Pratinjau Dokumen PDF
+                                                </a>
+                                            </div>
+                                        );
+                                    }
+
+                                    // 3. JIKA FORMATNYA WORD (DOC / DOCX)
+                                    if (['doc', 'docx'].includes(ekstensi)) {
+                                        return (
+                                            <div className="flex items-center gap-3 bg-white p-4 border border-gray-300 shadow-sm">
+                                                <span className="text-xs font-black bg-blue-100 text-blue-700 px-3 py-1.5 uppercase tracking-wider border border-blue-300">
+                                                    📝 DOKUMEN WORD
+                                                </span>
+                                                <a 
+                                                    href={urlFile} 
+                                                    download
+                                                    className="text-xs font-black text-blue-600 hover:text-blue-800 hover:underline uppercase tracking-wide"
+                                                >
+                                                    Unduh Lampiran Dokumen Word
+                                                </a>
+                                            </div>
+                                        );
+                                    }
+
+                                    // FALLBACK (FORMAT LAINNYA)
+                                    return (
+                                        <div className="p-2 bg-white border border-gray-300">
+                                            <a href={urlFile} download className="text-xs font-bold text-gray-700 hover:underline uppercase">
+                                                Unduh File Lampiran
+                                            </a>
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+                        )}
+
+                        {/* TEMPATKAN KODE INI DI BAWAH KONTEN TEXT ISI BERITA */}
+                        {berita.lampiran && (
+                            <div className="mt-8 p-4 border-2 border-gray-950 bg-blue-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div>
+                                    <h5 className="text-xs font-black uppercase text-blue-900 tracking-wider">
+                                        Dokumen Lampiran Tersedia:
+                                    </h5>
+                                    <p className="text-xs font-bold text-gray-700 mt-1 font-mono break-all">
+                                        📄 {berita.nama_file_asli || 'Unduh Lampiran'}
+                                    </p>
+                                </div>
+                                <a 
+                                    href={`/storage/${berita.lampiran}`} 
+                                    download={berita.nama_file_asli}
+                                    className="w-full sm:w-auto text-center bg-gray-900 text-white px-5 py-2.5 text-xs font-black uppercase tracking-widest hover:bg-yellow-500 hover:text-black border-2 border-gray-900 transition shadow-sm"
+                                >
+                                    UNDUH FILE
+                                </a>
                             </div>
                         )}
 
                         <div className="prose prose-lg max-w-none prose-p:leading-relaxed prose-p:text-gray-800 prose-a:text-blue-600 prose-a:font-bold prose-a:uppercase">
-                            <p className="whitespace-pre-wrap font-medium">
+                            <p className="whitespace-pre-wrap break-words font-medium">
                                 {berita.isi}
                             </p>
                         </div>

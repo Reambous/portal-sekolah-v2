@@ -24,12 +24,11 @@ class BeritaController extends Controller
         }
 
         // 3. Gunakan paginate() untuk membatasi 6 berita per halaman
-        // withQueryString() berguna agar parameter search tidak hilang saat pindah halaman
         $berita = $query->paginate(6)->withQueryString();
 
         return Inertia::render('admin/berita/index', [
             'berita' => $berita,
-            'filters' => $request->only(['search']) // Kirim balik kata kunci ke React agar tetap tampil di input
+            'filters' => $request->only(['search'])
         ]);
     }
 
@@ -39,43 +38,48 @@ class BeritaController extends Controller
         return Inertia::render('admin/berita/create');
     }
 
-    // 2. Memproses data dari form
+    // 2. Memproses data dari form (Mendukung Gambar Sampul & File Dokumen)
     public function store(Request $request)
     {
-        // Validasi inputan
+        // Validasi inputan terpisah antara gambar dan dokumen
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:4096', // Maksimal 4MB
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096', // Khusus Gambar Sampul
+            'lampiran' => 'nullable|file|mimes:pdf,doc,docx|max:5120',    // Khusus File Dokumen (Maks 5MB)
         ]);
 
-        // Proses upload gambar jika ada
-        $imagePath = null;
+        // Proses upload file Gambar Sampul jika ada
+        $gambarPath = null;
         if ($request->hasFile('gambar')) {
-            // Gambar akan disimpan di folder storage/app/public/berita
-            $imagePath = $request->file('gambar')->store('berita', 'public');
+            $gambarPath = $request->file('gambar')->store('berita/gambar', 'public');
         }
 
-        // Simpan ke database
-        // Simpan ke database
+        // Proses upload file Lampiran Dokumen jika ada
+        $lampiranPath = null;
+        $namaFileAsli = null;
+        if ($request->hasFile('lampiran')) {
+            $fileLampiran = $request->file('lampiran');
+            $namaFileAsli = $fileLampiran->getClientOriginalName(); // Ambil nama file asli (misal: Edaran_Sekolah.pdf)
+            $lampiranPath = $fileLampiran->store('berita/lampiran', 'public');
+        }
+
+        // Simpan ke database sesuai dengan kolom tabel Anda
         Berita::create([
-            // 👇 Gunakan $request->user()->id (tanpa kurung setelah id)
             'user_id' => $request->user()->id,
             'judul' => $validated['judul'],
             'isi' => $validated['isi'],
-            'gambar' => $imagePath,
+            'gambar' => $gambarPath,
+            'lampiran' => $lampiranPath,
+            'nama_file_asli' => $namaFileAsli,
         ]);
 
-        // Kembali ke halaman index
-        // ... kode simpan berita ...
-        return redirect('/berita')->with('success', 'Berita berhasil diterbitkan!');
+        return redirect('/berita')->with('success', 'Berita berhasil diterbitkan bersama lampiran!');
     }
 
     // Menampilkan detail satu berita
     public function show($id)
     {
-        // Tarik berita, penulisnya, DAN komentarnya (beserta penulis komentarnya)
-        // Pastikan relasi 'komentar' dan 'user' sudah ada di Model Berita & Komentar
         $berita = Berita::with(['user', 'komentar.user'])->findOrFail($id);
 
         return Inertia::render('admin/berita/show', [
@@ -92,7 +96,7 @@ class BeritaController extends Controller
         ]);
     }
 
-    // 4. Memproses update data
+    // 4. Memproses update data (Pembaruan teks, gambar, dan dokumen)
     public function update(Request $request, $id)
     {
         $berita = Berita::findOrFail($id);
@@ -100,65 +104,77 @@ class BeritaController extends Controller
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'lampiran' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
-        // Cek apakah ada gambar baru yang diupload
+        // Cek apakah ada file GAMBAR SAMPUL baru
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
             if ($berita->gambar) {
                 Storage::disk('public')->delete($berita->gambar);
             }
-            // Simpan gambar baru
-            $berita->gambar = $request->file('gambar')->store('berita', 'public');
+            $berita->gambar = $request->file('gambar')->store('berita/gambar', 'public');
         }
 
-        // Update teks
+        // Cek apakah ada file LAMPIRAN DOKUMEN baru
+        if ($request->hasFile('lampiran')) {
+            if ($berita->lampiran) {
+                Storage::disk('public')->delete($berita->lampiran);
+            }
+            $fileLampiran = $request->file('lampiran');
+            $berita->nama_file_asli = $fileLampiran->getClientOriginalName();
+            $berita->lampiran = $fileLampiran->store('berita/lampiran', 'public');
+        }
+
+        // Update data teks
         $berita->judul = $validated['judul'];
         $berita->isi = $validated['isi'];
         $berita->save();
 
-        // ... kode update berita ...
         return redirect('/berita')->with('success', 'Berita berhasil diperbarui!');
     }
 
-    // 5. Menghapus data
+    // 5. Menghapus data tunggal (Hapus gambar & dokumen sekaligus)
     public function destroy($id)
     {
         $berita = Berita::findOrFail($id);
 
-        // Hapus file gambar dari folder (jika ada) agar tidak jadi sampah
+        // Hapus file gambar fisiknya
         if ($berita->gambar) {
             Storage::disk('public')->delete($berita->gambar);
         }
 
+        // Hapus file dokumen fisiknya
+        if ($berita->lampiran) {
+            Storage::disk('public')->delete($berita->lampiran);
+        }
+
         $berita->delete();
 
-        // ... kode hapus berita ...
         return redirect('/berita')->with('success', 'Berita berhasil dihapus!');
     }
 
-    // 6. Hapus Massal (Bulk Delete)
+    // 6. Hapus Massal / Bulk Delete (Membersihkan semua aset dokumen & foto)
     public function bulkDelete(Request $request)
     {
-        // Validasi bahwa ada ID yang dikirim
         $request->validate([
             'ids' => 'required|array'
         ]);
 
-        // Ambil semua berita yang ID-nya dicentang
         $berita = Berita::whereIn('id', $request->ids)->get();
 
         foreach ($berita as $item) {
-            // Hapus gambar fisiknya dulu dari folder agar tidak menumpuk
+            // Bersihkan file gambar dari storage
             if ($item->gambar) {
                 Storage::disk('public')->delete($item->gambar);
             }
-            // Hapus data dari database
+            // Bersihkan file lampiran dokumen dari storage
+            if ($item->lampiran) {
+                Storage::disk('public')->delete($item->lampiran);
+            }
             $item->delete();
         }
 
-        // Kembali dengan pesan sukses
         return redirect()->back()->with('success', count($request->ids) . ' data berita berhasil dihapus secara massal!');
     }
 
@@ -168,7 +184,6 @@ class BeritaController extends Controller
         $berita = Berita::with('user')->latest()->get();
         $fileName = 'Laporan_Berita_Sekolah.csv';
 
-        // Header agar file langsung ter-download sebagai CSV/Excel
         $headers = [
             "Content-type"        => "text/csv",
             "Content-Disposition" => "attachment; filename=$fileName",
@@ -177,14 +192,11 @@ class BeritaController extends Controller
             "Expires"             => "0"
         ];
 
-        // Tulis data ke dalam format Excel/CSV
         $callback = function () use ($berita) {
             $file = fopen('php://output', 'w');
 
-            // Baris pertama (Judul Kolom)
             fputcsv($file, ['ID', 'Judul Pengumuman', 'Nama Penginput', 'Tanggal Terbit']);
 
-            // Baris selanjutnya (Isi Data)
             foreach ($berita as $row) {
                 fputcsv($file, [
                     $row->id,
@@ -200,35 +212,29 @@ class BeritaController extends Controller
     }
 
     // Fungsi Simpan Komentar
-    // Fungsi Simpan Komentar
     public function storeKomentar(Request $request, $id)
     {
         $request->validate([
             'isi' => 'required|string'
         ]);
 
-        // Simpan komentar ke database menggunakan Model yang baru dibuat
         \App\Models\Komentar::create([
             'berita_id' => $id,
             'user_id' => $request->user()->id,
-            // 👇 Sesuaikan dengan nama kolom di migration Anda
             'isi_komentar' => $request->isi
         ]);
 
-        return redirect()->back()->with('success', 'Komentar berhasil ditambahkan!');
+        return redirect()->back()->with('with', 'Komentar berhasil ditambahkan!');
     }
 
-    // Fungsi Hapus Komentar
     // Fungsi Hapus Komentar
     public function destroyKomentar($id)
     {
         $komentar = \App\Models\Komentar::findOrFail($id);
 
-        // Beri tahu editor bahwa $user ini merujuk ke Model User milik kita
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // CEK KEAMANAN: Pastikan yang menghapus adalah pemilik komentar ATAU Admin
         if ($user->id !== $komentar->user_id && $user->role !== 'admin') {
             abort(403, 'Anda tidak berhak menghapus komentar ini.');
         }

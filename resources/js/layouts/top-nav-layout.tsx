@@ -61,7 +61,7 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
                                     {/* ISI DROPDOWN */}
                                     {isKesiswaanOpen && (
                                         <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 shadow-xl min-w-[200px] py-2 transition-all">
-                                            <Link href="#" className="block px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black uppercase tracking-wide">
+                                            <Link href="/kesiswaan/lomba" className="block px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black uppercase tracking-wide">
                                                 - Kegiatan Lomba
                                             </Link>
                                             <Link href="#" className="block px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black uppercase tracking-wide">
@@ -77,8 +77,9 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
                                 <Link href="#" className="inline-flex items-center px-3 pt-1 border-b-2 text-xs font-bold uppercase tracking-wide transition border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">Ijin Guru</Link>
                                 <Link href="#" className="inline-flex items-center px-3 pt-1 border-b-2 text-xs font-bold uppercase tracking-wide transition border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">Refleksi</Link>
 
+                                {/* Kelola Akun (HANYA UNTUK DESKTOP) */}
                                 {user?.role === 'admin' && (
-                                    <Link href="#" className="inline-flex items-center px-3 pt-1 border-b-2 text-xs font-bold uppercase tracking-wide transition border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                    <Link href="/admin/users" className={`inline-flex items-center px-3 pt-1 border-b-2 text-xs font-bold uppercase tracking-wide transition h-full ${isActive('/admin/users') ? 'border-black text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
                                         Kelola Akun
                                     </Link>
                                 )}
@@ -142,7 +143,7 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
                                 </button>
                                 {isKesiswaanOpen && (
                                     <div className="pl-6 space-y-1 bg-gray-50 py-2">
-                                        <Link href="#" className="block py-2 pr-4 text-xs font-semibold uppercase text-gray-500 hover:text-black">- Kegiatan Lomba</Link>
+                                        <Link href="/kesiswaan/lomba" className="block py-2 pr-4 text-xs font-semibold uppercase text-gray-500 hover:text-black">- Kegiatan Lomba</Link>
                                         <Link href="#" className="block py-2 pr-4 text-xs font-semibold uppercase text-gray-500 hover:text-black">- Kegiatan Kesiswaan</Link>
                                     </div>
                                 )}
@@ -150,8 +151,11 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
 
                             <Link href="/berita" className="block pl-3 pr-4 py-2 border-l-4 text-xs font-bold uppercase tracking-wide transition border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50">Berita</Link>
                             
+                            {/* Kelola Akun (HANYA UNTUK HP) */}
                             {user?.role === 'admin' && (
-                                <Link href="#" className="block pl-3 pr-4 py-2 border-l-4 text-xs font-bold uppercase tracking-wide transition border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50">Kelola Akun</Link>
+                                <Link href="/admin/users" className={`block pl-3 pr-4 py-2 border-l-4 text-xs font-bold uppercase tracking-wide transition ${isActive('/admin/users') ? 'border-black text-black bg-gray-50' : 'border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50 hover:border-gray-300'}`}>
+                                    Kelola Akun
+                                </Link>
                             )}
                         </div>
 

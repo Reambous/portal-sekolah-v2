@@ -6,6 +6,7 @@ export default function BeritaCreate() {
         judul: '',
         isi: '',
         gambar: null as File | null,
+        lampiran: null as File | null,
     });
 
     const submit = (e: React.FormEvent) => {
@@ -73,7 +74,7 @@ export default function BeritaCreate() {
                             </label>
                             <input
                                 type="file"
-                                accept="image/*"
+                                accept="image/*, .pdf, .doc, .docx"
                                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-wider file:bg-gray-900 file:text-white hover:file:bg-gray-800 file:cursor-pointer border-2 border-dashed border-gray-300 p-4 bg-gray-50"
                                 onChange={(e) => setData('gambar', e.target.files ? e.target.files[0] : null)}
                             />

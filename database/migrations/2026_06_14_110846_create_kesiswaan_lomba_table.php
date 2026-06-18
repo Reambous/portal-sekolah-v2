@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->date('tanggal');
-            $table->string('jenis_lomba');
+            $table->string('jenis_lomba'); // Nama Lomba
+
+            // 👇 KITA TAMBAHKAN KOLOM INI
+            $table->text('peserta'); // Untuk menyimpan data: "Budi (XI-A), Andi (XI-A), Siti (XI-B)"
+            $table->string('bukti_gambar')->nullable(); // Opsional
             $table->string('prestasi');
             $table->text('refleksi');
             $table->enum('status', ['pending', 'disetujui'])->default('pending');
