@@ -22,18 +22,19 @@ export default function LombaShow({ lomba }: { lomba: any }) {
             <Head title={`Detail Lomba: ${lomba.jenis_lomba}`} />
 
             <div className="max-w-[95%] mx-auto max-w-4xl">
-                {/* HEADER */}
+                {/* HEADER - DIPERBAIKI ANTI-SCROLL & OTOMATIS PINDAH BARIS */}
                 <div className="border-b-4 border-gray-900 mb-8 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-                    <div>
+                    <div className="w-full md:flex-1 min-w-0">
                         <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-1">
                             Detail Lomba
                         </h2>
-                        <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">
+                        {/* Judul lomba dijamin turun ke bawah dengan aman jika sangat panjang */}
+                        <p className="text-gray-500 text-sm font-semibold uppercase tracking-wide break-words whitespace-normal w-full">
                             {lomba.jenis_lomba}
                         </p>
                     </div>
-                    <div className="flex gap-2 w-full sm:w-auto">
-                        <Link href="/kesiswaan/lomba" className="bg-white text-gray-900 border-2 border-gray-900 px-4 py-2 text-xs font-bold延 uppercase tracking-wider hover:bg-gray-100 transition text-center flex-1 sm:flex-none">
+                    <div className="w-full sm:w-auto shrink-0">
+                        <Link href="/kesiswaan/lomba" className="bg-white text-gray-900 border-2 border-gray-900 px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-gray-100 transition text-center block w-full sm:w-auto">
                             KEMBALI
                         </Link>
                     </div>
@@ -53,14 +54,16 @@ export default function LombaShow({ lomba }: { lomba: any }) {
                             <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-1 mt-4">Tanggal</h3>
                             <p className="text-sm font-bold">{new Date(lomba.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
 
-                            <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-1 mt-4">Pencapaian</h3>
-                            <p className="text-sm font-bold text-blue-700">{lomba.prestasi}</p>
-
+                           <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-1 mt-4">Pencapaian</h3>
+{/* 👇 Tambahkan break-words agar kalau teks prestasinya sangat panjang otomatis turun ke bawah */}
+<p className="text-sm font-bold text-blue-700 break-words w-full">
+    {lomba.prestasi}
+</p>
                             <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-1 mt-4">Penginput</h3>
                             <p className="text-sm font-bold">{lomba.user?.name || 'Sistem'}</p>
                         </div>
 
-                        {/* BUKTI GAMBAR INTERAKTIF (BISA DIKLIK) */}
+                        {/* BUKTI GAMBAR INTERAKTIF */}
                         {lomba.bukti_gambar && (
                             <div className="border-2 border-gray-900 shadow-sm group">
                                 <div className="bg-gray-900 text-white text-[10px] font-bold p-2 uppercase tracking-widest text-center">
@@ -79,7 +82,6 @@ export default function LombaShow({ lomba }: { lomba: any }) {
                         {/* TOMBOL AKSI MANAJEMEN DATA */}
                         {canBisaAksi && (
                             <div className="grid grid-cols-2 gap-2 border-2 border-gray-900 p-3 bg-gray-50">
-                                {/* 👇 UBAH BAGIAN INI */}
                                 <Link 
                                     href={`/kesiswaan/lomba/${lomba.id}/edit`}
                                     className="bg-yellow-500 text-black border border-gray-900 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center hover:bg-yellow-600 transition"
@@ -103,7 +105,7 @@ export default function LombaShow({ lomba }: { lomba: any }) {
                     </div>
 
                     {/* KOLOM KANAN (Peserta & Refleksi) */}
-                    <div className="md:col-span-2 space-y-8">
+                    <div className="md:col-span-2 space-y-8 min-w-0">
                         <div>
                             <h3 className="text-lg font-black uppercase border-b-2 border-gray-200 pb-2 mb-4">Daftar Peserta</h3>
                             <div className="space-y-4">
@@ -114,7 +116,7 @@ export default function LombaShow({ lomba }: { lomba: any }) {
                                         </div>
                                         <ul className="list-decimal list-inside space-y-1 text-sm font-medium text-gray-700 pl-2">
                                             {kelompok.siswa.map((s: string, sIdx: number) => (
-                                                <li key={sIdx} className="border-b border-gray-100 pb-1">{s}</li>
+                                                <li key={sIdx} className="border-b border-gray-100 pb-1 break-words">{s}</li>
                                             ))}
                                         </ul>
                                     </div>
@@ -122,10 +124,11 @@ export default function LombaShow({ lomba }: { lomba: any }) {
                             </div>
                         </div>
 
+                        {/* JURNAL REFLEKSI ANTI EMBLES */}
                         <div>
                             <h3 className="text-lg font-black uppercase border-b-2 border-gray-200 pb-2 mb-4">Jurnal Refleksi</h3>
                             <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 shadow-sm">
-                                <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap break-words">
+                                <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap break-words font-medium">
                                     {lomba.refleksi}
                                 </p>
                             </div>
