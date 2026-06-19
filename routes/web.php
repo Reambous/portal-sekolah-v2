@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Kesiswaan\KegiatanController;
 use App\Http\Controllers\Kurikulum\KurikulumKegiatanController;
+use App\Http\Controllers\Humas\HumasKegiatanController;
+use App\Http\Controllers\Sarpras\SarprasKegiatanController;
 
 Route::inertia('/', 'welcome')->name('home');
 
@@ -23,6 +25,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kesiswaan/lomba', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'index'])->name('kesiswaan.lomba.index');
     Route::get('/kesiswaan/lomba/create', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'create'])->name('kesiswaan.lomba.create');
     Route::post('/kesiswaan/lomba', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'store'])->name('kesiswaan.lomba.store');
+    Route::put('/kesiswaan/lomba/{id}/status', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'updateStatus'])->name('kesiswaan.lomba.status');
+    // Tambahkan dua rute baru ini di dalam grup middleware auth Anda
+    Route::post('/kesiswaan/lomba/bulk-delete', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'bulkDelete'])->name('kesiswaan.lomba.bulkDelete');
+
     Route::get('/kesiswaan/lomba/{id}', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'show'])->name('kesiswaan.lomba.show');
     Route::delete('/kesiswaan/lomba/{id}', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'destroy'])->name('kesiswaan.lomba.destroy');
     Route::put('/kesiswaan/lomba/{id}/status', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'updateStatus'])->name('kesiswaan.lomba.status');
@@ -31,18 +37,23 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kesiswaan/kegiatan', [KegiatanController::class, 'index'])->name('kesiswaan.kegiatan.index');
     Route::get('/kesiswaan/kegiatan/create', [KegiatanController::class, 'create'])->name('kesiswaan.kegiatan.create');
     Route::post('/kesiswaan/kegiatan', [KegiatanController::class, 'store'])->name('kesiswaan.kegiatan.store');
+    Route::get('/kesiswaan/lomba/export/csv', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'export'])->name('kesiswaan.lomba.export');
+    Route::post('/kesiswaan/kegiatan/bulk-delete', [KegiatanController::class, 'bulkDelete'])->name('kesiswaan.kegiatan.bulkDelete');
     Route::get('/kesiswaan/kegiatan/{id}', [KegiatanController::class, 'show'])->name('kesiswaan.kegiatan.show');
     Route::put('/kesiswaan/kegiatan/{id}/status', [KegiatanController::class, 'updateStatus'])->name('kesiswaan.kegiatan.status');
     Route::delete('/kesiswaan/kegiatan/{id}', [KegiatanController::class, 'destroy'])->name('kesiswaan.kegiatan.destroy');
-    Route::post('/kesiswaan/kegiatan/bulk-delete', [KegiatanController::class, 'bulkDelete'])->name('kesiswaan.kegiatan.bulkDelete');
+
     Route::get('/kesiswaan/kegiatan/export/csv', [KegiatanController::class, 'export'])->name('kesiswaan.kegiatan.export');
-    Route::get('/kesiswaan/lomba/export/csv', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'export'])->name('kesiswaan.lomba.export');
+
     Route::get('/kesiswaan/kegiatan/{id}/edit', [KegiatanController::class, 'edit'])->name('kesiswaan.kegiatan.edit');
     Route::post('/kesiswaan/kegiatan/{id}', [KegiatanController::class, 'update'])->name('kesiswaan.kegiatan.update');
     // --- MODUL UTAMA JURNAL KURIKULUM ---
     Route::get('/kurikulum', [KurikulumKegiatanController::class, 'index'])->name('kurikulum.index');
     Route::get('/kurikulum/create', [KurikulumKegiatanController::class, 'create'])->name('kurikulum.create');
     Route::post('/kurikulum', [KurikulumKegiatanController::class, 'store'])->name('kurikulum.store');
+    // Fitur Manajemen Massal & Data Eksternal
+    Route::post('/kurikulum/bulk-delete', [KurikulumKegiatanController::class, 'bulkDelete'])->name('kurikulum.bulkDelete');
+    Route::get('/kurikulum/export/csv', [KurikulumKegiatanController::class, 'export'])->name('kurikulum.export');
     Route::get('/kurikulum/{id}', [KurikulumKegiatanController::class, 'show'])->name('kurikulum.show');
     Route::get('/kurikulum/{id}/edit', [KurikulumKegiatanController::class, 'edit'])->name('kurikulum.edit');
     Route::post('/kurikulum/{id}', [KurikulumKegiatanController::class, 'update'])->name('kurikulum.update');
@@ -51,9 +62,33 @@ Route::middleware(['auth'])->group(function () {
     // Verifikasi Status oleh Admin
     Route::put('/kurikulum/{id}/status', [KurikulumKegiatanController::class, 'updateStatus'])->name('kurikulum.status');
 
-    // Fitur Manajemen Massal & Data Eksternal
-    Route::post('/kurikulum/bulk-delete', [KurikulumKegiatanController::class, 'bulkDelete'])->name('kurikulum.bulkDelete');
-    Route::get('/kurikulum/export/csv', [KurikulumKegiatanController::class, 'export'])->name('kurikulum.export');
+
+    // --- MODUL JURNAL HUMAS ---
+    Route::get('/humas', [HumasKegiatanController::class, 'index'])->name('humas.index');
+    Route::get('/humas/create', [HumasKegiatanController::class, 'create'])->name('humas.create');
+    Route::post('/humas', [HumasKegiatanController::class, 'store'])->name('humas.store');
+    Route::post('/humas/bulk-delete', [HumasKegiatanController::class, 'bulkDelete'])->name('humas.bulkDelete');
+    Route::get('/humas/export/csv', [HumasKegiatanController::class, 'export'])->name('humas.export');
+    Route::get('/humas/{id}', [HumasKegiatanController::class, 'show'])->name('humas.show');
+    Route::get('/humas/{id}/edit', [HumasKegiatanController::class, 'edit'])->name('humas.edit');
+    Route::post('/humas/{id}', [HumasKegiatanController::class, 'update'])->name('humas.update');
+    Route::delete('/humas/{id}', [HumasKegiatanController::class, 'destroy'])->name('humas.destroy');
+    Route::put('/humas/{id}/status', [HumasKegiatanController::class, 'updateStatus'])->name('humas.status');
+
+
+    // 1. Rute Statis (Tanpa Parameter) - Harus di Atas!
+    Route::get('/sarpras', [SarprasKegiatanController::class, 'index'])->name('sarpras.index');
+    Route::get('/sarpras/create', [SarprasKegiatanController::class, 'create'])->name('sarpras.create');
+    Route::post('/sarpras', [SarprasKegiatanController::class, 'store'])->name('sarpras.store');
+    Route::post('/sarpras/bulk-delete', [SarprasKegiatanController::class, 'bulkDelete'])->name('sarpras.bulkDelete');
+    Route::get('/sarpras/export/csv', [SarprasKegiatanController::class, 'export'])->name('sarpras.export');
+
+    // 2. Rute Dinamis (Menggunakan Parameter {id}) - Harus di Bawah!
+    Route::get('/sarpras/{id}', [SarprasKegiatanController::class, 'show'])->name('sarpras.show');
+    Route::get('/sarpras/{id}/edit', [SarprasKegiatanController::class, 'edit'])->name('sarpras.edit');
+    Route::post('/sarpras/{id}', [SarprasKegiatanController::class, 'update'])->name('sarpras.update');
+    Route::delete('/sarpras/{id}', [SarprasKegiatanController::class, 'destroy'])->name('sarpras.destroy');
+    Route::put('/sarpras/{id}/status', [SarprasKegiatanController::class, 'updateStatus'])->name('sarpras.status');
 });
 
 // ==========================================
@@ -74,9 +109,7 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix
     Route::get('/users/{id}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
-    Route::put('/kesiswaan/lomba/{id}/status', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'updateStatus'])->name('kesiswaan.lomba.status');
-    // Tambahkan dua rute baru ini di dalam grup middleware auth Anda
-    Route::post('/kesiswaan/lomba/bulk-delete', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'bulkDelete'])->name('kesiswaan.lomba.bulkDelete');
 });
+
 
 require __DIR__ . '/settings.php';
