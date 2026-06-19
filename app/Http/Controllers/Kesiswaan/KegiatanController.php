@@ -110,12 +110,11 @@ class KegiatanController extends Controller
     public function destroy($id)
     {
         $kegiatan = Kegiatan::findOrFail($id);
-
-        /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if ($user->role !== 'admin' && $user->id !== $kegiatan->user_id) {
-            abort(403);
+        // 🔒 PROTEKSI KEGIATAN KESISWAAN: Jika sudah di-ACC, Guru dilarang hapus!
+        if ($kegiatan->status === 'disetujui' && $user->role !== 'admin') {
+            abort(403, 'Data kegiatan sudah disetujui Admin dan tidak dapat dihapus.');
         }
 
         if ($kegiatan->bukti_gambar) {
@@ -200,11 +199,11 @@ class KegiatanController extends Controller
     public function update(Request $request, $id)
     {
         $kegiatan = Kegiatan::where('kategori', 'kesiswaan')->findOrFail($id);
+        $user = Auth::user();
 
-        // Proteksi Hak Akses
-        $user = $request->user();
-        if ($user->role !== 'admin' && $user->id !== $kegiatan->user_id) {
-            abort(403);
+        // 🔒 PROTEKSI KEGIATAN KESISWAAN: Jika sudah di-ACC, Guru dilarang edit!
+        if ($kegiatan->status === 'disetujui' && $user->role !== 'admin') {
+            abort(403, 'Data kegiatan sudah disetujui Admin dan tidak dapat diubah.');
         }
 
         $validated = $request->validate([

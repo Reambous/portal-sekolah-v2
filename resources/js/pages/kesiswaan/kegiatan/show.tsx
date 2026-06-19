@@ -65,25 +65,30 @@ export default function KegiatanShow({ kegiatan }: { kegiatan: any }) {
                             </div>
                         </div>
 
-                        {/* 👇 TAMBAHKAN BLOK TOMBOL EDIT INI */}
-                        {(isAdmin || isOwner) && (
-                            <Link 
-                                href={`/kesiswaan/kegiatan/${kegiatan.id}/edit`}
-                                className="w-full block text-center bg-yellow-500 text-black border-2 border-gray-900 px-4 py-2.5 text-xs font-black uppercase tracking-widest hover:bg-yellow-600 transition shadow-sm mb-2"
-                            >
-                                📝 EDIT DATA JURNAL
-                            </Link>
-                        )}
+                       {/* 🔒 LOGIKA AMAN JURNAL KEGIATAN KESISWAAN */}
+{(isAdmin || (isOwner && kegiatan.status === 'pending')) && (
+    <div className="space-y-2">
+        <Link 
+            href={`/kesiswaan/kegiatan/${kegiatan.id}/edit`} // Sesuaikan dengan jalur rute kesiswaan Anda
+            className="w-full block text-center bg-yellow-500 text-black border-2 border-gray-900 px-4 py-2.5 text-xs font-black uppercase tracking-widest hover:bg-yellow-600 transition shadow-sm"
+        >
+            📝 EDIT DATA JURNAL
+        </Link>
+        <button 
+            onClick={handleDelete} 
+            className="w-full bg-red-600 text-white border-2 border-gray-900 px-4 py-2.5 text-xs font-black uppercase tracking-widest hover:bg-red-700 transition shadow-sm"
+        >
+            🗑️ HAPUS JURNAL
+        </button>
+    </div>
+)}
 
-                        {/* TOMBOL HAPUS DATA (Sudah ada sebelumnya) */}
-                        {(isAdmin || isOwner) && (
-                            <button 
-                                onClick={handleDelete}
-                                className="w-full bg-red-600 text-white border-2 border-gray-900 px-4 py-2.5 text-xs font-black uppercase tracking-widest hover:bg-red-700 transition shadow-sm"
-                            >
-                                🗑️ HAPUS JURNAL
-                            </button>
-                        )}
+{/* Pesan gembok pengunci untuk guru */}
+{!isAdmin && isOwner && kegiatan.status === 'disetujui' && (
+    <div className="text-[10px] bg-green-50 border border-green-300 text-green-800 p-3 font-bold uppercase tracking-wide text-center">
+        🔒 Data terkunci karena sudah di-ACC Admin. Hubungi Administrator jika ingin mengubah data.
+    </div>
+)}
                     </div>
 
                     {/* KONTEN UTAMA */}

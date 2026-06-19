@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Kesiswaan\KegiatanController;
+use App\Http\Controllers\Kurikulum\KurikulumKegiatanController;
 
 Route::inertia('/', 'welcome')->name('home');
 
@@ -38,6 +39,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kesiswaan/lomba/export/csv', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'export'])->name('kesiswaan.lomba.export');
     Route::get('/kesiswaan/kegiatan/{id}/edit', [KegiatanController::class, 'edit'])->name('kesiswaan.kegiatan.edit');
     Route::post('/kesiswaan/kegiatan/{id}', [KegiatanController::class, 'update'])->name('kesiswaan.kegiatan.update');
+    // --- MODUL UTAMA JURNAL KURIKULUM ---
+    Route::get('/kurikulum', [KurikulumKegiatanController::class, 'index'])->name('kurikulum.index');
+    Route::get('/kurikulum/create', [KurikulumKegiatanController::class, 'create'])->name('kurikulum.create');
+    Route::post('/kurikulum', [KurikulumKegiatanController::class, 'store'])->name('kurikulum.store');
+    Route::get('/kurikulum/{id}', [KurikulumKegiatanController::class, 'show'])->name('kurikulum.show');
+    Route::get('/kurikulum/{id}/edit', [KurikulumKegiatanController::class, 'edit'])->name('kurikulum.edit');
+    Route::post('/kurikulum/{id}', [KurikulumKegiatanController::class, 'update'])->name('kurikulum.update');
+    Route::delete('/kurikulum/{id}', [KurikulumKegiatanController::class, 'destroy'])->name('kurikulum.destroy');
+
+    // Verifikasi Status oleh Admin
+    Route::put('/kurikulum/{id}/status', [KurikulumKegiatanController::class, 'updateStatus'])->name('kurikulum.status');
+
+    // Fitur Manajemen Massal & Data Eksternal
+    Route::post('/kurikulum/bulk-delete', [KurikulumKegiatanController::class, 'bulkDelete'])->name('kurikulum.bulkDelete');
+    Route::get('/kurikulum/export/csv', [KurikulumKegiatanController::class, 'export'])->name('kurikulum.export');
 });
 
 // ==========================================

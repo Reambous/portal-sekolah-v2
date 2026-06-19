@@ -59,6 +59,7 @@ export default function LombaShow({ lomba }: { lomba: any }) {
 <p className="text-sm font-bold text-blue-700 break-words w-full">
     {lomba.prestasi}
 </p>
+
                             <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-1 mt-4">Penginput</h3>
                             <p className="text-sm font-bold">{lomba.user?.name || 'Sistem'}</p>
                         </div>

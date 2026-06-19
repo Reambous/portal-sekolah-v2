@@ -6,6 +6,7 @@ export default function BeritaShow({ berita }: { berita: any }) {
     // 2. Ambil data user yang sedang login dari props Inertia
     const { auth, flash } = usePage().props as any;
     const currentUser = auth?.user;
+const isAdmin = auth?.user?.role === 'admin';
 
     const { data, setData, post, processing, reset, errors } = useForm({
         isi: '',
@@ -161,17 +162,21 @@ export default function BeritaShow({ berita }: { berita: any }) {
                         </div>
                     </div>
 
-                    <div className="bg-gray-50 border-t-2 border-gray-200 p-6 flex justify-between items-center">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                            AKHIR DARI PENGUMUMAN
-                        </span>
-                        <Link
-                            href={`/admin/berita/${berita.id}/edit`}
-                            className="bg-gray-900 text-white px-6 py-2 text-xs font-bold uppercase tracking-wider hover:bg-blue-600 transition shadow-sm"
-                        >
-                            EDIT ARTIKEL INI
-                        </Link>
-                    </div>
+                   <div className="bg-gray-50 border-t-2 border-gray-200 p-6 flex justify-between items-center">
+    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+        AKHIR DARI PENGUMUMAN
+    </span>
+    
+    {/* 👇 TOMBOL INI DIKUNCI: HANYA MUNCUL JIKA USER ADALAH ADMIN */}
+    {isAdmin && (
+        <Link
+            href={`/admin/berita/${berita.id}/edit`}
+            className="bg-gray-900 text-white px-6 py-2 text-xs font-bold uppercase tracking-wider hover:bg-blue-600 transition shadow-sm"
+        >
+            EDIT ARTIKEL INI
+        </Link>
+    )}
+</div>
                 </div>
 
                 {/* RUANG DISKUSI & KOMENTAR */}
