@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
 
         // 2. Buat Akun Guru 1
         User::create([
-            'name' => 'Budi Santoso, S.Pd',
+            'name' => 'Anas Syihabudin, S.Pd',
             'email' => 'anas@gmail.com',
             'nip' => '198001012005011001',
             'password' => Hash::make('guru123'), // Password default guru
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
 
         // 3. Buat Akun Guru 2
         User::create([
-            'name' => 'Siti Aminah, M.Pd',
+            'name' => 'Muhammad Haidar, M.Pd',
             'email' => 'haidar@gmail.com',
             'nip' => '198502022010012002',
             'password' => Hash::make('guru123'), // Password default guru

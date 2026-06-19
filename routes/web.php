@@ -7,6 +7,8 @@ use App\Http\Controllers\Kesiswaan\KegiatanController;
 use App\Http\Controllers\Kurikulum\KurikulumKegiatanController;
 use App\Http\Controllers\Humas\HumasKegiatanController;
 use App\Http\Controllers\Sarpras\SarprasKegiatanController;
+use App\Http\Controllers\IjinController;
+use App\Http\Controllers\JurnalRefleksiController;
 
 Route::inertia('/', 'welcome')->name('home');
 
@@ -89,6 +91,31 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/sarpras/{id}', [SarprasKegiatanController::class, 'update'])->name('sarpras.update');
     Route::delete('/sarpras/{id}', [SarprasKegiatanController::class, 'destroy'])->name('sarpras.destroy');
     Route::put('/sarpras/{id}/status', [SarprasKegiatanController::class, 'updateStatus'])->name('sarpras.status');
+
+    Route::get('/ijin', [IjinController::class, 'index'])->name('ijin.index');
+    Route::get('/ijin/create', [IjinController::class, 'create'])->name('ijin.create');
+    Route::post('/ijin', [IjinController::class, 'store'])->name('ijin.store');
+    // Tempatkan di dalam grup Route::middleware(['auth'])
+    Route::post('/ijin/bulk-delete', [IjinController::class, 'bulkDelete'])->name('ijin.bulkDelete');
+    Route::get('/ijin/export/csv', [IjinController::class, 'export'])->name('ijin.export');
+    Route::get('/ijin/{id}', [IjinController::class, 'show'])->name('ijin.show');
+    Route::get('/ijin/{id}/edit', [IjinController::class, 'edit'])->name('ijin.edit');
+    Route::post('/ijin/{id}', [IjinController::class, 'update'])->name('ijin.update');
+    Route::delete('/ijin/{id}', [IjinController::class, 'destroy'])->name('ijin.destroy');
+
+    // Khusus Admin merubah status izin (disetujui/ditolak)
+    Route::put('/ijin/{id}/status', [IjinController::class, 'updateStatus'])->name('ijin.status');
+
+    Route::post('/jurnal-refleksi/bulk-delete', [JurnalRefleksiController::class, 'bulkDelete'])->name('jurnal-refleksi.bulkDelete');
+    Route::get('/jurnal-refleksi/export/csv', [JurnalRefleksiController::class, 'export'])->name('jurnal-refleksi.export');
+
+    Route::get('/jurnal-refleksi', [JurnalRefleksiController::class, 'index'])->name('jurnal-refleksi.index');
+    Route::get('/jurnal-refleksi/create', [JurnalRefleksiController::class, 'create'])->name('jurnal-refleksi.create');
+    Route::post('/jurnal-refleksi', [JurnalRefleksiController::class, 'store'])->name('jurnal-refleksi.store');
+    Route::get('/jurnal-refleksi/{id}', [JurnalRefleksiController::class, 'show'])->name('jurnal-refleksi.show');
+    Route::get('/jurnal-refleksi/{id}/edit', [JurnalRefleksiController::class, 'edit'])->name('jurnal-refleksi.edit');
+    Route::post('/jurnal-refleksi/{id}', [JurnalRefleksiController::class, 'update'])->name('jurnal-refleksi.update');
+    Route::delete('/jurnal-refleksi/{id}', [JurnalRefleksiController::class, 'destroy'])->name('jurnal-refleksi.destroy');
 });
 
 // ==========================================

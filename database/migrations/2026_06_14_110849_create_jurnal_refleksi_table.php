@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->date('tanggal');
-            $table->string('kategori');
+            $table->string('kategori'); // Misal: Evaluasi Kelas, Pengembangan Diri, Diskusi Sejawat
             $table->string('judul_refleksi');
             $table->text('isi_refleksi');
+            $table->string('bukti_file')->nullable(); // 👈 Tambahkan ini agar bisa upload foto kelas/PDF modul
             $table->timestamps();
         });
     }
