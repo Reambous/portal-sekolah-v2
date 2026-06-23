@@ -9,11 +9,19 @@ use App\Http\Controllers\Humas\HumasKegiatanController;
 use App\Http\Controllers\Sarpras\SarprasKegiatanController;
 use App\Http\Controllers\IjinController;
 use App\Http\Controllers\JurnalRefleksiController;
+use App\Http\Controllers\DashboardController;
 
-Route::inertia('/', 'welcome')->name('home');
+// UBAH RUTE ROOT UTAMA:
+// Pastikan diberi nama ->name('home') di ujungnya!
+Route::get('/', function () {
+    return redirect()->route('login');
+})->name('home');
 
+// 🔑 Ganti grup middleware Anda menjadi seperti ini:
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+
+    // Rute dashboard lama yang menggunakan Route::inertia dipotong & diganti ke Controller:
+    Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 });
 
 // ==========================================
