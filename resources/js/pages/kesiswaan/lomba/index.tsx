@@ -122,132 +122,133 @@ export default function LombaIndex({ lomba, filters }: { lomba: any, filters: an
                     </div>
                 )}
 
-                {/* TABEL DATA LOMBA */}
-                <div className="bg-white border-2 border-gray-900 shadow-sm overflow-hidden mb-8">
-                    <table className="w-full text-left border-collapse table-fixed">
-                        <thead>
-                            <tr className="bg-gray-900 text-white text-xs uppercase tracking-widest">
-                                {isAdmin && (
-                                    <th className="p-4 border-r border-gray-700 w-12 text-center">
-                                        <input 
-                                            type="checkbox" 
-                                            className="focus:ring-0 rounded-none border-2 border-gray-400 text-gray-900"
-                                            onChange={handleSelectAll}
-                                            checked={dataLomba.length > 0 && selectedIds.length === dataLomba.length}
-                                        />
-                                    </th>
-                                )}
-                                <th className="p-4 border-r border-gray-700 w-16 text-center">NO</th>
-                                <th className="p-4 border-r border-gray-700 w-28">TANGGAL</th>
-                                <th className="p-4 border-r border-gray-700 w-1/3">DETAIL PERLOMBAAN</th>
-                                <th className="p-4 border-r border-gray-700 w-1/4">DIIKUTI OLEH</th>
-                                <th className="p-4 border-r border-gray-700 w-28 text-center">STATUS</th>
-                                <th className="p-4 w-36 text-center">AKSI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {dataLomba.length === 0 ? (
-                                <tr>
-                                    <td colSpan={isAdmin ? 7 : 6} className="p-10 text-center text-gray-500 font-bold uppercase tracking-widest border-t-2 border-gray-900">
-                                        Belum ada data rekaman lomba.
-                                    </td>
-                                </tr>
-                            ) : (
-                                dataLomba.map((item: any, index: number) => (
-                                    <tr key={item.id} className="border-t-2 border-gray-200 hover:bg-gray-50 transition">
-                                        {isAdmin && (
-                                            <td className="p-4 border-r-2 border-gray-200 text-center">
-                                                <input 
-                                                    type="checkbox"
-                                                    className="focus:ring-0 rounded-none border-2 border-gray-300 text-gray-900"
-                                                    checked={selectedIds.includes(item.id)}
-                                                    onChange={(e) => handleSelectOne(item.id, e.target.checked)}
-                                                />
-                                            </td>
-                                        )}
-                                        <td className="p-4 border-r-2 border-gray-200 text-center font-bold text-xs">
-                                            {lomba.from + index}
-                                        </td>
-                                        
-                                        <td className="p-4 border-r-2 border-gray-200 text-xs font-bold text-gray-600">
-                                            {new Date(item.tanggal).toLocaleDateString('id-ID', {
-                                                day: 'numeric', month: 'short', year: 'numeric'
-                                            })}
-                                        </td>
-                                        
-                                        {/* DETAIL PERLOMBAAN KUNCI TRUNCATE (POTONG TEKS TOTAL) */}
-                                        <td className="p-4 border-r-2 border-gray-200 text-xs">
-                                            <div className="font-black text-gray-900 uppercase truncate mb-0.5" title={item.jenis_lomba}>
-                                                {item.jenis_lomba}
-                                            </div>
-                                            <div className="font-bold text-blue-700 uppercase truncate" title={item.prestasi}>
-                                                🏆 {item.prestasi || 'Partisipan'}
-                                            </div>
-                                            <div className="text-gray-500 mt-1 italic truncate" title={item.refleksi}>
-                                                "Refleksi: {item.refleksi || '-'}"
-                                            </div>
-                                        </td>
-                                        
-                                        {/* KELAS KUNCI TRUNCATE (POTONG TEKS TOTAL) */}
-                                        <td className="p-4 border-r-2 border-gray-200 text-xs font-medium text-gray-800">
-                                            <div className="font-bold text-gray-700 truncate" title={item.peserta && Array.isArray(item.peserta) ? item.peserta.map((p: any) => p.kelas).join(', ') : '-'}>
-                                                {item.peserta && Array.isArray(item.peserta) 
-                                                    ? item.peserta.map((p: any) => p.kelas).join(', ') 
-                                                    : '-'}
-                                            </div>
-                                            <div className="text-[10px] text-gray-400 mt-0.5 font-bold uppercase">
-                                                (Detail di halaman show)
-                                            </div>
-                                        </td>
-                                        
-                                        {/* STATUS */}
-                                        <td className="p-4 border-r-2 border-gray-200 text-center">
-                                            <span className={`inline-block px-2 py-0.5 text-[9px] font-black uppercase tracking-wider border-2 ${
-                                                item.status === 'disetujui' 
-                                                ? 'bg-green-100 border-green-600 text-green-800' 
-                                                : 'bg-yellow-100 border-yellow-600 text-yellow-800'
-                                            }`}>
-                                                {item.status}
-                                            </span>
-                                        </td>
-                                        
-                                        {/* AKSI */}
-                                        <td className="p-3 text-center">
-                                            <div className="flex flex-col gap-1 items-center">
-                                                <Link 
-                                                    href={`/kesiswaan/lomba/${item.id}`}
-                                                    className="bg-blue-600 text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:bg-blue-700 transition w-full text-center"
-                                                >
-                                                    DETAIL
-                                                </Link>
+                {/* TABEL DATA LOMBA (RESPONSIVE BRUTALIST VERSION) */}
+<div className="w-full overflow-x-auto border-4 border-gray-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-8">
+    {/* KUNCI: Mengubah ke table-auto dan memaksa lebar minimal 1000px agar HP bisa melakukan scroll geser */}
+    <table className="w-full text-left border-collapse table-auto min-w-[1000px]">
+        <thead>
+            <tr className="bg-gray-900 text-white text-xs uppercase tracking-widest">
+                {isAdmin && (
+                    <th className="p-4 border-r border-gray-700 w-12 text-center">
+                        <input 
+                            type="checkbox" 
+                            className="focus:ring-0 rounded-none border-2 border-gray-400 text-gray-900"
+                            onChange={handleSelectAll}
+                            checked={dataLomba.length > 0 && selectedIds.length === dataLomba.length}
+                        />
+                    </th>
+                )}
+                {/* KUNCI: Menambahkan whitespace-nowrap di semua header agar teks judul tidak patah baris kebawah */}
+                <th className="p-4 border-r border-gray-700 w-16 text-center whitespace-nowrap">NO</th>
+                <th className="p-4 border-r border-gray-700 w-32 whitespace-nowrap">TANGGAL</th>
+                <th className="p-4 border-r border-gray-700 whitespace-nowrap">DETAIL PERLOMBAAN</th>
+                <th className="p-4 border-r border-gray-700 whitespace-nowrap">DIIKUTI OLEH</th>
+                <th className="p-4 border-r border-gray-700 w-28 text-center whitespace-nowrap">STATUS</th>
+                <th className="p-4 w-36 text-center whitespace-nowrap">AKSI</th>
+            </tr>
+        </thead>
+        <tbody>
+            {dataLomba.length === 0 ? (
+                <tr>
+                    <td colSpan={isAdmin ? 7 : 6} className="p-10 text-center text-gray-500 font-bold uppercase tracking-widest border-t-2 border-gray-900">
+                        Belum ada data rekaman lomba.
+                    </td>
+                </tr>
+            ) : (
+                dataLomba.map((item: any, index: number) => (
+                    <tr key={item.id} className="border-t-2 border-gray-200 hover:bg-gray-50 transition">
+                        {isAdmin && (
+                            <td className="p-4 border-r-2 border-gray-200 text-center">
+                                <input 
+                                    type="checkbox"
+                                    className="focus:ring-0 rounded-none border-2 border-gray-300 text-gray-900"
+                                    checked={selectedIds.includes(item.id)}
+                                    onChange={(e) => handleSelectOne(item.id, e.target.checked)}
+                                />
+                            </td>
+                        )}
+                        <td className="p-4 border-r-2 border-gray-200 text-center font-bold text-xs whitespace-nowrap">
+                            {lomba.from + index}
+                        </td>
+                        
+                        <td className="p-4 border-r-2 border-gray-200 text-xs font-bold text-gray-600 whitespace-nowrap">
+                            {new Date(item.tanggal).toLocaleDateString('id-ID', {
+                                day: 'numeric', month: 'short', year: 'numeric'
+                            })}
+                        </td>
+                        
+                        {/* KUNCI: Memasang max-w-xs dan truncate pada kolom detail teks panjang */}
+                        <td className="p-4 border-r-2 border-gray-200 text-xs max-w-xs">
+                            <div className="font-black text-gray-900 uppercase truncate mb-0.5" title={item.jenis_lomba}>
+                                {item.jenis_lomba}
+                            </div>
+                            <div className="font-bold text-blue-700 uppercase truncate" title={item.prestasi}>
+                                🏆 {item.prestasi || 'Partisipan'}
+                            </div>
+                            <div className="text-gray-500 mt-1 italic truncate" title={item.refleksi}>
+                                "Refleksi: {item.refleksi || '-'}"
+                            </div>
+                        </td>
+                        
+                        {/* KUNCI: Memasang max-w-xs dan truncate pada kolom nama peserta */}
+                        <td className="p-4 border-r-2 border-gray-200 text-xs font-medium text-gray-800 max-w-xs">
+                            <div className="font-bold text-gray-700 truncate" title={item.peserta && Array.isArray(item.peserta) ? item.peserta.map((p: any) => p.kelas).join(', ') : '-'}>
+                                {item.peserta && Array.isArray(item.peserta) 
+                                    ? item.peserta.map((p: any) => p.kelas).join(', ') 
+                                    : '-'}
+                            </div>
+                            <div className="text-[10px] text-gray-400 mt-0.5 font-bold uppercase whitespace-nowrap">
+                                (Detail di halaman show)
+                            </div>
+                        </td>
+                        
+                        <td className="p-4 border-r-2 border-gray-200 text-center">
+                            {/* KUNCI: Memastikan posisi badge adalah inline-block normal dan dikunci whitespace-nowrap */}
+                            <span className={`inline-block px-2 py-0.5 text-[9px] font-black uppercase tracking-wider border-2 whitespace-nowrap ${
+                                item.status === 'disetujui' 
+                                ? 'bg-green-100 border-green-600 text-green-800' 
+                                : 'bg-yellow-100 border-yellow-600 text-yellow-800'
+                            }`}>
+                                {item.status}
+                            </span>
+                        </td>
+                        
+                        <td className="p-3 text-center">
+                            <div className="flex flex-col gap-1 items-center w-full">
+                                <Link 
+                                    href={`/kesiswaan/lomba/${item.id}`}
+                                    className="bg-blue-600 text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:bg-blue-700 transition w-full text-center block"
+                                >
+                                    DETAIL
+                                </Link>
 
-                                                {isAdmin && (
-                                                    <>
-                                                        {item.status === 'pending' ? (
-                                                            <button onClick={() => handleUpdateStatus(item.id, 'disetujui')} className="bg-green-600 text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:bg-green-700 transition w-full">
-                                                                ✔ ACC
-                                                            </button>
-                                                        ) : (
-                                                            <button onClick={() => handleUpdateStatus(item.id, 'pending')} className="border border-gray-300 text-gray-400 px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:border-red-600 hover:text-red-600 transition w-full">
-                                                                BATAL
-                                                            </button>
-                                                        )}
-                                                        <button 
-                                                            onClick={() => handleDeleteSingle(item.id)}
-                                                            className="bg-red-600 text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:bg-red-700 transition w-full"
-                                                        >
-                                                            🗑️ HAPUS
-                                                        </button>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                {isAdmin && (
+                                    <>
+                                        {item.status === 'pending' ? (
+                                            <button onClick={() => handleUpdateStatus(item.id, 'disetujui')} className="bg-green-600 text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:bg-green-700 transition w-full block">
+                                                ✔ ACC
+                                            </button>
+                                        ) : (
+                                            <button onClick={() => handleUpdateStatus(item.id, 'pending')} className="border-2 border-gray-300 bg-white text-gray-400 px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:border-red-600 hover:text-red-600 transition w-full block">
+                                                BATAL
+                                            </button>
+                                        )}
+                                        <button 
+                                            onClick={() => handleDeleteSingle(item.id)}
+                                            className="bg-red-600 text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:bg-red-700 transition w-full block"
+                                        >
+                                            🗑️ HAPUS
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </td>
+                    </tr>
+                ))
+            )}
+        </tbody>
+    </table>
+</div>
 
                 {/* PAGINASI */}
                 {lomba.last_page > 1 && (

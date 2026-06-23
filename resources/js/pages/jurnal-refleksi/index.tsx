@@ -46,52 +46,84 @@ export default function JurnalIndex({ daftarJurnal, filters }: { daftarJurnal: a
                     </div>
                 )}
 
-                <div className="bg-white border-2 border-gray-900 shadow-sm overflow-hidden mb-8">
-                    <table className="w-full text-left border-collapse table-fixed">
-                        <thead>
-                            <tr className="bg-gray-900 text-white text-xs uppercase tracking-widest">
-                                {isAdmin && <th className="p-4 border-r border-gray-700 w-12 text-center"><input type="checkbox" className="focus:ring-0 border-2 text-gray-900" onChange={(e) => setSelectedIds(e.target.checked ? dataJurnal.map((item: any) => item.id) : [])} checked={dataJurnal.length > 0 && selectedIds.length === dataJurnal.length} /></th>}
-                                <th className="p-4 border-r border-gray-700 w-14 text-center">NO</th>
-                                <th className="p-4 border-r border-gray-700 w-44">PENGINPUT / TANGGAL</th>
-                                <th className="p-4 border-r border-gray-700 w-40">KATEGORI EVALUASI</th>
-                                <th className="p-4 border-r border-gray-700 w-2/5">JUDUL JURNAL REFLEKSI</th>
-                                <th className="p-4 border-r border-gray-700 w-24 text-center">LAMPIRAN</th>
-                                <th className="p-4 w-32 text-center">AKSI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {dataJurnal.length === 0 ? (
-                                <tr><td colSpan={isAdmin ? 7 : 6} className="p-10 text-center text-gray-500 font-bold uppercase tracking-widest border-t-2 border-gray-900">Belum ada arsip catatan refleksi kelas.</td></tr>
+                {/* TABEL DATA UTAMA JURNAL REFLEKSI (RESPONSIVE BRUTALIST VERSION) */}
+<div className="w-full overflow-x-auto border-4 border-gray-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-8">
+    {/* KUNCI: table-auto dan min-w-[1000px] memberikan ruang elastis saat dibuka di mobile */}
+    <table className="w-full text-left border-collapse table-auto min-w-[1000px]">
+        <thead>
+            <tr className="bg-gray-900 text-white text-xs uppercase tracking-widest">
+                {isAdmin && (
+                    <th className="p-4 border-r border-gray-700 w-12 text-center">
+                        <input 
+                            type="checkbox" 
+                            className="focus:ring-0 border-2 text-gray-900" 
+                            onChange={(e) => setSelectedIds(e.target.checked ? dataJurnal.map((item: any) => item.id) : [])} 
+                            checked={dataJurnal.length > 0 && selectedIds.length === dataJurnal.length} 
+                        />
+                    </th>
+                )}
+                {/* KUNCI: whitespace-nowrap dipasang di seluruh header agar teks tidak patah vertikal */}
+                <th className="p-4 border-r border-gray-700 w-16 text-center whitespace-nowrap">NO</th>
+                <th className="p-4 border-r border-gray-700 w-44 whitespace-nowrap">PENGINPUT / TANGGAL</th>
+                <th className="p-4 border-r border-gray-700 w-40 whitespace-nowrap">KATEGORI EVALUASI</th>
+                <th className="p-4 border-r border-gray-700 whitespace-nowrap">JUDUL JURNAL REFLEKSI</th>
+                <th className="p-4 border-r border-gray-700 w-24 text-center whitespace-nowrap">LAMPIRAN</th>
+                <th className="p-4 w-32 text-center whitespace-nowrap">AKSI</th>
+            </tr>
+        </thead>
+        <tbody>
+            {dataJurnal.length === 0 ? (
+                <tr>
+                    <td colSpan={isAdmin ? 7 : 6} className="p-10 text-center text-gray-500 font-bold uppercase tracking-widest border-t-2 border-gray-900">
+                        Belum ada arsip catatan refleksi kelas.
+                    </td>
+                </tr>
+            ) : (
+                dataJurnal.map((item: any, index: number) => (
+                    <tr key={item.id} className="border-t-2 border-gray-200 hover:bg-gray-50 transition">
+                        {isAdmin && (
+                            <td className="p-4 border-r-2 border-gray-200 text-center">
+                                <input type="checkbox" className="focus:ring-0 border-2 text-gray-900" checked={selectedIds.includes(item.id)} onChange={(e) => handleSelectOne(item.id, e.target.checked)} />
+                            </td>
+                        )}
+                        <td className="p-4 border-r-2 border-gray-200 text-center font-bold text-xs whitespace-nowrap">
+                            {daftarJurnal.from + index}
+                        </td>
+                        <td className="p-4 border-r-2 border-gray-200 text-xs max-w-xs">
+                            <div className="font-black text-gray-900 uppercase truncate mb-0.5">{item.user ? item.user.name : '-'}</div>
+                            <div className="font-bold text-gray-500 whitespace-nowrap">{new Date(item.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                        </td>
+                        <td className="p-4 border-r-2 border-gray-200 text-xs font-black text-blue-900 uppercase whitespace-nowrap" title={item.kategori}>
+                            {item.kategori}
+                        </td>
+                        
+                        {/* KUNCI: Pembatasan max-w-xs dan truncate agar judul panjang tidak merusak layout tabel */}
+                        <td className="p-4 border-r-2 border-gray-200 text-xs font-bold text-gray-800 max-w-xs">
+                            <div className="truncate uppercase" title={item.judul_refleksi}>
+                                {item.judul_refleksi}
+                            </div>
+                        </td>
+                        
+                        <td className="p-4 border-r-2 border-gray-200 text-center">
+                            {/* KUNCI: Komponen didalam sel dikunci dengan whitespace-nowrap agar badge tidak gepeng */}
+                            {item.bukti_file ? (
+                                <span className="inline-block px-2 py-0.5 text-[9px] font-black border border-gray-400 bg-gray-100 text-gray-700 uppercase whitespace-nowrap">ADA FILE</span>
                             ) : (
-                                dataJurnal.map((item: any, index: number) => (
-                                    <tr key={item.id} className="border-t-2 border-gray-200 hover:bg-gray-50 transition">
-                                        {isAdmin && <td className="p-4 border-r-2 border-gray-200 text-center"><input type="checkbox" className="focus:ring-0 border-2 text-gray-900" checked={selectedIds.includes(item.id)} onChange={(e) => handleSelectOne(item.id, e.target.checked)} /></td>}
-                                        <td className="p-4 border-r-2 border-gray-200 text-center font-bold text-xs">{daftarJurnal.from + index}</td>
-                                        <td className="p-4 border-r-2 border-gray-200 text-xs">
-                                            <div className="font-black text-gray-900 uppercase truncate mb-0.5">{item.user ? item.user.name : '-'}</div>
-                                            <div className="font-bold text-gray-500">{new Date(item.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
-                                        </td>
-                                        <td className="p-4 border-r-2 border-gray-200 text-xs font-black text-blue-900 uppercase truncate" title={item.kategori}>{item.kategori}</td>
-                                        <td className="p-4 border-r-2 border-gray-200 text-xs font-bold text-gray-800"><div className="truncate uppercase" title={item.judul_refleksi}>{item.judul_refleksi}</div></td>
-                                        <td className="p-4 border-r-2 border-gray-200 text-center">
-                                            {item.bukti_file ? (
-                                                <span className="inline-block px-2 py-0.5 text-[9px] font-black border border-gray-400 bg-gray-100 text-gray-700 uppercase">ADA FILE</span>
-                                            ) : (
-                                                <span className="text-[10px] text-gray-300 italic">KOSONG</span>
-                                            )}
-                                        </td>
-                                        <td className="p-3 text-center">
-                                            <div className="flex gap-1 justify-center">
-                                                <Link href={`/jurnal-refleksi/${item.id}`} className="bg-blue-600 text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:bg-blue-700 transition flex-1 text-center">LIHAT</Link>
-                                                <button onClick={() => { if(confirm('Hapus permanen jurnal refleksi ini?')) router.delete(`/jurnal-refleksi/${item.id}`) }} className="bg-red-600 text-white px-2 py-1 text-[10px] font-bold uppercase hover:bg-red-700 transition">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
+                                <span className="text-[10px] text-gray-300 italic whitespace-nowrap">KOSONG</span>
                             )}
-                        </tbody>
-                    </table>
-                </div>
+                        </td>
+                        <td className="p-3 text-center">
+                            <div className="flex gap-1 justify-center items-center w-full">
+                                <Link href={`/jurnal-refleksi/${item.id}`} className="bg-blue-600 text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:bg-blue-700 transition flex-1 text-center block whitespace-nowrap">LIHAT</Link>
+                                <button onClick={() => { if(confirm('Hapus permanen jurnal refleksi ini?')) router.delete(`/jurnal-refleksi/${item.id}`) }} className="bg-red-600 text-white px-2 py-1 text-[10px] font-bold uppercase hover:bg-red-700 transition block">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                ))
+            )}
+        </tbody>
+    </table>
+</div>
             </div>
         </div>
     );

@@ -67,70 +67,81 @@ export default function UserIndex({ users, filters }: { users: any, filters: any
                     </div>
                 )}
 
-                {/* TABEL DATA AKUN (Gaya Brutalist) */}
-                <div className="bg-white border-2 border-gray-900 shadow-sm overflow-x-auto mb-8">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-gray-900 text-white text-xs uppercase tracking-widest">
-                                <th className="p-4 border-r border-gray-700 w-16 text-center">NO</th>
-                                <th className="p-4 border-r border-gray-700">INFORMASI PENGGUNA</th>
-                                <th className="p-4 border-r border-gray-700 w-32 text-center">HAK AKSES</th>
-                                <th className="p-4 w-40 text-center">AKSI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {dataUsers.length === 0 ? (
-                                <tr>
-                                    <td colSpan={4} className="p-10 text-center text-gray-500 font-bold uppercase tracking-widest border-t-2 border-gray-900">
-                                        Data akun tidak ditemukan.
-                                    </td>
-                                </tr>
-                            ) : (
-                                dataUsers.map((item: any, index: number) => (
-                                    <tr key={item.id} className="border-t-2 border-gray-200 hover:bg-gray-50 transition">
-                                        <td className="p-4 border-r-2 border-gray-200 text-center font-bold">
-                                            {users.from + index}
-                                        </td>
-                                        <td className="p-4 border-r-2 border-gray-200">
-                                            <div className="font-black text-gray-900 uppercase tracking-wide text-sm mb-1">{item.name}</div>
-                                            <div className="text-xs font-bold text-gray-500">{item.email}</div>
-                                        </td>
-                                        <td className="p-4 border-r-2 border-gray-200 text-center">
-                                            <span className={`inline-block px-3 py-1 text-[10px] font-black uppercase tracking-widest border-2 ${
-                                                item.role === 'admin' 
-                                                ? 'bg-yellow-400 border-gray-900 text-black' 
-                                                : 'bg-gray-100 border-gray-400 text-gray-600'
-                                            }`}>
-                                                {item.role}
-                                            </span>
-                                        </td>
-                                        <td className="p-4 text-center">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <Link 
-                                                    href={`/admin/users/${item.id}/edit`}
-                                                    className="text-xs font-bold uppercase tracking-widest text-blue-600 hover:text-blue-900 hover:underline"
-                                                >
-                                                    EDIT
-                                                </Link>
-                                                {auth?.user?.id !== item.id && (
-                                                    <>
-                                                        <span className="text-gray-300">|</span>
-                                                        <button 
-                                                            onClick={() => handleDelete(item.id)}
-                                                            className="text-xs font-bold uppercase tracking-widest text-red-600 hover:text-red-900 hover:underline"
-                                                        >
-                                                            HAPUS
-                                                        </button>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                {/* TABEL DATA AKUN (RESPONSIVE BRUTALIST VERSION) */}
+<div className="w-full overflow-x-auto border-4 border-gray-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-8">
+    {/* KUNCI: table-auto dan min-w-[800px] agar kolom memiliki ruang ideal dan tidak tertekan saat dibuka di mobile */}
+    <table className="w-full text-left border-collapse table-auto min-w-[800px]">
+        <thead>
+            <tr className="bg-gray-900 text-white text-xs uppercase tracking-widest">
+                {/* KUNCI: Mengunci judul kolom dengan whitespace-nowrap */}
+                <th className="p-4 border-r border-gray-700 w-16 text-center whitespace-nowrap">NO</th>
+                <th className="p-4 border-r border-gray-700 whitespace-nowrap">INFORMASI PENGGUNA</th>
+                <th className="p-4 border-r border-gray-700 w-32 text-center whitespace-nowrap">HAK AKSES</th>
+                <th className="p-4 w-40 text-center whitespace-nowrap">AKSI</th>
+            </tr>
+        </thead>
+        <tbody>
+            {dataUsers.length === 0 ? (
+                <tr>
+                    <td colSpan={4} className="p-10 text-center text-gray-500 font-bold uppercase tracking-widest border-t-2 border-gray-900">
+                        Data akun tidak ditemukan.
+                    </td>
+                </tr>
+            ) : (
+                dataUsers.map((item: any, index: number) => (
+                    <tr key={item.id} className="border-t-2 border-gray-200 hover:bg-gray-50 transition">
+                        <td className="p-4 border-r-2 border-gray-200 text-center font-bold text-xs whitespace-nowrap">
+                            {users.from + index}
+                        </td>
+                        
+                        {/* KUNCI: Memasang max-w-xs dan truncate agar jika ada nama/email panjang tetap rapi */}
+                        <td className="p-4 border-r-2 border-gray-200 text-xs max-w-xs">
+                            <div className="font-black text-gray-900 uppercase tracking-wide text-sm mb-1 truncate" title={item.name}>
+                                {item.name}
+                            </div>
+                            <div className="text-xs font-bold text-gray-500 truncate" title={item.email}>
+                                {item.email}
+                            </div>
+                        </td>
+                        
+                        <td className="p-4 border-r-2 border-gray-200 text-center">
+                            {/* KUNCI: Status badge diamankan dengan whitespace-nowrap */}
+                            <span className={`inline-block px-3 py-1 text-[10px] font-black uppercase tracking-widest border-2 whitespace-nowrap ${
+                                item.role === 'admin' 
+                                ? 'bg-yellow-400 border-gray-900 text-black' 
+                                : 'bg-gray-100 border-gray-400 text-gray-600'
+                            }`}>
+                                {item.role}
+                            </span>
+                        </td>
+                        
+                        <td className="p-4 text-center">
+                            <div className="flex items-center justify-center gap-2 w-full whitespace-nowrap">
+                                <Link 
+                                    href={`/admin/users/${item.id}/edit`}
+                                    className="text-xs font-bold uppercase tracking-widest text-blue-600 hover:text-blue-900 hover:underline"
+                                >
+                                    EDIT
+                                </Link>
+                                {auth?.user?.id !== item.id && (
+                                    <>
+                                        <span className="text-gray-300">|</span>
+                                        <button 
+                                            onClick={() => handleDelete(item.id)}
+                                            className="text-xs font-bold uppercase tracking-widest text-red-600 hover:text-red-900 hover:underline"
+                                        >
+                                            HAPUS
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </td>
+                    </tr>
+                ))
+            )}
+        </tbody>
+    </table>
+</div>
 
                 {/* PAGINASI */}
                 {users.last_page > 1 && (
