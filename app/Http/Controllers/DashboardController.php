@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Berita;
+use App\Models\JurnalRefleksi;
+use App\Models\KesiswaanLomba;
 use Inertia\Inertia;
-
 
 class DashboardController extends Controller
 {
@@ -12,24 +13,24 @@ class DashboardController extends Controller
     {
         // 1. Ambil 3 Prestasi/Lomba Terbaru (Sesuaikan nama model Kesiswaan/Lomba Anda jika berbeda)
         $juaraTerbaru = class_exists('\App\Models\KesiswaanLomba')
-            ? \App\Models\KesiswaanLomba::latest()->take(3)->get(['id', 'jenis_lomba', 'prestasi'])
+            ? KesiswaanLomba::latest()->take(3)->get(['id', 'jenis_lomba', 'prestasi'])
             : [];
 
         // 2. Ambil 4 Berita Terbaru (1 untuk Utama, 3 untuk List Samping)
         $beritaTerbaru = class_exists('\App\Models\Berita')
-            ? \App\Models\Berita::latest()->take(4)->get(['id', 'judul', 'isi', 'gambar', 'created_at'])
+            ? Berita::latest()->take(4)->get(['id', 'judul', 'isi', 'gambar', 'created_at'])
             : [];
 
         // 3. Ambil 3 Catatan Refleksi Guru Terbaru beserta nama pembuatnya
         $refleksiTerbaru = class_exists('\App\Models\JurnalRefleksi')
-            ? \App\Models\JurnalRefleksi::with('user:id,name')->latest()->take(3)->get(['id', 'judul_refleksi', 'tanggal', 'user_id'])
+            ? JurnalRefleksi::with('user:id,name')->latest()->take(3)->get(['id', 'judul_refleksi', 'tanggal', 'user_id'])
             : [];
 
         // 🔑 KIRIM DATA DENGAN NAMA VARIABEL YANG COCOK 100% DENGAN TSX
         return Inertia::render('dashboard', [
-            'juara_terbaru'     => $juaraTerbaru,
-            'berita_terbaru'    => $beritaTerbaru,
-            'refleksi_terbaru'  => $refleksiTerbaru,
+            'juara_terbaru' => $juaraTerbaru,
+            'berita_terbaru' => $beritaTerbaru,
+            'refleksi_terbaru' => $refleksiTerbaru,
         ]);
     }
 }

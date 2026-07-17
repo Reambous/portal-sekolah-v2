@@ -12,7 +12,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         // Jika belum login atau bukan admin, tendang ke halaman 403 (Akses Ditolak)
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
+        if (! Auth::check() || Auth::user()->role !== 'admin') {
             abort(403, 'Akses Ditolak! Halaman ini khusus Administrator Kak Roz.');
         }
 

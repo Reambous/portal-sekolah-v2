@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Ijin;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class IjinController extends Controller
 {
@@ -33,7 +33,7 @@ class IjinController extends Controller
 
         return Inertia::render('ijin/index', [
             'daftarIjin' => $daftarIjin,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -66,7 +66,7 @@ class IjinController extends Controller
             'jam_selesai' => $validated['jam_selesai'],
             'alasan' => $validated['alasan'],
             'bukti_foto' => $fotoPath,
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         return redirect('/ijin')->with('success', 'Pengajuan izin Anda berhasil dikirim!');
@@ -83,7 +83,7 @@ class IjinController extends Controller
         }
 
         return Inertia::render('ijin/show', [
-            'ijin' => $ijin
+            'ijin' => $ijin,
         ]);
     }
 
@@ -151,7 +151,7 @@ class IjinController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:pending,disetujui,ditolak'
+            'status' => 'required|in:pending,disetujui,ditolak',
         ]);
 
         $ijin = Ijin::findOrFail($id);
@@ -179,6 +179,7 @@ class IjinController extends Controller
         }
 
         $ijin->delete();
+
         return redirect('/ijin')->with('success', 'Pengajuan izin berhasil dihapus.');
     }
 
@@ -199,7 +200,7 @@ class IjinController extends Controller
             $item->delete();
         }
 
-        return redirect()->back()->with('success', count($request->ids) . ' data pengajuan izin berhasil dihapus massal!');
+        return redirect()->back()->with('success', count($request->ids).' data pengajuan izin berhasil dihapus massal!');
     }
 
     // 9. Export CSV Rekap Izin (Khusus Admin/Semua jika diizinkan)
@@ -214,14 +215,14 @@ class IjinController extends Controller
         }
 
         $daftarIjin = $query->get();
-        $fileName = 'Rekap_Izin_Pegawai_' . date('Y-m-d') . '.csv';
+        $fileName = 'Rekap_Izin_Pegawai_'.date('Y-m-d').'.csv';
 
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $callback = function () use ($daftarIjin) {
@@ -237,7 +238,7 @@ class IjinController extends Controller
                     $row->jam_mulai ?? '-',
                     $row->jam_selesai ?? '-',
                     $row->alasan,
-                    strtoupper($row->status)
+                    strtoupper($row->status),
                 ]);
             }
             fclose($file);

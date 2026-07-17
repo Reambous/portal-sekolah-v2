@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\KesiswaanLomba; // 👈 1. PASTIKAN INI ADA (Menuju folder Models)
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class LombaController extends Controller
@@ -26,7 +27,7 @@ class LombaController extends Controller
 
         return Inertia::render('kesiswaan/lomba/index', [
             'lomba' => $lomba,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -73,12 +74,12 @@ class LombaController extends Controller
     {
         // Proteksi Lapis Baja: Hanya Admin yang boleh mengeksekusi ini
         // Pastikan user terautentikasi dan memiliki role admin
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
+        if (! Auth::check() || Auth::user()->role !== 'admin') {
             abort(403, 'Akses Ditolak! Hanya Admin yang berhak menyetujui atau menolak data lomba.');
         }
 
         $request->validate([
-            'status' => 'required|in:pending,disetujui'
+            'status' => 'required|in:pending,disetujui',
         ]);
 
         $lomba = KesiswaanLomba::findOrFail($id);
@@ -95,8 +96,9 @@ class LombaController extends Controller
     public function show($id)
     {
         $lomba = KesiswaanLomba::with('user')->findOrFail($id);
+
         return Inertia::render('kesiswaan/lomba/show', [
-            'lomba' => $lomba
+            'lomba' => $lomba,
         ]);
     }
 
@@ -112,7 +114,7 @@ class LombaController extends Controller
 
         // Hapus file gambar dari storage jika ada
         if ($lomba->bukti_gambar) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($lomba->bukti_gambar);
+            Storage::disk('public')->delete($lomba->bukti_gambar);
         }
 
         $lomba->delete();
@@ -126,12 +128,12 @@ class LombaController extends Controller
         $lomba = KesiswaanLomba::findOrFail($id);
 
         // Proteksi: Guru tidak boleh mengedit ajuan yang sudah di-ACC
-        if (!Auth::check() || (Auth::user()->role !== 'admin' && $lomba->status === 'disetujui')) {
+        if (! Auth::check() || (Auth::user()->role !== 'admin' && $lomba->status === 'disetujui')) {
             abort(403, 'Data sudah di-ACC Admin, Anda tidak boleh mengeditnya lagi.');
         }
 
         return Inertia::render('kesiswaan/lomba/edit', [
-            'lomba' => $lomba
+            'lomba' => $lomba,
         ]);
     }
 
@@ -141,7 +143,7 @@ class LombaController extends Controller
         $lomba = KesiswaanLomba::findOrFail($id);
 
         // Proteksi Lapis Baja
-        if (!Auth::check() || (Auth::user()->role !== 'admin' && $lomba->status === 'disetujui')) {
+        if (! Auth::check() || (Auth::user()->role !== 'admin' && $lomba->status === 'disetujui')) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -158,7 +160,7 @@ class LombaController extends Controller
         if ($request->hasFile('bukti_gambar')) {
             // Hapus gambar lama agar storage tidak penuh
             if ($lomba->bukti_gambar) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($lomba->bukti_gambar);
+                Storage::disk('public')->delete($lomba->bukti_gambar);
             }
             $lomba->bukti_gambar = $request->file('bukti_gambar')->store('lomba', 'public');
         }
@@ -177,24 +179,24 @@ class LombaController extends Controller
     // Fungsi Hapus Massal (Bulk Delete) khusus Admin
     public function bulkDelete(Request $request)
     {
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
+        if (! Auth::check() || Auth::user()->role !== 'admin') {
             abort(403, 'Akses ditolak.');
         }
 
         $request->validate([
-            'ids' => 'required|array'
+            'ids' => 'required|array',
         ]);
 
         $lomba = KesiswaanLomba::whereIn('id', $request->ids)->get();
 
         foreach ($lomba as $item) {
             if ($item->bukti_gambar) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($item->bukti_gambar);
+                Storage::disk('public')->delete($item->bukti_gambar);
             }
             $item->delete();
         }
 
-        return redirect()->back()->with('success', count($request->ids) . ' data lomba berhasil dihapus massal!');
+        return redirect()->back()->with('success', count($request->ids).' data lomba berhasil dihapus massal!');
     }
 
     // Fungsi Export ke CSV / Excel
@@ -204,11 +206,11 @@ class LombaController extends Controller
         $fileName = 'Laporan_Kesiswaan_Lomba.csv';
 
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $callback = function () use ($lomba) {
@@ -222,7 +224,7 @@ class LombaController extends Controller
                 $pesertaText = '';
                 if ($row->peserta && is_array($row->peserta)) {
                     foreach ($row->peserta as $k) {
-                        $pesertaText .= "[" . $k['kelas'] . ": " . implode(', ', $k['siswa']) . "] ";
+                        $pesertaText .= '['.$k['kelas'].': '.implode(', ', $k['siswa']).'] ';
                     }
                 }
 
@@ -234,7 +236,7 @@ class LombaController extends Controller
                     $pesertaText,
                     $row->refleksi,
                     $row->user ? $row->user->name : '-',
-                    $row->status
+                    $row->status,
                 ]);
             }
             fclose($file);

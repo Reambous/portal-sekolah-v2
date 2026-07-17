@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Kegiatan extends Model
 {
     protected $table = 'kegiatan';
+
     protected $guarded = [];
 
     public function user(): BelongsTo

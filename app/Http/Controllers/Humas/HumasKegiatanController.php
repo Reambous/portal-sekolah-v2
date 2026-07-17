@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Humas;
 use App\Http\Controllers\Controller;
 use App\Models\Kegiatan;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class HumasKegiatanController extends Controller
 {
@@ -27,7 +27,7 @@ class HumasKegiatanController extends Controller
 
         return Inertia::render('humas/index', [
             'kegiatan' => $kegiatan,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -80,16 +80,18 @@ class HumasKegiatanController extends Controller
     public function show($id)
     {
         $kegiatan = Kegiatan::with('user')->where('kategori', 'humas')->findOrFail($id);
+
         return Inertia::render('humas/show', [
-            'kegiatan' => $kegiatan
+            'kegiatan' => $kegiatan,
         ]);
     }
 
     public function edit($id)
     {
         $kegiatan = Kegiatan::where('kategori', 'humas')->findOrFail($id);
+
         return Inertia::render('humas/edit', [
-            'kegiatan' => $kegiatan
+            'kegiatan' => $kegiatan,
         ]);
     }
 
@@ -146,6 +148,7 @@ class HumasKegiatanController extends Controller
         }
         $request->validate(['status' => 'required|in:pending,disetujui']);
         Kegiatan::findOrFail($id)->update(['status' => $request->status]);
+
         return redirect()->back()->with('success', 'Status jurnal humas diperbarui!');
     }
 
@@ -171,6 +174,7 @@ class HumasKegiatanController extends Controller
         }
 
         $kegiatan->delete();
+
         return redirect('/humas')->with('success', 'Data jurnal humas berhasil dihapus!');
     }
 
@@ -191,7 +195,8 @@ class HumasKegiatanController extends Controller
             }
             $item->delete();
         }
-        return redirect()->back()->with('success', count($request->ids) . ' data jurnal humas dihapus massal!');
+
+        return redirect()->back()->with('success', count($request->ids).' data jurnal humas dihapus massal!');
     }
 
     public function export()
@@ -200,11 +205,11 @@ class HumasKegiatanController extends Controller
         $fileName = 'Laporan_Jurnal_Humas.csv';
 
         $headers = [
-            "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $callback = function () use ($kegiatan) {
@@ -215,6 +220,7 @@ class HumasKegiatanController extends Controller
             }
             fclose($file);
         };
+
         return response()->stream($callback, 200, $headers);
     }
 }

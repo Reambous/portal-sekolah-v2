@@ -1,6 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import TopNavLayout from '@/layouts/top-nav-layout';
+import Pagination from '@/components/pagination';
 
 export default function JurnalIndex({ daftarJurnal, filters }: { daftarJurnal: any, filters: any }) {
     const { flash, auth } = usePage().props as any;
@@ -124,6 +125,8 @@ export default function JurnalIndex({ daftarJurnal, filters }: { daftarJurnal: a
         </tbody>
     </table>
 </div>
+
+                <Pagination paginator={daftarJurnal} />
             </div>
         </div>
     );

@@ -1,15 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Kesiswaan\KegiatanController;
-use App\Http\Controllers\Kurikulum\KurikulumKegiatanController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Humas\HumasKegiatanController;
-use App\Http\Controllers\Sarpras\SarprasKegiatanController;
 use App\Http\Controllers\IjinController;
 use App\Http\Controllers\JurnalRefleksiController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Kesiswaan\KegiatanController;
+use App\Http\Controllers\Kesiswaan\LombaController;
+use App\Http\Controllers\Kurikulum\KurikulumKegiatanController;
+use App\Http\Controllers\Sarpras\SarprasKegiatanController;
+use App\Http\Middleware\AdminMiddleware;
+use Illuminate\Support\Facades\Route;
 
 // UBAH RUTE ROOT UTAMA:
 // Pastikan diberi nama ->name('home') di ujungnya!
@@ -21,7 +23,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // Rute dashboard lama yang menggunakan Route::inertia dipotong & diganti ke Controller:
-    Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 // ==========================================
@@ -32,22 +34,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.show');
     Route::post('/berita/{id}/komentar', [BeritaController::class, 'storeKomentar'])->name('berita.komentar.store');
     Route::delete('/komentar/{id}', [BeritaController::class, 'destroyKomentar'])->name('komentar.destroy');
-    Route::get('/kesiswaan/lomba', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'index'])->name('kesiswaan.lomba.index');
-    Route::get('/kesiswaan/lomba/create', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'create'])->name('kesiswaan.lomba.create');
-    Route::post('/kesiswaan/lomba', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'store'])->name('kesiswaan.lomba.store');
-    Route::put('/kesiswaan/lomba/{id}/status', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'updateStatus'])->name('kesiswaan.lomba.status');
+    Route::get('/kesiswaan/lomba', [LombaController::class, 'index'])->name('kesiswaan.lomba.index');
+    Route::get('/kesiswaan/lomba/create', [LombaController::class, 'create'])->name('kesiswaan.lomba.create');
+    Route::post('/kesiswaan/lomba', [LombaController::class, 'store'])->name('kesiswaan.lomba.store');
+    Route::put('/kesiswaan/lomba/{id}/status', [LombaController::class, 'updateStatus'])->name('kesiswaan.lomba.status');
     // Tambahkan dua rute baru ini di dalam grup middleware auth Anda
-    Route::post('/kesiswaan/lomba/bulk-delete', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'bulkDelete'])->name('kesiswaan.lomba.bulkDelete');
+    Route::post('/kesiswaan/lomba/bulk-delete', [LombaController::class, 'bulkDelete'])->name('kesiswaan.lomba.bulkDelete');
 
-    Route::get('/kesiswaan/lomba/{id}', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'show'])->name('kesiswaan.lomba.show');
-    Route::delete('/kesiswaan/lomba/{id}', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'destroy'])->name('kesiswaan.lomba.destroy');
-    Route::put('/kesiswaan/lomba/{id}/status', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'updateStatus'])->name('kesiswaan.lomba.status');
-    Route::get('/kesiswaan/lomba/{id}/edit', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'edit'])->name('kesiswaan.lomba.edit');
-    Route::post('/kesiswaan/lomba/{id}', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'update'])->name('kesiswaan.lomba.update');
+    Route::get('/kesiswaan/lomba/{id}', [LombaController::class, 'show'])->name('kesiswaan.lomba.show');
+    Route::delete('/kesiswaan/lomba/{id}', [LombaController::class, 'destroy'])->name('kesiswaan.lomba.destroy');
+    Route::put('/kesiswaan/lomba/{id}/status', [LombaController::class, 'updateStatus'])->name('kesiswaan.lomba.status');
+    Route::get('/kesiswaan/lomba/{id}/edit', [LombaController::class, 'edit'])->name('kesiswaan.lomba.edit');
+    Route::post('/kesiswaan/lomba/{id}', [LombaController::class, 'update'])->name('kesiswaan.lomba.update');
     Route::get('/kesiswaan/kegiatan', [KegiatanController::class, 'index'])->name('kesiswaan.kegiatan.index');
     Route::get('/kesiswaan/kegiatan/create', [KegiatanController::class, 'create'])->name('kesiswaan.kegiatan.create');
     Route::post('/kesiswaan/kegiatan', [KegiatanController::class, 'store'])->name('kesiswaan.kegiatan.store');
-    Route::get('/kesiswaan/lomba/export/csv', [\App\Http\Controllers\Kesiswaan\LombaController::class, 'export'])->name('kesiswaan.lomba.export');
+    Route::get('/kesiswaan/lomba/export/csv', [LombaController::class, 'export'])->name('kesiswaan.lomba.export');
     Route::post('/kesiswaan/kegiatan/bulk-delete', [KegiatanController::class, 'bulkDelete'])->name('kesiswaan.kegiatan.bulkDelete');
     Route::get('/kesiswaan/kegiatan/{id}', [KegiatanController::class, 'show'])->name('kesiswaan.kegiatan.show');
     Route::put('/kesiswaan/kegiatan/{id}/status', [KegiatanController::class, 'updateStatus'])->name('kesiswaan.kegiatan.status');
@@ -72,7 +74,6 @@ Route::middleware(['auth'])->group(function () {
     // Verifikasi Status oleh Admin
     Route::put('/kurikulum/{id}/status', [KurikulumKegiatanController::class, 'updateStatus'])->name('kurikulum.status');
 
-
     // --- MODUL JURNAL HUMAS ---
     Route::get('/humas', [HumasKegiatanController::class, 'index'])->name('humas.index');
     Route::get('/humas/create', [HumasKegiatanController::class, 'create'])->name('humas.create');
@@ -84,7 +85,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/humas/{id}', [HumasKegiatanController::class, 'update'])->name('humas.update');
     Route::delete('/humas/{id}', [HumasKegiatanController::class, 'destroy'])->name('humas.destroy');
     Route::put('/humas/{id}/status', [HumasKegiatanController::class, 'updateStatus'])->name('humas.status');
-
 
     // 1. Rute Statis (Tanpa Parameter) - Harus di Atas!
     Route::get('/sarpras', [SarprasKegiatanController::class, 'index'])->name('sarpras.index');
@@ -130,7 +130,7 @@ Route::middleware(['auth'])->group(function () {
 // 2. RUTE KHUSUS ADMIN (Kelola Data)
 // ==========================================
 // 👇 Tambahkan AdminMiddleware di dalam array middleware ini:
-Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/berita/create', [BeritaController::class, 'create'])->name('berita.create');
     Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
     Route::get('/berita/{id}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
@@ -138,13 +138,12 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix
     Route::delete('/berita/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
     Route::post('/berita/bulk-delete', [BeritaController::class, 'bulkDelete'])->name('berita.bulk_delete');
     Route::get('/berita/export', [BeritaController::class, 'export'])->name('berita.export');
-    Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
-    Route::get('/users/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('users.create');
-    Route::post('/users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
-    Route::get('/users/{id}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
-
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

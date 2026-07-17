@@ -1,6 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import TopNavLayout from '@/layouts/top-nav-layout';
+import Pagination from '@/components/pagination';
 
 export default function HumasIndex({ kegiatan, filters }: { kegiatan: any, filters: any }) {
     const { flash, auth } = usePage().props as any;
@@ -123,6 +124,8 @@ export default function HumasIndex({ kegiatan, filters }: { kegiatan: any, filte
         </tbody>
     </table>
 </div>
+
+                <Pagination paginator={kegiatan} />
             </div>
         </div>
     );

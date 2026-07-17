@@ -1,6 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import TopNavLayout from '@/layouts/top-nav-layout';
+import Pagination from '@/components/pagination';
 
 export default function IjinIndex({ daftarIjin, filters }: { daftarIjin: any, filters: any }) {
     const { flash, auth } = usePage().props as any;
@@ -158,6 +159,8 @@ export default function IjinIndex({ daftarIjin, filters }: { daftarIjin: any, fi
         </tbody>
     </table>
 </div>
+
+                <Pagination paginator={daftarIjin} />
             </div>
         </div>
     );

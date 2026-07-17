@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Berita;
+use App\Models\Komentar;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class BeritaController extends Controller
 {
@@ -28,7 +30,7 @@ class BeritaController extends Controller
 
         return Inertia::render('admin/berita/index', [
             'berita' => $berita,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -83,7 +85,7 @@ class BeritaController extends Controller
         $berita = Berita::with(['user', 'komentar.user'])->findOrFail($id);
 
         return Inertia::render('admin/berita/show', [
-            'berita' => $berita
+            'berita' => $berita,
         ]);
     }
 
@@ -91,8 +93,9 @@ class BeritaController extends Controller
     public function edit($id)
     {
         $berita = Berita::findOrFail($id);
+
         return Inertia::render('admin/berita/edit', [
-            'berita' => $berita
+            'berita' => $berita,
         ]);
     }
 
@@ -158,7 +161,7 @@ class BeritaController extends Controller
     public function bulkDelete(Request $request)
     {
         $request->validate([
-            'ids' => 'required|array'
+            'ids' => 'required|array',
         ]);
 
         $berita = Berita::whereIn('id', $request->ids)->get();
@@ -175,7 +178,7 @@ class BeritaController extends Controller
             $item->delete();
         }
 
-        return redirect()->back()->with('success', count($request->ids) . ' data berita berhasil dihapus secara massal!');
+        return redirect()->back()->with('success', count($request->ids).' data berita berhasil dihapus secara massal!');
     }
 
     // 7. Export ke Excel / CSV
@@ -185,11 +188,11 @@ class BeritaController extends Controller
         $fileName = 'Laporan_Berita_Sekolah.csv';
 
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $callback = function () use ($berita) {
@@ -215,13 +218,13 @@ class BeritaController extends Controller
     public function storeKomentar(Request $request, $id)
     {
         $request->validate([
-            'isi' => 'required|string'
+            'isi' => 'required|string',
         ]);
 
-        \App\Models\Komentar::create([
+        Komentar::create([
             'berita_id' => $id,
             'user_id' => $request->user()->id,
-            'isi_komentar' => $request->isi
+            'isi_komentar' => $request->isi,
         ]);
 
         return redirect()->back()->with('with', 'Komentar berhasil ditambahkan!');
@@ -230,9 +233,9 @@ class BeritaController extends Controller
     // Fungsi Hapus Komentar
     public function destroyKomentar($id)
     {
-        $komentar = \App\Models\Komentar::findOrFail($id);
+        $komentar = Komentar::findOrFail($id);
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         if ($user->id !== $komentar->user_id && $user->role !== 'admin') {

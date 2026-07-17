@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -27,7 +27,7 @@ class UserController extends Controller
 
         return Inertia::render('admin/users/index', [
             'users' => $users,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -67,8 +67,9 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
+
         return Inertia::render('admin/users/edit', [
-            'userEdit' => $user // Menggunakan nama 'userEdit' agar tidak bentrok dengan data user yang sedang login
+            'userEdit' => $user, // Menggunakan nama 'userEdit' agar tidak bentrok dengan data user yang sedang login
         ]);
     }
 
@@ -81,7 +82,7 @@ class UserController extends Controller
         // Perhatikan bagian 'unique:users,email,'.$id -> Ini agar emailnya sendiri tidak dianggap duplikat
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$id,
             'role' => 'required|in:admin,guru',
             'password' => 'nullable|string|min:2|confirmed', // nullable = boleh kosong
         ], [

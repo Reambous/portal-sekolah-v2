@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Ijin;
 use App\Models\JurnalRefleksi;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -20,8 +20,9 @@ class ModulSekolahSeeder extends Seeder
         // Ambil 1 user acak yang sudah ada di database sebagai penanggung jawab
         $user = User::first();
 
-        if (!$user) {
+        if (! $user) {
             $this->command->error('⚠️ Gagal seeding: Belum ada akun di tabel users. Silakan buat 1 akun terlebih dahulu!');
+
             return;
         }
 
@@ -48,7 +49,7 @@ class ModulSekolahSeeder extends Seeder
                 'nama_file_asli' => null,
                 'views' => 15,
                 'created_at' => $now,
-                'updated_at' => $now
+                'updated_at' => $now,
             ]);
 
             // Insert Komentar Berita jika tabel komentar ada
@@ -59,12 +60,11 @@ class ModulSekolahSeeder extends Seeder
                         'user_id' => $userId,
                         'isi_komentar' => 'Semoga sukses dan lancar PKL-nya untuk seluruh siswa angkatan ini!',
                         'created_at' => $now,
-                        'updated_at' => $now
-                    ]
+                        'updated_at' => $now,
+                    ],
                 ]);
             }
         }
-
 
         // ==========================================
         // 2. SEEDER MODUL KEGIATAN MULTI-KATEGORI (KORREKSI TOTAL)
@@ -84,7 +84,7 @@ class ModulSekolahSeeder extends Seeder
                     'nama_file_asli' => null,
                     'status' => 'pending',
                     'created_at' => $now,
-                    'updated_at' => $now
+                    'updated_at' => $now,
                 ],
                 [
                     'user_id' => $userId,
@@ -97,7 +97,7 @@ class ModulSekolahSeeder extends Seeder
                     'nama_file_asli' => null,
                     'status' => 'disetujui',
                     'created_at' => $now,
-                    'updated_at' => $now
+                    'updated_at' => $now,
                 ],
                 [
                     'user_id' => $userId,
@@ -110,11 +110,10 @@ class ModulSekolahSeeder extends Seeder
                     'nama_file_asli' => null,
                     'status' => 'disetujui',
                     'created_at' => $now,
-                    'updated_at' => $now
-                ]
+                    'updated_at' => $now,
+                ],
             ]);
         }
-
 
         // ==========================================
         // 3. SEEDER MODUL IJIN GURU & PEGAWAI
@@ -131,7 +130,7 @@ class ModulSekolahSeeder extends Seeder
                     'status' => 'pending',
                     'bukti_foto' => null,
                     'created_at' => $now,
-                    'updated_at' => $now
+                    'updated_at' => $now,
                 ],
                 [
                     'user_id' => $userId,
@@ -142,11 +141,10 @@ class ModulSekolahSeeder extends Seeder
                     'status' => 'disetujui',
                     'bukti_foto' => null,
                     'created_at' => $now,
-                    'updated_at' => $now
-                ]
+                    'updated_at' => $now,
+                ],
             ]);
         }
-
 
         // ==========================================
         // 4. SEEDER MODUL JURNAL REFLEKSI GURU
@@ -162,8 +160,8 @@ class ModulSekolahSeeder extends Seeder
                     'isi_refleksi' => 'Siswa masih memerlukan visualisasi diagram sebelum masuk baris kode. Pertemuan selanjutnya akan diawali dengan pemetaan foreign key di papan tulis.',
                     'bukti_file' => null,
                     'created_at' => $now,
-                    'updated_at' => $now
-                ]
+                    'updated_at' => $now,
+                ],
             ]);
         }
 

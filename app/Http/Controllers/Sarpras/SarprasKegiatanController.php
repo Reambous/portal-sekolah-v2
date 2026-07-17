@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Sarpras;
 use App\Http\Controllers\Controller;
 use App\Models\Kegiatan;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class SarprasKegiatanController extends Controller
 {
@@ -27,7 +27,7 @@ class SarprasKegiatanController extends Controller
 
         return Inertia::render('sarpras/index', [
             'kegiatan' => $kegiatan,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -80,16 +80,18 @@ class SarprasKegiatanController extends Controller
     public function show($id)
     {
         $kegiatan = Kegiatan::with('user')->where('kategori', 'sarpras')->findOrFail($id);
+
         return Inertia::render('sarpras/show', [
-            'kegiatan' => $kegiatan
+            'kegiatan' => $kegiatan,
         ]);
     }
 
     public function edit($id)
     {
         $kegiatan = Kegiatan::where('kategori', 'sarpras')->findOrFail($id);
+
         return Inertia::render('sarpras/edit', [
-            'kegiatan' => $kegiatan
+            'kegiatan' => $kegiatan,
         ]);
     }
 
@@ -146,6 +148,7 @@ class SarprasKegiatanController extends Controller
         }
         $request->validate(['status' => 'required|in:pending,disetujui']);
         Kegiatan::findOrFail($id)->update(['status' => $request->status]);
+
         return redirect()->back()->with('success', 'Status jurnal sarpras diperbarui!');
     }
 
@@ -171,6 +174,7 @@ class SarprasKegiatanController extends Controller
         }
 
         $kegiatan->delete();
+
         return redirect('/sarpras')->with('success', 'Data jurnal sarpras berhasil dihapus!');
     }
 
@@ -191,7 +195,8 @@ class SarprasKegiatanController extends Controller
             }
             $item->delete();
         }
-        return redirect()->back()->with('success', count($request->ids) . ' data jurnal sarpras dihapus massal!');
+
+        return redirect()->back()->with('success', count($request->ids).' data jurnal sarpras dihapus massal!');
     }
 
     public function export()
@@ -200,11 +205,11 @@ class SarprasKegiatanController extends Controller
         $fileName = 'Laporan_Jurnal_Sarpras.csv';
 
         $headers = [
-            "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $callback = function () use ($kegiatan) {
@@ -215,6 +220,7 @@ class SarprasKegiatanController extends Controller
             }
             fclose($file);
         };
+
         return response()->stream($callback, 200, $headers);
     }
 }

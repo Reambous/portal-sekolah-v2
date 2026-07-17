@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Kesiswaan;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kegiatan; // Pastikan Anda sudah membuat Model Kegiatan
+use App\Models\User;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class KegiatanController extends Controller
 {
@@ -29,7 +30,7 @@ class KegiatanController extends Controller
 
         return Inertia::render('kesiswaan/kegiatan/index', [
             'kegiatan' => $kegiatan,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -64,7 +65,7 @@ class KegiatanController extends Controller
             $lampiranPath = $file->store('kegiatan/lampiran', 'public');
         }
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $request->user();
 
         Kegiatan::create([
@@ -86,8 +87,9 @@ class KegiatanController extends Controller
     public function show($id)
     {
         $kegiatan = Kegiatan::with('user')->where('kategori', 'kesiswaan')->findOrFail($id);
+
         return Inertia::render('kesiswaan/kegiatan/show', [
-            'kegiatan' => $kegiatan
+            'kegiatan' => $kegiatan,
         ]);
     }
 
@@ -125,6 +127,7 @@ class KegiatanController extends Controller
         }
 
         $kegiatan->delete();
+
         return redirect('/kesiswaan/kegiatan')->with('success', 'Data kegiatan berhasil dihapus!');
     }
 
@@ -148,7 +151,7 @@ class KegiatanController extends Controller
             $item->delete();
         }
 
-        return redirect()->back()->with('success', count($request->ids) . ' data kegiatan berhasil dihapus massal!');
+        return redirect()->back()->with('success', count($request->ids).' data kegiatan berhasil dihapus massal!');
     }
 
     // 8. Export ke CSV/Excel
@@ -158,11 +161,11 @@ class KegiatanController extends Controller
         $fileName = 'Laporan_Kegiatan_Kesiswaan.csv';
 
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $callback = function () use ($kegiatan) {
@@ -176,7 +179,7 @@ class KegiatanController extends Controller
                     $row->nama_kegiatan,
                     $row->refleksi,
                     $row->user ? $row->user->name : '-',
-                    $row->status
+                    $row->status,
                 ]);
             }
             fclose($file);
@@ -191,7 +194,7 @@ class KegiatanController extends Controller
         $kegiatan = Kegiatan::where('kategori', 'kesiswaan')->findOrFail($id);
 
         return Inertia::render('kesiswaan/kegiatan/edit', [
-            'kegiatan' => $kegiatan
+            'kegiatan' => $kegiatan,
         ]);
     }
 

@@ -18,7 +18,7 @@ class JurnalRefleksi extends Model
         'kategori',
         'judul_refleksi',
         'isi_refleksi',
-        'bukti_file'
+        'bukti_file',
     ];
 
     public function user(): BelongsTo

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany; // 👈 Jangan lupa import i
 class Berita extends Model
 {
     protected $table = 'berita';
+
     protected $guarded = ['id'];
 
     // Relasi: 1 Berita dimiliki oleh 1 Penulis (User)

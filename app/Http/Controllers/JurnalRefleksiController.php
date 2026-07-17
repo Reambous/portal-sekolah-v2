@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\JurnalRefleksi;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class JurnalRefleksiController extends Controller
 {
@@ -29,7 +29,7 @@ class JurnalRefleksiController extends Controller
 
         return Inertia::render('jurnal-refleksi/index', [
             'daftarJurnal' => $query->paginate(10)->withQueryString(),
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -71,6 +71,7 @@ class JurnalRefleksiController extends Controller
         if (Auth::user()->role !== 'admin' && Auth::id() !== $jurnal->user_id) {
             abort(403);
         }
+
         return Inertia::render('jurnal-refleksi/show', ['jurnal' => $jurnal]);
     }
 
@@ -80,6 +81,7 @@ class JurnalRefleksiController extends Controller
         if (Auth::user()->role !== 'admin' && Auth::id() !== $jurnal->user_id) {
             abort(403);
         }
+
         return Inertia::render('jurnal-refleksi/edit', ['jurnal' => $jurnal]);
     }
 
@@ -127,6 +129,7 @@ class JurnalRefleksiController extends Controller
         }
 
         $jurnal->delete();
+
         return redirect('/jurnal-refleksi')->with('success', 'Jurnal refleksi berhasil dihapus.');
     }
 
@@ -146,7 +149,7 @@ class JurnalRefleksiController extends Controller
             $item->delete();
         }
 
-        return redirect()->back()->with('success', count($request->ids) . ' data jurnal berhasil dihapus massal!');
+        return redirect()->back()->with('success', count($request->ids).' data jurnal berhasil dihapus massal!');
     }
 
     public function export()
@@ -158,14 +161,14 @@ class JurnalRefleksiController extends Controller
         }
 
         $daftarJurnal = $query->get();
-        $fileName = 'Rekap_Jurnal_Refleksi_' . date('Y-m-d') . '.csv';
+        $fileName = 'Rekap_Jurnal_Refleksi_'.date('Y-m-d').'.csv';
 
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $callback = function () use ($daftarJurnal) {
@@ -179,7 +182,7 @@ class JurnalRefleksiController extends Controller
                     $row->tanggal,
                     $row->kategori,
                     $row->judul_refleksi,
-                    $row->isi_refleksi
+                    $row->isi_refleksi,
                 ]);
             }
             fclose($file);

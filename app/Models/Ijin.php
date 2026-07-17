@@ -19,7 +19,7 @@ class Ijin extends Model
         'jam_selesai',
         'alasan',
         'bukti_foto',
-        'status'
+        'status',
     ];
 
     // Relasi balik ke User (Siapa yang mengajukan izin)

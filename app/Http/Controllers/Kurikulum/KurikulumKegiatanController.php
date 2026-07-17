@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Kurikulum;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kegiatan;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class KurikulumKegiatanController extends Controller
 {
@@ -27,7 +28,7 @@ class KurikulumKegiatanController extends Controller
 
         return Inertia::render('kurikulum/index', [
             'kegiatan' => $kegiatan,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -60,7 +61,7 @@ class KurikulumKegiatanController extends Controller
             $lampiranPath = $file->store('kegiatan/lampiran', 'public');
         }
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $request->user();
 
         Kegiatan::create([
@@ -81,16 +82,18 @@ class KurikulumKegiatanController extends Controller
     public function show($id)
     {
         $kegiatan = Kegiatan::with('user')->where('kategori', 'kurikulum')->findOrFail($id);
+
         return Inertia::render('kurikulum/show', [
-            'kegiatan' => $kegiatan
+            'kegiatan' => $kegiatan,
         ]);
     }
 
     public function edit($id)
     {
         $kegiatan = Kegiatan::where('kategori', 'kurikulum')->findOrFail($id);
+
         return Inertia::render('kurikulum/edit', [
-            'kegiatan' => $kegiatan
+            'kegiatan' => $kegiatan,
         ]);
     }
 
@@ -98,7 +101,7 @@ class KurikulumKegiatanController extends Controller
     {
 
         $kegiatan = Kegiatan::where('kategori', 'kurikulum')->findOrFail($id);
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         // 🔒 JIKA SUDAH DISETUJUI: Hanya Admin yang boleh edit. Guru biasa ditolak!
@@ -150,12 +153,13 @@ class KurikulumKegiatanController extends Controller
         }
         $request->validate(['status' => 'required|in:pending,disetujui']);
         Kegiatan::findOrFail($id)->update(['status' => $request->status]);
+
         return redirect()->back()->with('success', 'Status jurnal berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $kegiatan = Kegiatan::findOrFail($id);
         $user = Auth::user();
 
@@ -176,6 +180,7 @@ class KurikulumKegiatanController extends Controller
         }
 
         $kegiatan->delete();
+
         return redirect('/kurikulum')->with('success', 'Data jurnal berhasil dihapus!');
     }
 
@@ -196,7 +201,8 @@ class KurikulumKegiatanController extends Controller
             }
             $item->delete();
         }
-        return redirect()->back()->with('success', count($request->ids) . ' data jurnal berhasil dihapus massal!');
+
+        return redirect()->back()->with('success', count($request->ids).' data jurnal berhasil dihapus massal!');
     }
 
     public function export()
@@ -205,11 +211,11 @@ class KurikulumKegiatanController extends Controller
         $fileName = 'Laporan_Jurnal_Kurikulum.csv';
 
         $headers = [
-            "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $callback = function () use ($kegiatan) {
@@ -220,6 +226,7 @@ class KurikulumKegiatanController extends Controller
             }
             fclose($file);
         };
+
         return response()->stream($callback, 200, $headers);
     }
 }
