@@ -75,9 +75,7 @@ Catatan refleksi harian/mingguan guru per kategori (Evaluasi Kelas, Pengembangan
 
 ## Screenshots
 
-> _Coming soon — tambahkan screenshot aplikasi di folder `public/screenshots/` atau gunakan URL gambar eksternal._
+<img width="1895" height="1037" alt="image" src="https://github.com/user-attachments/assets/8f0ec93b-20e5-4fd5-b5c8-40dd9269e781" />
 
-<!-- Contoh:
-![Dashboard](public/screenshots/dashboard.png)
-![Berita](public/screenshots/berita.png)
--->
+
+
