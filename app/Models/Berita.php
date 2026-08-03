@@ -12,6 +12,10 @@ class Berita extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'user_id' => 'integer',
+    ];
+
     // Relasi: 1 Berita dimiliki oleh 1 Penulis (User)
     public function user(): BelongsTo
     {

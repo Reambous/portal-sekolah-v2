@@ -22,6 +22,10 @@ class Ijin extends Model
         'status',
     ];
 
+    protected $casts = [
+        'user_id' => 'integer',
+    ];
+
     // Relasi balik ke User (Siapa yang mengajukan izin)
     public function user(): BelongsTo
     {

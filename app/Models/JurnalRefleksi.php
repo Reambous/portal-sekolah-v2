@@ -21,6 +21,10 @@ class JurnalRefleksi extends Model
         'bukti_file',
     ];
 
+    protected $casts = [
+        'user_id' => 'integer',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

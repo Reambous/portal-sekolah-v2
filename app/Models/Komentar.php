@@ -13,6 +13,11 @@ class Komentar extends Model
     // Izinkan semua kolom diisi massal kecuali ID
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'user_id' => 'integer',
+        'berita_id' => 'integer',
+    ];
+
     // Relasi: 1 Komentar dimiliki oleh 1 User
     public function user(): BelongsTo
     {

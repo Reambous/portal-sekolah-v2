@@ -13,6 +13,7 @@ class KesiswaanLomba extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'user_id' => 'integer',
         'peserta' => 'array',
     ];
 
