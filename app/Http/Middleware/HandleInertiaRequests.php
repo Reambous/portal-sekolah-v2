@@ -2,11 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use App\Concerns\HasNotificationBadges;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
+    use HasNotificationBadges;
+
     /**
      * The root template that's loaded on the first page visit.
      *
@@ -35,16 +38,24 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+
+        // Tandai modul yang sedang dibuka sebagai "sudah dilihat"
+        $this->markSeen($user, $request->path());
+
         return [
             ...parent::share($request),
             'auth' => [
                 // Kita modifikasi sedikit agar role ikut terkirim ke React
-                'user' => $request->user() ? [
-                    'id' => $request->user()->id,
-                    'name' => $request->user()->name,
-                    'email' => $request->user()->email,
-                    'role' => $request->user()->role, // 👈 INI KUNCI UTAMANYA
+                'user' => $user ? [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role, // 👈 INI KUNCI UTAMANYA
                 ] : null,
+            ],
+            'notifications' => [
+                'badges' => $this->badgesFor($user),
             ],
         ];
     }

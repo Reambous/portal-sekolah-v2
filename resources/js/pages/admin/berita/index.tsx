@@ -103,14 +103,16 @@ export default function BeritaIndex({ berita, filters }: { berita: any, filters:
                                         HAPUS MASSAL
                                     </button>
                                 </div>
-                                <a
-                                    href="/admin/berita/export"
-                                    className="bg-green-700 text-white px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-green-800 transition shadow-sm flex items-center gap-2"
-                                >
-                                    <span>📥</span> EXPORT
-                                </a>
                             </>
                         )}
+
+                        {/* TOMBOL EXPORT (SEMUA AKUN) */}
+                        <a
+                            href="/berita/export"
+                            className="bg-green-700 text-white px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-green-800 transition shadow-sm flex items-center gap-2"
+                        >
+                            <span>📥</span> EXPORT
+                        </a>
 
                         {/* TOMBOL TULIS BERITA (SEMUA AKUN) */}
                         <Link

@@ -9,6 +9,7 @@ use App\Http\Controllers\JurnalRefleksiController;
 use App\Http\Controllers\Kesiswaan\KegiatanController;
 use App\Http\Controllers\Kesiswaan\LombaController;
 use App\Http\Controllers\Kurikulum\KurikulumKegiatanController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Sarpras\SarprasKegiatanController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -33,12 +34,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
     Route::get('/berita/create', [BeritaController::class, 'create'])->name('berita.create');
     Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
+    Route::get('/berita/export', [BeritaController::class, 'export'])->name('berita.export');
     Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.show');
     Route::get('/berita/{id}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
     Route::put('/berita/{id}', [BeritaController::class, 'update'])->name('berita.update');
     Route::delete('/berita/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
     Route::post('/berita/{id}/komentar', [BeritaController::class, 'storeKomentar'])->name('berita.komentar.store');
     Route::delete('/komentar/{id}', [BeritaController::class, 'destroyKomentar'])->name('komentar.destroy');
+    Route::get('/notifications/count', [NotificationController::class, 'count'])->name('notifications.count');
     Route::get('/kesiswaan/lomba', [LombaController::class, 'index'])->name('kesiswaan.lomba.index');
     Route::get('/kesiswaan/lomba/create', [LombaController::class, 'create'])->name('kesiswaan.lomba.create');
     Route::post('/kesiswaan/lomba', [LombaController::class, 'store'])->name('kesiswaan.lomba.store');
@@ -137,7 +140,6 @@ Route::middleware(['auth'])->group(function () {
 // 👇 Tambahkan AdminMiddleware di dalam array middleware ini:
 Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
     Route::post('/berita/bulk-delete', [BeritaController::class, 'bulkDelete'])->name('berita.bulk_delete');
-    Route::get('/berita/export', [BeritaController::class, 'export'])->name('berita.export');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');

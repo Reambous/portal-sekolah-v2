@@ -1,21 +1,77 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 
+// Komponen badge notifikasi kecil
+const BadgeNotif = ({ count }: { count?: number }) =>
+    count && count > 0 ? (
+        <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[9px] font-black rounded-sm">
+            {count}
+        </span>
+    ) : null;
+
 export default function TopNavLayout({ children }: { children: React.ReactNode }) {
-    const { auth } = usePage().props as any;
+    const { auth, notifications } = usePage().props as any;
     const user = auth?.user;
     const url = usePage().url;
+
+    // Badge notifikasi (diisi dari props awal, lalu diperbarui via polling)
+    const [badges, setBadges] = useState<any>(notifications?.badges || {});
+
+    // Sinkronkan badge dengan props saat pindah halaman (agar badge modul yang dibuka langsung hilang)
+    useEffect(() => {
+        setBadges(notifications?.badges || {});
+    }, [notifications]);
 
     // React State untuk buka/tutup menu
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isKesiswaanOpen, setIsKesiswaanOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+    // Ref untuk deteksi klik di luar dropdown (menggantikan onBlur yang error)
+    const kesiswaanRef = useRef<HTMLDivElement>(null);
+    const profileRef = useRef<HTMLDivElement>(null);
+
     // Fungsi Logout
     const handleLogout = (e: React.FormEvent) => {
         e.preventDefault();
         router.post('/logout');
     };
+
+    // Polling notifikasi tiap 60 detik (ringan, tanpa reload halaman)
+    useEffect(() => {
+        const fetchBadges = () => {
+            if (document.hidden) return;
+            fetch('/notifications/count')
+                .then((res) => res.json())
+                .then((data) => setBadges(data.badges || {}))
+                .catch(() => {});
+        };
+
+        const t = setInterval(fetchBadges, 60000);
+        return () => clearInterval(t);
+    }, []);
+
+    // Tutup dropdown Kesiswaan saat klik di luar
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (kesiswaanRef.current && !kesiswaanRef.current.contains(e.target as Node)) {
+                setIsKesiswaanOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Tutup dropdown Profile saat klik di luar
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+                setIsProfileOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     // Helper penanda menu aktif yang akurat
     const isActive = (path: string) => {
@@ -48,13 +104,13 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
                                 
                                 <Link href="/berita" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/berita') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>
                                     Berita
+                                    <BadgeNotif count={badges.berita} />
                                 </Link>
 
                                 {/* DROPDOWN KESISWAAN DESKTOP */}
-                                <div className="relative py-5">
+                                <div ref={kesiswaanRef} className="relative py-5">
                                     <button 
                                         onClick={() => setIsKesiswaanOpen(!isKesiswaanOpen)} 
-                                        onBlur={() => setTimeout(() => setIsKesiswaanOpen(false), 200)}
                                         className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 focus:outline-none gap-1 transition ${isActive('/kesiswaan') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}
                                     >
                                         <span>Kesiswaan</span>
@@ -65,21 +121,23 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
 
                                     {isKesiswaanOpen && (
                                         <div className="absolute top-full left-0 z-50 bg-white border-4 border-gray-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] min-w-[200px] py-1">
-                                            <Link href="/kesiswaan/lomba" className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide border-b-2 border-gray-100 last:border-0">
+                                            <Link href="/kesiswaan/lomba" onClick={() => setIsKesiswaanOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide border-b-2 border-gray-100 last:border-0">
                                                 🏆 Kegiatan Lomba
+                                                <BadgeNotif count={badges.lomba} />
                                             </Link>
-                                            <Link href="/kesiswaan/kegiatan" className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide">
+                                            <Link href="/kesiswaan/kegiatan" onClick={() => setIsKesiswaanOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide">
                                                 🏃 Kegiatan Kesiswaan
+                                                <BadgeNotif count={badges.kesiswaan} />
                                             </Link>
                                         </div>
                                     )}
                                 </div>
 
-                                <Link href="/kurikulum" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/kurikulum') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Kurikulum</Link>
-                                <Link href="/humas" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/humas') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Humas</Link>
-                                <Link href="/sarpras" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/sarpras') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Sarpras</Link>
-                                <Link href="/ijin" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/ijin') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Ijin Guru</Link>
-                                <Link href="/jurnal-refleksi" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/jurnal-refleksi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>Refleksi</Link>
+                                <Link href="/kurikulum" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/kurikulum') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Kurikulum<BadgeNotif count={badges.kurikulum} /></Link>
+                                <Link href="/humas" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/humas') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Humas<BadgeNotif count={badges.humas} /></Link>
+                                <Link href="/sarpras" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/sarpras') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Sarpras<BadgeNotif count={badges.sarpras} /></Link>
+                                <Link href="/ijin" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/ijin') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Ijin Guru<BadgeNotif count={badges.ijin} /></Link>
+                                <Link href="/jurnal-refleksi" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/jurnal-refleksi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>Refleksi<BadgeNotif count={badges.refleksi} /></Link>
 
                                 {user?.role === 'admin' && (
                                     <Link href="/admin/users" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/admin/users') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>
@@ -91,10 +149,9 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
 
                         {/* ⬜ BAGIAN KANAN: PROFILE DROPDOWN */}
                         <div className="hidden sm:flex sm:items-center sm:ml-6">
-                            <div className="relative">
+                            <div ref={profileRef} className="relative">
                                 <button 
                                     onClick={() => setIsProfileOpen(!isProfileOpen)} 
-                                    onBlur={() => setTimeout(() => setIsProfileOpen(false), 200)}
                                     className="inline-flex items-center gap-3 px-3 py-1.5 border-2 border-gray-900 bg-white hover:bg-gray-50 focus:outline-none transition font-sans"
                                 >
                                     <div className="flex flex-col text-right">
@@ -142,7 +199,7 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
                         </Link>
                         
                         <Link href="/berita" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/berita') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
-                            Berita
+                            <span className="inline-flex items-center">Berita <BadgeNotif count={badges.berita} /></span>
                         </Link>
                         
                         {/* Kesiswaan Dropdown Mobile */}
@@ -158,27 +215,27 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
                             </button>
                             {isKesiswaanOpen && (
                                 <div className="pl-4 bg-gray-50 border-l-4 border-gray-900 my-1 space-y-1 py-1">
-                                    <Link href="/kesiswaan/lomba" className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black">- Kegiatan Lomba</Link>
-                                    <Link href="/kesiswaan/kegiatan" className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black">- Kegiatan Kesiswaan</Link>
+                                    <Link href="/kesiswaan/lomba" className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Kegiatan Lomba <BadgeNotif count={badges.lomba} /></span></Link>
+                                    <Link href="/kesiswaan/kegiatan" className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Kegiatan Kesiswaan <BadgeNotif count={badges.kesiswaan} /></span></Link>
                                 </div>
                             )}
                         </div>
 
                         {/* MENU-MENU YANG TADI TERTINGGAL SEKARANG DITAMBAHKAN DISINI: */}
                         <Link href="/kurikulum" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/kurikulum') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
-                            Kurikulum
+                            <span className="inline-flex items-center">Kurikulum <BadgeNotif count={badges.kurikulum} /></span>
                         </Link>
                         <Link href="/humas" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/humas') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
-                            Humas
+                            <span className="inline-flex items-center">Humas <BadgeNotif count={badges.humas} /></span>
                         </Link>
                         <Link href="/sarpras" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/sarpras') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
-                            Sarpras
+                            <span className="inline-flex items-center">Sarpras <BadgeNotif count={badges.sarpras} /></span>
                         </Link>
                         <Link href="/ijin" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/ijin') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
-                            Ijin Guru
+                            <span className="inline-flex items-center">Ijin Guru <BadgeNotif count={badges.ijin} /></span>
                         </Link>
                         <Link href="/jurnal-refleksi" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/jurnal-refleksi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
-                            Refleksi
+                            <span className="inline-flex items-center">Refleksi <BadgeNotif count={badges.refleksi} /></span>
                         </Link>
 
                         {user?.role === 'admin' && (

@@ -45,6 +45,14 @@ class User extends Authenticatable implements PasskeyUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'berita_seen_at' => 'datetime',
+            'lomba_seen_at' => 'datetime',
+            'kesiswaan_seen_at' => 'datetime',
+            'kurikulum_seen_at' => 'datetime',
+            'humas_seen_at' => 'datetime',
+            'sarpras_seen_at' => 'datetime',
+            'ijin_seen_at' => 'datetime',
+            'refleksi_seen_at' => 'datetime',
         ];
     }
 }
