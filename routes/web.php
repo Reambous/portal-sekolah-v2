@@ -31,7 +31,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // ==========================================
 Route::middleware(['auth'])->group(function () {
     Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
+    Route::get('/berita/create', [BeritaController::class, 'create'])->name('berita.create');
+    Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
     Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.show');
+    Route::get('/berita/{id}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
+    Route::put('/berita/{id}', [BeritaController::class, 'update'])->name('berita.update');
+    Route::delete('/berita/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
     Route::post('/berita/{id}/komentar', [BeritaController::class, 'storeKomentar'])->name('berita.komentar.store');
     Route::delete('/komentar/{id}', [BeritaController::class, 'destroyKomentar'])->name('komentar.destroy');
     Route::get('/kesiswaan/lomba', [LombaController::class, 'index'])->name('kesiswaan.lomba.index');
@@ -131,11 +136,6 @@ Route::middleware(['auth'])->group(function () {
 // ==========================================
 // 👇 Tambahkan AdminMiddleware di dalam array middleware ini:
 Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/berita/create', [BeritaController::class, 'create'])->name('berita.create');
-    Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
-    Route::get('/berita/{id}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
-    Route::put('/berita/{id}', [BeritaController::class, 'update'])->name('berita.update');
-    Route::delete('/berita/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
     Route::post('/berita/bulk-delete', [BeritaController::class, 'bulkDelete'])->name('berita.bulk_delete');
     Route::get('/berita/export', [BeritaController::class, 'export'])->name('berita.export');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');

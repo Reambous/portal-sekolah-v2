@@ -11,7 +11,7 @@ export default function BeritaCreate() {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/admin/berita');
+        post('/berita');
     };
 
     return (

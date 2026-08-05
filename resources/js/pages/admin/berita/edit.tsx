@@ -12,7 +12,7 @@ export default function BeritaEdit({ berita }: { berita: any }) {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/admin/berita/${berita.id}`);
+        post(`/berita/${berita.id}`);
     };
 
     return (

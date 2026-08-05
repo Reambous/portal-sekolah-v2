@@ -6,7 +6,9 @@ export default function BeritaShow({ berita }: { berita: any }) {
     // 2. Ambil data user yang sedang login dari props Inertia
     const { auth, flash } = usePage().props as any;
     const currentUser = auth?.user;
-const isAdmin = auth?.user?.role === 'admin';
+    const isAdmin = auth?.user?.role === 'admin';
+    const isOwner = auth?.user?.id === berita.user_id;
+    const canManage = isAdmin || isOwner;
 
     const { data, setData, post, processing, reset, errors } = useForm({
         isi: '',
@@ -167,15 +169,27 @@ const isAdmin = auth?.user?.role === 'admin';
         AKHIR DARI PENGUMUMAN
     </span>
     
-    {/* 👇 TOMBOL INI DIKUNCI: HANYA MUNCUL JIKA USER ADALAH ADMIN */}
-    {isAdmin && (
-        <Link
-            href={`/admin/berita/${berita.id}/edit`}
-            className="bg-gray-900 text-white px-6 py-2 text-xs font-bold uppercase tracking-wider hover:bg-blue-600 transition shadow-sm"
-        >
-            EDIT ARTIKEL INI
-        </Link>
-    )}
+                    {/* 👇 TOMBOL KELOLA: MUNCUL UNTUK ADMIN ATAU PEMILIK BERITA */}
+                    {canManage && (
+                        <div className="flex gap-2">
+                            <Link
+                                href={`/berita/${berita.id}/edit`}
+                                className="bg-gray-900 text-white px-6 py-2 text-xs font-bold uppercase tracking-wider hover:bg-blue-600 transition shadow-sm"
+                            >
+                                EDIT ARTIKEL
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    if (confirm('YAKIN INGIN MENGHAPUS BERITA INI?')) {
+                                        router.delete(`/berita/${berita.id}`);
+                                    }
+                                }}
+                                className="bg-red-600 text-white px-6 py-2 text-xs font-bold uppercase tracking-wider hover:bg-red-700 transition shadow-sm"
+                            >
+                                HAPUS
+                            </button>
+                        </div>
+                    )}
 </div>
                 </div>
 

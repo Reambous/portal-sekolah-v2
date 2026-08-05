@@ -94,6 +94,10 @@ class BeritaController extends Controller
     {
         $berita = Berita::findOrFail($id);
 
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $berita->user_id) {
+            abort(403, 'Anda tidak berhak mengedit berita ini.');
+        }
+
         return Inertia::render('admin/berita/edit', [
             'berita' => $berita,
         ]);
@@ -103,6 +107,10 @@ class BeritaController extends Controller
     public function update(Request $request, $id)
     {
         $berita = Berita::findOrFail($id);
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $berita->user_id) {
+            abort(403, 'Anda tidak berhak mengubah berita ini.');
+        }
 
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
@@ -141,6 +149,10 @@ class BeritaController extends Controller
     public function destroy($id)
     {
         $berita = Berita::findOrFail($id);
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $berita->user_id) {
+            abort(403, 'Anda tidak berhak menghapus berita ini.');
+        }
 
         // Hapus file gambar fisiknya
         if ($berita->gambar) {

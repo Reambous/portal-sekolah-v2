@@ -109,14 +109,16 @@ export default function BeritaIndex({ berita, filters }: { berita: any, filters:
                                 >
                                     <span>📥</span> EXPORT
                                 </a>
-                                <Link
-                                    href="/admin/berita/create"
-                                    className="bg-blue-700 text-white px-5 py-2 text-xs font-bold uppercase tracking-wider hover:bg-blue-800 transition shadow-sm"
-                                >
-                                    + TULIS BERITA
-                                </Link>
                             </>
                         )}
+
+                        {/* TOMBOL TULIS BERITA (SEMUA AKUN) */}
+                        <Link
+                            href="/berita/create"
+                            className="bg-blue-700 text-white px-5 py-2 text-xs font-bold uppercase tracking-wider hover:bg-blue-800 transition shadow-sm"
+                        >
+                            + TULIS BERITA
+                        </Link>
                     </div>
                 </div>
 
