@@ -96,6 +96,7 @@ trait HasNotificationBadges
             'sarpras' => Kegiatan::where('kategori', 'sarpras'),
             'ijin' => Ijin::query(),
             'refleksi' => JurnalRefleksi::query(),
+            default => throw new \LogicException("Modul notifikasi tidak dikenal: {$module}"),
         };
 
         // Khusus ijin bersifat pribadi: guru hanya melihat pengajuan miliknya sendiri.

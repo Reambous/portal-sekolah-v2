@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
+import { useEffect, useRef, useState } from 'react';
 
 // Komponen badge notifikasi kecil
 const BadgeNotif = ({ count }: { count?: number }) =>
@@ -16,11 +16,13 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
 
     // Badge notifikasi (diisi dari props awal, lalu diperbarui via polling)
     const [badges, setBadges] = useState<any>(notifications?.badges || {});
+    const [prevNotifications, setPrevNotifications] = useState(notifications);
 
     // Sinkronkan badge dengan props saat pindah halaman (agar badge modul yang dibuka langsung hilang)
-    useEffect(() => {
+    if (prevNotifications !== notifications) {
+        setPrevNotifications(notifications);
         setBadges(notifications?.badges || {});
-    }, [notifications]);
+    }
 
     // React State untuk buka/tutup menu
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -40,7 +42,9 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
     // Polling notifikasi tiap 60 detik (ringan, tanpa reload halaman)
     useEffect(() => {
         const fetchBadges = () => {
-            if (document.hidden) return;
+            if (document.hidden) {
+                return;
+            }
             fetch('/notifications/count')
                 .then((res) => res.json())
                 .then((data) => setBadges(data.badges || {}))
