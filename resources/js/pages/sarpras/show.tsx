@@ -53,6 +53,9 @@ export default function SarprasShow({ kegiatan }: { kegiatan: any }) {
                         {kegiatan.bukti_gambar && (
                             <div className="border-2 border-gray-900 shadow-sm bg-gray-50 p-2">
                                 <a href={`/storage/${kegiatan.bukti_gambar}`} target="_blank" rel="noreferrer" className="block cursor-zoom-in"><img src={`/storage/${kegiatan.bukti_gambar}`} alt="Dokumentasi" className="w-full h-auto max-h-[450px] object-contain mx-auto" /></a>
+                                <div className="mt-3 flex justify-end">
+                                    <a href={`/storage/${kegiatan.bukti_gambar}`} download className="bg-gray-900 text-white px-4 py-2 text-xs font-black uppercase tracking-widest hover:bg-yellow-500 hover:text-black border-2 border-gray-900 transition">⬇ UNDUH GAMBAR</a>
+                                </div>
                             </div>
                         )}
                         {kegiatan.lampiran && (

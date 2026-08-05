@@ -170,7 +170,7 @@ class KegiatanController extends Controller
 
         $callback = function () use ($kegiatan) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['ID', 'Tanggal', 'Nama Kegiatan', 'Catatan Evaluasi / Refleksi', 'Penginput', 'Status']);
+            fputcsv($file, ['ID', 'Tanggal', 'Nama Kegiatan', 'Catatan Evaluasi / Refleksi', 'Penginput', 'Status', 'Link Bukti Gambar', 'Link Lampiran']);
 
             foreach ($kegiatan as $row) {
                 fputcsv($file, [
@@ -180,6 +180,8 @@ class KegiatanController extends Controller
                     $row->refleksi,
                     $row->user ? $row->user->name : '-',
                     $row->status,
+                    $row->bukti_gambar ? url('/storage/'.$row->bukti_gambar) : '-',
+                    $row->lampiran ? url('/storage/'.$row->lampiran) : '-',
                 ]);
             }
             fclose($file);

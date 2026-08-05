@@ -228,7 +228,7 @@ class IjinController extends Controller
         $callback = function () use ($daftarIjin) {
             $file = fopen('php://output', 'w');
             // Menulis Header Kolom CSV
-            fputcsv($file, ['ID', 'Nama Pegawai', 'Tanggal', 'Jam Mulai', 'Jam Selesai', 'Alasan', 'Status']);
+            fputcsv($file, ['ID', 'Nama Pegawai', 'Tanggal', 'Jam Mulai', 'Jam Selesai', 'Alasan', 'Status', 'Link Bukti']);
 
             foreach ($daftarIjin as $row) {
                 fputcsv($file, [
@@ -239,6 +239,7 @@ class IjinController extends Controller
                     $row->jam_selesai ?? '-',
                     $row->alasan,
                     strtoupper($row->status),
+                    $row->bukti_foto ? url('/storage/'.$row->bukti_foto) : '-',
                 ]);
             }
             fclose($file);

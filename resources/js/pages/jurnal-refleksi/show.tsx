@@ -35,9 +35,14 @@ export default function JurnalShow({ jurnal }: { jurnal: any }) {
                             <div className="border-2 border-gray-900 p-3 bg-white">
                                 <h4 className="text-[10px] font-black text-gray-400 uppercase mb-2">📁 Berkas Lampiran Evaluasi:</h4>
                                 {/\.(jpeg|jpg|png|webp)$/i.test(jurnal.bukti_file) ? (
-                                    <a href={`/storage/${jurnal.bukti_file}`} target="_blank" rel="noreferrer" className="block cursor-zoom-in">
-                                        <img src={`/storage/${jurnal.bukti_file}`} alt="Lampiran Refleksi" className="w-full h-auto border object-contain mx-auto" />
-                                    </a>
+                                    <>
+                                        <a href={`/storage/${jurnal.bukti_file}`} target="_blank" rel="noreferrer" className="block cursor-zoom-in">
+                                            <img src={`/storage/${jurnal.bukti_file}`} alt="Lampiran Refleksi" className="w-full h-auto border object-contain mx-auto" />
+                                        </a>
+                                        <div className="mt-3 flex justify-end">
+                                            <a href={`/storage/${jurnal.bukti_file}`} download className="bg-gray-900 text-white px-4 py-2 text-xs font-black uppercase tracking-widest hover:bg-yellow-500 hover:text-black border-2 border-gray-900 transition">⬇ UNDUH GAMBAR</a>
+                                        </div>
+                                    </>
                                 ) : (
                                     <a href={`/storage/${jurnal.bukti_file}`} download className="w-full block text-center bg-gray-900 text-white py-2 text-xs font-bold uppercase tracking-wider hover:bg-gray-800 transition">UNDUH DOKUMEN</a>
                                 )}

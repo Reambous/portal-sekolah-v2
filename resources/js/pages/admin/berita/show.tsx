@@ -133,6 +133,17 @@ export default function BeritaShow({ berita }: { berita: any }) {
                                         </div>
                                     );
                                 })()}
+
+                                {/* TOMBOL UNDUH GAMBAR */}
+                                <div className="mt-4 flex justify-end">
+                                    <a
+                                        href={`/storage/${berita.gambar}`}
+                                        download
+                                        className="bg-gray-900 text-white px-5 py-2.5 text-xs font-black uppercase tracking-widest hover:bg-yellow-500 hover:text-black border-2 border-gray-900 transition shadow-sm"
+                                    >
+                                        ⬇ UNDUH GAMBAR
+                                    </a>
+                                </div>
                             </div>
                         )}
 

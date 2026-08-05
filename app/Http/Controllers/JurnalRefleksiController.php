@@ -173,7 +173,7 @@ class JurnalRefleksiController extends Controller
 
         $callback = function () use ($daftarJurnal) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['ID', 'Nama Guru', 'Tanggal', 'Kategori', 'Judul Refleksi', 'Isi Evaluasi']);
+            fputcsv($file, ['ID', 'Nama Guru', 'Tanggal', 'Kategori', 'Judul Refleksi', 'Isi Evaluasi', 'Link Bukti']);
 
             foreach ($daftarJurnal as $row) {
                 fputcsv($file, [
@@ -183,6 +183,7 @@ class JurnalRefleksiController extends Controller
                     $row->kategori,
                     $row->judul_refleksi,
                     $row->isi_refleksi,
+                    $row->bukti_file ? url('/storage/'.$row->bukti_file) : '-',
                 ]);
             }
             fclose($file);

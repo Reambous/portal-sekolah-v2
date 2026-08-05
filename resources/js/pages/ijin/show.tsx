@@ -71,9 +71,14 @@ export default function IjinShow({ ijin }: { ijin: any }) {
         
         {/* LOGIKA DETEKSI: Jika berkas berakhiran ekstensi gambar, tampilkan previewnya */}
         {/\.(jpeg|jpg|png|webp)$/i.test(ijin.bukti_foto) ? (
-            <a href={`/storage/${ijin.bukti_foto}`} target="_blank" rel="noreferrer" className="block cursor-zoom-in">
-                <img src={`/storage/${ijin.bukti_foto}`} alt="Bukti Lampiran" className="w-full h-auto max-h-[450px] object-contain mx-auto border" />
-            </a>
+            <>
+                <a href={`/storage/${ijin.bukti_foto}`} target="_blank" rel="noreferrer" className="block cursor-zoom-in">
+                    <img src={`/storage/${ijin.bukti_foto}`} alt="Bukti Lampiran" className="w-full h-auto max-h-[450px] object-contain mx-auto border" />
+                </a>
+                <div className="mt-3 flex justify-end">
+                    <a href={`/storage/${ijin.bukti_foto}`} download className="bg-gray-900 text-white px-4 py-2 text-xs font-black uppercase tracking-widest hover:bg-yellow-500 hover:text-black border-2 border-gray-900 transition">⬇ UNDUH GAMBAR</a>
+                </div>
+            </>
         ) : (
             // Jika berkas berupa PDF/Word, tampilkan tombol unduh yang kokoh
             <div className="flex items-center justify-between bg-blue-50 border-2 border-blue-200 p-3">

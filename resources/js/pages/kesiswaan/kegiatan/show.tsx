@@ -116,6 +116,9 @@ export default function KegiatanShow({ kegiatan }: { kegiatan: any }) {
                                         className="w-full h-auto max-h-[450px] object-contain border border-gray-200 mx-auto" 
                                     />
                                 </a>
+                                <div className="p-2 flex justify-end">
+                                    <a href={`/storage/${kegiatan.bukti_gambar}`} download className="bg-gray-900 text-white px-4 py-2 text-xs font-black uppercase tracking-widest hover:bg-yellow-500 hover:text-black border-2 border-gray-900 transition">⬇ UNDUH GAMBAR</a>
+                                </div>
                             </div>
                         )}
 

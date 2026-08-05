@@ -210,7 +210,7 @@ class BeritaController extends Controller
         $callback = function () use ($berita) {
             $file = fopen('php://output', 'w');
 
-            fputcsv($file, ['ID', 'Judul Pengumuman', 'Nama Penginput', 'Tanggal Terbit']);
+            fputcsv($file, ['ID', 'Judul Pengumuman', 'Nama Penginput', 'Tanggal Terbit', 'Link Gambar', 'Link Lampiran']);
 
             foreach ($berita as $row) {
                 fputcsv($file, [
@@ -218,6 +218,8 @@ class BeritaController extends Controller
                     $row->judul,
                     $row->user ? $row->user->name : 'Anonim',
                     $row->created_at->format('d M Y H:i'),
+                    $row->gambar ? url('/storage/'.$row->gambar) : '-',
+                    $row->lampiran ? url('/storage/'.$row->lampiran) : '-',
                 ]);
             }
             fclose($file);

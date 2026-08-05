@@ -217,7 +217,7 @@ class LombaController extends Controller
             $file = fopen('php://output', 'w');
 
             // Header Kolom Excel
-            fputcsv($file, ['ID', 'Tanggal', 'Nama Lomba', 'Prestasi', 'Daftar Kelas & Siswa', 'Catatan Refleksi', 'Penginput', 'Status']);
+            fputcsv($file, ['ID', 'Tanggal', 'Nama Lomba', 'Prestasi', 'Daftar Kelas & Siswa', 'Catatan Refleksi', 'Penginput', 'Status', 'Link Bukti Gambar']);
 
             foreach ($lomba as $row) {
                 // Susun teks peserta agar rapi di excel
@@ -237,6 +237,7 @@ class LombaController extends Controller
                     $row->refleksi,
                     $row->user ? $row->user->name : '-',
                     $row->status,
+                    $row->bukti_gambar ? url('/storage/'.$row->bukti_gambar) : '-',
                 ]);
             }
             fclose($file);
