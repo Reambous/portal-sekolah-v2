@@ -53,6 +53,7 @@ class User extends Authenticatable implements PasskeyUser
             'sarpras_seen_at' => 'datetime',
             'ijin_seen_at' => 'datetime',
             'refleksi_seen_at' => 'datetime',
+            'observasi_seen_at' => 'datetime',
         ];
     }
 }

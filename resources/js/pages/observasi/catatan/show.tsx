@@ -1,0 +1,132 @@
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import TopNavLayout from '@/layouts/top-nav-layout';
+
+export default function CatatanShow({ catatan }: { catatan: any }) {
+    const { auth, flash } = usePage().props as any;
+    const isAdmin = auth?.user?.role === 'admin';
+    const isOwner = auth?.user?.id === catatan.user_id;
+    const canManage = isAdmin || isOwner;
+
+    const handleDelete = () => {
+        if (confirm('YAKIN INGIN MENGHAPUS LEMBAR CATATAN INI?')) {
+            router.delete(`/observasi/pra-catatan/${catatan.id}`);
+        }
+    };
+
+    const row = 'border-b border-gray-300';
+    const label = 'p-3 text-xs font-black uppercase tracking-widest text-gray-500 bg-gray-100 w-56';
+    const value = 'p-3 text-sm font-medium text-gray-800';
+
+    return (
+        <div className="py-8 bg-white min-h-screen font-sans text-gray-900">
+            <Head title="Detail Lembar Catatan Pra-Observasi" />
+            <div className="max-w-[95%] mx-auto max-w-4xl">
+                <div className="border-b-4 border-gray-900 mb-8 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+                    <div>
+                        <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tighter mb-1">Lembar Catatan Percakapan Pra-Observasi Kelas</h2>
+                        <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">Sekolah: SMP Negeri 1 Candimulyo</p>
+                    </div>
+                    <Link href="/observasi" className="bg-white text-gray-900 border-2 border-gray-900 px-4 py-2 text-xs font-bold uppercase hover:bg-gray-100 transition">Kembali</Link>
+                </div>
+
+                {flash?.success && (
+                    <div className="mb-6 bg-green-50 border-l-4 border-green-600 p-4 text-green-800 text-sm font-bold uppercase tracking-wide">
+                        ✅ {flash.success}
+                    </div>
+                )}
+
+                {/* TOMBOL EXPORT WORD */}
+                <div className="mb-8 flex flex-wrap gap-2">
+                    <a
+                        href={`/observasi/pra-catatan/${catatan.id}/export/word`}
+                        className="bg-blue-700 text-white px-6 py-3 text-xs font-black uppercase tracking-widest hover:bg-blue-800 border-2 border-gray-900 transition shadow-md"
+                    >
+                        ⬇ EXPORT WORD (.DOCX)
+                    </a>
+                    {canManage && (
+                        <>
+                            <Link
+                                href={`/observasi/pra-catatan/${catatan.id}/edit`}
+                                className="bg-yellow-500 text-black px-5 py-3 text-xs font-black uppercase tracking-widest hover:bg-yellow-600 border-2 border-gray-900 transition shadow-md"
+                            >
+                                EDIT
+                            </Link>
+                            <button
+                                onClick={handleDelete}
+                                className="bg-red-600 text-white px-5 py-3 text-xs font-black uppercase tracking-widest hover:bg-red-700 border-2 border-gray-900 transition shadow-md"
+                            >
+                                HAPUS
+                            </button>
+                        </>
+                    )}
+                </div>
+
+                {/* DOKUMEN */}
+                <div className="border-4 border-gray-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
+                    <div className="border-b-4 border-gray-900 p-6 text-center">
+                        <h3 className="text-xl font-black uppercase tracking-tighter">Lembar Catatan Percakapan Pra-Observasi Kelas</h3>
+                        <p className="text-sm font-bold text-gray-600 mt-1">Sekolah: SMP Negeri 1 Candimulyo</p>
+                    </div>
+
+                    <table className="w-full border-collapse">
+                        <tbody>
+                            <tr className={row}>
+                                <td className={label}>Hari / Tanggal</td>
+                                <td className={value}>{new Date(catatan.hari_tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</td>
+                            </tr>
+                            <tr className={row}>
+                                <td className={label}>Nama Guru</td>
+                                <td className={value}>{catatan.nama_guru}</td>
+                            </tr>
+                            <tr className={row}>
+                                <td className={label}>Mata Pelajaran</td>
+                                <td className={value}>{catatan.mata_pelajaran}</td>
+                            </tr>
+                            <tr className={row}>
+                                <td className={label}>Kelas</td>
+                                <td className={value}>{catatan.kelas}</td>
+                            </tr>
+                            <tr className={row}>
+                                <td className={label}>Waktu</td>
+                                <td className={value}>{catatan.waktu}</td>
+                            </tr>
+                            <tr>
+                                <td className={label}>Nama Supervisor</td>
+                                <td className={value}>{catatan.nama_supervisor}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div className="border-t-4 border-gray-900">
+                        {[
+                            ['TUJUAN PEMBELAJARAN', catatan.tujuan_pembelajaran],
+                            ['AREA PENGEMBANGAN YANG HENDAK DICAPAI', catatan.area_pengembangan],
+                            ['STRATEGI YANG DIPERSIAPKAN', catatan.strategi],
+                            ['CATATAN KHUSUS SUPERVISOR', catatan.catatan_khusus],
+                        ].map(([judul, isi]) => (
+                            <div key={judul} className="border-b-2 border-gray-200 p-5">
+                                <h4 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-2">{judul}</h4>
+                                <p className="text-sm text-gray-800 whitespace-pre-wrap break-words font-medium">{isi || '-'}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="p-6 grid grid-cols-2 gap-8">
+                        <div className="text-center">
+                            <p className="text-xs font-black uppercase tracking-widest mb-10">Supervisor</p>
+                            <p className="text-sm font-bold">{catatan.nama_supervisor}</p>
+                            <p className="text-xs text-gray-500 mt-1">NIP. ............................................</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-xs font-black uppercase tracking-widest mb-10">Guru yang diobservasi</p>
+                            <p className="text-sm font-bold">{catatan.nama_guru}</p>
+                            <p className="text-xs text-gray-500 mt-1">NIP. ............................................</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+CatatanShow.layout = (page: any) => <TopNavLayout>{page}</TopNavLayout>;

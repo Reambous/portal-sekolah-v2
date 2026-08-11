@@ -7,6 +7,8 @@ use App\Models\Ijin;
 use App\Models\JurnalRefleksi;
 use App\Models\Kegiatan;
 use App\Models\KesiswaanLomba;
+use App\Models\PraObservasiCatatan;
+use App\Models\PraObservasiInstrumen;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -52,6 +54,7 @@ trait HasNotificationBadges
             'sarpras' => 'sarpras',
             'ijin' => 'ijin',
             'jurnal-refleksi' => 'refleksi',
+            'observasi' => 'observasi',
         ];
 
         $columns = $this->moduleColumns();
@@ -80,12 +83,19 @@ trait HasNotificationBadges
             'sarpras' => 'sarpras_seen_at',
             'ijin' => 'ijin_seen_at',
             'refleksi' => 'refleksi_seen_at',
+            'observasi' => 'observasi_seen_at',
         ];
     }
 
     protected function countNew(string $module, mixed $seenAt, User $user): int
     {
         $since = $seenAt ? Carbon::parse($seenAt) : now()->subDays(30);
+
+        // Observasi: gabungan dua tabel (catatan + instrumen)
+        if ($module === 'observasi') {
+            return PraObservasiCatatan::where('created_at', '>', $since)->count()
+                + PraObservasiInstrumen::where('created_at', '>', $since)->count();
+        }
 
         $query = match ($module) {
             'berita' => Berita::query(),

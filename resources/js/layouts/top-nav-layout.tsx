@@ -45,6 +45,7 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
             if (document.hidden) {
                 return;
             }
+
             fetch('/notifications/count')
                 .then((res) => res.json())
                 .then((data) => setBadges(data.badges || {}))
@@ -52,6 +53,7 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
         };
 
         const t = setInterval(fetchBadges, 60000);
+
         return () => clearInterval(t);
     }, []);
 
@@ -63,6 +65,7 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
@@ -74,12 +77,16 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     // Helper penanda menu aktif yang akurat
     const isActive = (path: string) => {
-        if (path === '/dashboard') return url === '/dashboard';
+        if (path === '/dashboard') {
+return url === '/dashboard';
+}
+
         return url.startsWith(path);
     };
 
@@ -142,6 +149,7 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
                                 <Link href="/sarpras" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/sarpras') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Sarpras<BadgeNotif count={badges.sarpras} /></Link>
                                 <Link href="/ijin" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/ijin') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Ijin Guru<BadgeNotif count={badges.ijin} /></Link>
                                 <Link href="/jurnal-refleksi" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/jurnal-refleksi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>Refleksi<BadgeNotif count={badges.refleksi} /></Link>
+                                <Link href="/observasi" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/observasi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>Observasi<BadgeNotif count={badges.observasi} /></Link>
 
                                 {user?.role === 'admin' && (
                                     <Link href="/admin/users" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/admin/users') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>
@@ -240,6 +248,9 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
                         </Link>
                         <Link href="/jurnal-refleksi" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/jurnal-refleksi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                             <span className="inline-flex items-center">Refleksi <BadgeNotif count={badges.refleksi} /></span>
+                        </Link>
+                        <Link href="/observasi" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/observasi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                            <span className="inline-flex items-center">Observasi <BadgeNotif count={badges.observasi} /></span>
                         </Link>
 
                         {user?.role === 'admin' && (

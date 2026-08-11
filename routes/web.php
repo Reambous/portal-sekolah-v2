@@ -10,6 +10,7 @@ use App\Http\Controllers\Kesiswaan\KegiatanController;
 use App\Http\Controllers\Kesiswaan\LombaController;
 use App\Http\Controllers\Kurikulum\KurikulumKegiatanController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PraObservasiController;
 use App\Http\Controllers\Sarpras\SarprasKegiatanController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -132,6 +133,27 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/jurnal-refleksi/{id}/edit', [JurnalRefleksiController::class, 'edit'])->name('jurnal-refleksi.edit');
     Route::post('/jurnal-refleksi/{id}', [JurnalRefleksiController::class, 'update'])->name('jurnal-refleksi.update');
     Route::delete('/jurnal-refleksi/{id}', [JurnalRefleksiController::class, 'destroy'])->name('jurnal-refleksi.destroy');
+
+    // --- MODUL OBSERVASI: PRA OBSERVASI ---
+    Route::get('/observasi', [PraObservasiController::class, 'index'])->name('observasi.index');
+
+    // Form A: Lembar Catatan Percakapan Pra-Observasi Kelas
+    Route::get('/observasi/pra-catatan/create', [PraObservasiController::class, 'createCatatan'])->name('observasi.catatan.create');
+    Route::post('/observasi/pra-catatan', [PraObservasiController::class, 'storeCatatan'])->name('observasi.catatan.store');
+    Route::get('/observasi/pra-catatan/{id}', [PraObservasiController::class, 'showCatatan'])->name('observasi.catatan.show');
+    Route::get('/observasi/pra-catatan/{id}/edit', [PraObservasiController::class, 'editCatatan'])->name('observasi.catatan.edit');
+    Route::put('/observasi/pra-catatan/{id}', [PraObservasiController::class, 'updateCatatan'])->name('observasi.catatan.update');
+    Route::delete('/observasi/pra-catatan/{id}', [PraObservasiController::class, 'destroyCatatan'])->name('observasi.catatan.destroy');
+    Route::get('/observasi/pra-catatan/{id}/export/word', [PraObservasiController::class, 'exportWordCatatan'])->name('observasi.catatan.exportWord');
+
+    // Form B: Instrumen Umpan Balik Perencanaan Pembelajaran Mendalam
+    Route::get('/observasi/pra-instrumen/create', [PraObservasiController::class, 'createInstrumen'])->name('observasi.instrumen.create');
+    Route::post('/observasi/pra-instrumen', [PraObservasiController::class, 'storeInstrumen'])->name('observasi.instrumen.store');
+    Route::get('/observasi/pra-instrumen/{id}', [PraObservasiController::class, 'showInstrumen'])->name('observasi.instrumen.show');
+    Route::get('/observasi/pra-instrumen/{id}/edit', [PraObservasiController::class, 'editInstrumen'])->name('observasi.instrumen.edit');
+    Route::put('/observasi/pra-instrumen/{id}', [PraObservasiController::class, 'updateInstrumen'])->name('observasi.instrumen.update');
+    Route::delete('/observasi/pra-instrumen/{id}', [PraObservasiController::class, 'destroyInstrumen'])->name('observasi.instrumen.destroy');
+    Route::get('/observasi/pra-instrumen/{id}/export/excel', [PraObservasiController::class, 'exportExcelInstrumen'])->name('observasi.instrumen.exportExcel');
 });
 
 // ==========================================
