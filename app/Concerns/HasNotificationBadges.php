@@ -92,7 +92,12 @@ trait HasNotificationBadges
         $since = $seenAt ? Carbon::parse($seenAt) : now()->subDays(30);
 
         // Observasi: gabungan dua tabel (catatan + instrumen)
+        // Guru hanya lihat data miliknya sendiri, admin lihat semua
         if ($module === 'observasi') {
+            if ($user->role !== 'admin') {
+                return PraObservasiCatatan::where('user_id', $user->id)->where('created_at', '>', $since)->count()
+                    + PraObservasiInstrumen::where('user_id', $user->id)->where('created_at', '>', $since)->count();
+            }
             return PraObservasiCatatan::where('created_at', '>', $since)->count()
                 + PraObservasiInstrumen::where('created_at', '>', $since)->count();
         }
@@ -111,6 +116,11 @@ trait HasNotificationBadges
 
         // Khusus ijin bersifat pribadi: guru hanya melihat pengajuan miliknya sendiri.
         if ($module === 'ijin' && $user->role !== 'admin') {
+            $query->where('user_id', $user->id);
+        }
+
+        // Khusus refleksi: guru hanya lihat data miliknya sendiri, admin lihat semua
+        if ($module === 'refleksi' && $user->role !== 'admin') {
             $query->where('user_id', $user->id);
         }
 
