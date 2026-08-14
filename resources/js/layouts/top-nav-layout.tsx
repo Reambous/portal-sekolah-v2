@@ -31,7 +31,14 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
 
     // Ref untuk deteksi klik di luar dropdown (menggantikan onBlur yang error)
     const kesiswaanRef = useRef<HTMLDivElement>(null);
+    const kesiswaanMobileRef = useRef<HTMLDivElement>(null);
     const profileRef = useRef<HTMLDivElement>(null);
+
+    // Tutup menu saat pindah halaman (navigasi)
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+        setIsKesiswaanOpen(false);
+    }, [url]);
 
     // Fungsi Logout
     const handleLogout = (e: React.FormEvent) => {
@@ -57,10 +64,12 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
         return () => clearInterval(t);
     }, []);
 
-    // Tutup dropdown Kesiswaan saat klik di luar
+    // Tutup dropdown Kesiswaan saat klik di luar (desktop & mobile)
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
-            if (kesiswaanRef.current && !kesiswaanRef.current.contains(e.target as Node)) {
+            const inDesktop = kesiswaanRef.current?.contains(e.target as Node);
+            const inMobile = kesiswaanMobileRef.current?.contains(e.target as Node);
+            if (!inDesktop && !inMobile) {
                 setIsKesiswaanOpen(false);
             }
         };
@@ -206,16 +215,16 @@ return url === '/dashboard';
                 {isMobileMenuOpen && (
                     <div className="sm:hidden bg-white border-t-2 border-gray-900 py-2 space-y-1 px-4">
                         
-                        <Link href="/dashboard" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/dashboard') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                        <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/dashboard') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                             Beranda
                         </Link>
                         
-                        <Link href="/berita" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/berita') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                        <Link href="/berita" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/berita') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                             <span className="inline-flex items-center">Berita <BadgeNotif count={badges.berita} /></span>
                         </Link>
                         
                         {/* Kesiswaan Dropdown Mobile */}
-                        <div className="border-2 border-transparent">
+                        <div ref={kesiswaanMobileRef} className="border-2 border-transparent">
                             <button 
                                 onClick={() => setIsKesiswaanOpen(!isKesiswaanOpen)} 
                                 className={`w-full flex justify-between items-center px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/kesiswaan') ? 'bg-gray-100 text-gray-900 border-gray-300' : 'border-transparent text-gray-600'}`}
@@ -226,35 +235,35 @@ return url === '/dashboard';
                                 </svg>
                             </button>
                             {isKesiswaanOpen && (
-                                <div className="pl-4 bg-gray-50 border-l-4 border-gray-900 my-1 space-y-1 py-1">
-                                    <Link href="/kesiswaan/lomba" className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Kegiatan Lomba <BadgeNotif count={badges.lomba} /></span></Link>
-                                    <Link href="/kesiswaan/kegiatan" className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Kegiatan Kesiswaan <BadgeNotif count={badges.kesiswaan} /></span></Link>
-                                </div>
-                            )}
+                                 <div className="pl-4 bg-gray-50 border-l-4 border-gray-900 my-1 space-y-1 py-1">
+                                     <Link href="/kesiswaan/lomba" onClick={() => { setIsMobileMenuOpen(false); setIsKesiswaanOpen(false); }} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Kegiatan Lomba <BadgeNotif count={badges.lomba} /></span></Link>
+                                     <Link href="/kesiswaan/kegiatan" onClick={() => { setIsMobileMenuOpen(false); setIsKesiswaanOpen(false); }} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Kegiatan Kesiswaan <BadgeNotif count={badges.kesiswaan} /></span></Link>
+                                 </div>
+                             )}
                         </div>
 
                         {/* MENU-MENU YANG TADI TERTINGGAL SEKARANG DITAMBAHKAN DISINI: */}
-                        <Link href="/kurikulum" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/kurikulum') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                        <Link href="/kurikulum" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/kurikulum') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                             <span className="inline-flex items-center">Kurikulum <BadgeNotif count={badges.kurikulum} /></span>
                         </Link>
-                        <Link href="/humas" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/humas') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                        <Link href="/humas" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/humas') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                             <span className="inline-flex items-center">Humas <BadgeNotif count={badges.humas} /></span>
                         </Link>
-                        <Link href="/sarpras" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/sarpras') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                        <Link href="/sarpras" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/sarpras') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                             <span className="inline-flex items-center">Sarpras <BadgeNotif count={badges.sarpras} /></span>
                         </Link>
-                        <Link href="/ijin" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/ijin') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                        <Link href="/ijin" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/ijin') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                             <span className="inline-flex items-center">Ijin Guru <BadgeNotif count={badges.ijin} /></span>
                         </Link>
-                        <Link href="/jurnal-refleksi" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/jurnal-refleksi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                        <Link href="/jurnal-refleksi" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/jurnal-refleksi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                             <span className="inline-flex items-center">Refleksi <BadgeNotif count={badges.refleksi} /></span>
                         </Link>
-                        <Link href="/observasi" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/observasi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                        <Link href="/observasi" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/observasi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                             <span className="inline-flex items-center">Observasi <BadgeNotif count={badges.observasi} /></span>
                         </Link>
 
                         {user?.role === 'admin' && (
-                            <Link href="/admin/users" className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/admin/users') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                            <Link href="/admin/users" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/admin/users') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                                 Kelola Akun
                             </Link>
                         )}
