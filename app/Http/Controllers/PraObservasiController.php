@@ -20,8 +20,18 @@ class PraObservasiController extends Controller
 {
     public function index(Request $request)
     {
-        $catatan = PraObservasiCatatan::with('user')->latest()->paginate(10)->withQueryString();
-        $instrumen = PraObservasiInstrumen::with('user')->latest()->paginate(10)->withQueryString();
+        $user = Auth::user();
+
+        $catatanQuery = PraObservasiCatatan::with('user')->latest();
+        $instrumenQuery = PraObservasiInstrumen::with('user')->latest();
+
+        if ($user->role !== 'admin') {
+            $catatanQuery->where('user_id', $user->id);
+            $instrumenQuery->where('user_id', $user->id);
+        }
+
+        $catatan = $catatanQuery->paginate(10)->withQueryString();
+        $instrumen = $instrumenQuery->paginate(10)->withQueryString();
 
         $instrumen->getCollection()->transform(function ($item) {
             $item->total_skor = PraObservasiInstrumen::hitungTotal($item->skor);
@@ -68,6 +78,10 @@ class PraObservasiController extends Controller
     public function showCatatan($id)
     {
         $catatan = PraObservasiCatatan::with('user')->findOrFail($id);
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $catatan->user_id) {
+            abort(403);
+        }
 
         return Inertia::render('observasi/catatan/show', [
             'catatan' => $catatan,
@@ -123,6 +137,10 @@ class PraObservasiController extends Controller
     public function exportWordCatatan($id)
     {
         $catatan = PraObservasiCatatan::findOrFail($id);
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $catatan->user_id) {
+            abort(403);
+        }
 
         $phpWord = new PhpWord;
         $section = $phpWord->addSection([
@@ -251,6 +269,10 @@ class PraObservasiController extends Controller
     {
         $instrumen = PraObservasiInstrumen::with('user')->findOrFail($id);
 
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $instrumen->user_id) {
+            abort(403);
+        }
+
         return Inertia::render('observasi/instrumen/show', [
             'instrumen' => $instrumen,
             'definisi' => PraObservasiInstrumen::definisi(),
@@ -321,6 +343,11 @@ class PraObservasiController extends Controller
     public function exportExcelInstrumen($id)
     {
         $instrumen = PraObservasiInstrumen::with('user')->findOrFail($id);
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $instrumen->user_id) {
+            abort(403);
+        }
+
         $definisi = PraObservasiInstrumen::definisi();
         $total = PraObservasiInstrumen::hitungTotal($instrumen->skor);
         $skor = $instrumen->skor ?? [];
