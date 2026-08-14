@@ -7,6 +7,7 @@ use App\Models\Ijin;
 use App\Models\JurnalRefleksi;
 use App\Models\Kegiatan;
 use App\Models\KesiswaanLomba;
+use App\Models\ObservasiPelaksanaan;
 use App\Models\PraObservasiCatatan;
 use App\Models\PraObservasiInstrumen;
 use App\Models\User;
@@ -91,15 +92,18 @@ trait HasNotificationBadges
     {
         $since = $seenAt ? Carbon::parse($seenAt) : now()->subDays(30);
 
-        // Observasi: gabungan dua tabel (catatan + instrumen)
+        // Observasi: gabungan tiga tabel (catatan + instrumen + pelaksanaan)
         // Guru hanya lihat data miliknya sendiri, admin lihat semua
         if ($module === 'observasi') {
             if ($user->role !== 'admin') {
                 return PraObservasiCatatan::where('user_id', $user->id)->where('created_at', '>', $since)->count()
-                    + PraObservasiInstrumen::where('user_id', $user->id)->where('created_at', '>', $since)->count();
+                    + PraObservasiInstrumen::where('user_id', $user->id)->where('created_at', '>', $since)->count()
+                    + ObservasiPelaksanaan::where('user_id', $user->id)->where('created_at', '>', $since)->count();
             }
+
             return PraObservasiCatatan::where('created_at', '>', $since)->count()
-                + PraObservasiInstrumen::where('created_at', '>', $since)->count();
+                + PraObservasiInstrumen::where('created_at', '>', $since)->count()
+                + ObservasiPelaksanaan::where('created_at', '>', $since)->count();
         }
 
         $query = match ($module) {

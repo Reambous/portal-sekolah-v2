@@ -10,6 +10,7 @@ use App\Http\Controllers\Kesiswaan\KegiatanController;
 use App\Http\Controllers\Kesiswaan\LombaController;
 use App\Http\Controllers\Kurikulum\KurikulumKegiatanController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ObservasiPelaksanaanController;
 use App\Http\Controllers\PraObservasiController;
 use App\Http\Controllers\Sarpras\SarprasKegiatanController;
 use App\Http\Middleware\AdminMiddleware;
@@ -154,6 +155,16 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/observasi/pra-instrumen/{id}', [PraObservasiController::class, 'updateInstrumen'])->name('observasi.instrumen.update');
     Route::delete('/observasi/pra-instrumen/{id}', [PraObservasiController::class, 'destroyInstrumen'])->name('observasi.instrumen.destroy');
     Route::get('/observasi/pra-instrumen/{id}/export/excel', [PraObservasiController::class, 'exportExcelInstrumen'])->name('observasi.instrumen.exportExcel');
+
+    // Form C: Observasi Pelaksanaan (Implementasi dan Refleksi)
+    Route::get('/observasi/pelaksanaan', [ObservasiPelaksanaanController::class, 'index'])->name('observasi.pelaksanaan.index');
+    Route::get('/observasi/pelaksanaan/create', [ObservasiPelaksanaanController::class, 'create'])->name('observasi.pelaksanaan.create');
+    Route::post('/observasi/pelaksanaan', [ObservasiPelaksanaanController::class, 'store'])->name('observasi.pelaksanaan.store');
+    Route::get('/observasi/pelaksanaan/{id}', [ObservasiPelaksanaanController::class, 'show'])->name('observasi.pelaksanaan.show');
+    Route::get('/observasi/pelaksanaan/{id}/edit', [ObservasiPelaksanaanController::class, 'edit'])->name('observasi.pelaksanaan.edit');
+    Route::put('/observasi/pelaksanaan/{id}', [ObservasiPelaksanaanController::class, 'update'])->name('observasi.pelaksanaan.update');
+    Route::delete('/observasi/pelaksanaan/{id}', [ObservasiPelaksanaanController::class, 'destroy'])->name('observasi.pelaksanaan.destroy');
+    Route::get('/observasi/pelaksanaan/{id}/export/excel', [ObservasiPelaksanaanController::class, 'exportExcel'])->name('observasi.pelaksanaan.exportExcel');
 });
 
 // ==========================================

@@ -27,17 +27,21 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
     // React State untuk buka/tutup menu
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isKesiswaanOpen, setIsKesiswaanOpen] = useState(false);
+    const [isObservasiOpen, setIsObservasiOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     // Ref untuk deteksi klik di luar dropdown (menggantikan onBlur yang error)
     const kesiswaanRef = useRef<HTMLDivElement>(null);
     const kesiswaanMobileRef = useRef<HTMLDivElement>(null);
+    const observasiRef = useRef<HTMLDivElement>(null);
+    const observasiMobileRef = useRef<HTMLDivElement>(null);
     const profileRef = useRef<HTMLDivElement>(null);
 
     // Tutup menu saat pindah halaman (navigasi)
     useEffect(() => {
         setIsMobileMenuOpen(false);
         setIsKesiswaanOpen(false);
+        setIsObservasiOpen(false);
     }, [url]);
 
     // Fungsi Logout
@@ -69,8 +73,24 @@ export default function TopNavLayout({ children }: { children: React.ReactNode }
         const handleClickOutside = (e: MouseEvent) => {
             const inDesktop = kesiswaanRef.current?.contains(e.target as Node);
             const inMobile = kesiswaanMobileRef.current?.contains(e.target as Node);
+
             if (!inDesktop && !inMobile) {
                 setIsKesiswaanOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Tutup dropdown Observasi saat klik di luar (desktop & mobile)
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            const inDesktop = observasiRef.current?.contains(e.target as Node);
+            const inMobile = observasiMobileRef.current?.contains(e.target as Node);
+
+            if (!inDesktop && !inMobile) {
+                setIsObservasiOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -158,7 +178,31 @@ return url === '/dashboard';
                                 <Link href="/sarpras" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/sarpras') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Sarpras<BadgeNotif count={badges.sarpras} /></Link>
                                 <Link href="/ijin" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/ijin') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}>Ijin Guru<BadgeNotif count={badges.ijin} /></Link>
                                 <Link href="/jurnal-refleksi" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/jurnal-refleksi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>Refleksi<BadgeNotif count={badges.refleksi} /></Link>
-                                <Link href="/observasi" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/observasi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>Observasi<BadgeNotif count={badges.observasi} /></Link>
+
+                                {/* DROPDOWN OBSERVASI DESKTOP */}
+                                <div ref={observasiRef} className="relative py-5">
+                                    <button 
+                                        onClick={() => setIsObservasiOpen(!isObservasiOpen)} 
+                                        className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 focus:outline-none gap-1 transition ${isActive('/observasi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-900'}`}
+                                    >
+                                        <span>Observasi</span>
+                                        <svg className={`h-3 w-3 transition-transform duration-200 ${isObservasiOpen ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                        </svg>
+                                        <BadgeNotif count={badges.observasi} />
+                                    </button>
+
+                                    {isObservasiOpen && (
+                                        <div className="absolute top-full left-0 z-50 bg-white border-4 border-gray-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] min-w-[220px] py-1">
+                                            <Link href="/observasi" onClick={() => setIsObservasiOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide border-b-2 border-gray-100 last:border-0">
+                                                📋 Pra Observasi
+                                            </Link>
+                                            <Link href="/observasi/pelaksanaan" onClick={() => setIsObservasiOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide">
+                                                🎯 Observasi Pelaksanaan
+                                            </Link>
+                                        </div>
+                                    )}
+                                </div>
 
                                 {user?.role === 'admin' && (
                                     <Link href="/admin/users" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/admin/users') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>
@@ -236,8 +280,12 @@ return url === '/dashboard';
                             </button>
                             {isKesiswaanOpen && (
                                  <div className="pl-4 bg-gray-50 border-l-4 border-gray-900 my-1 space-y-1 py-1">
-                                     <Link href="/kesiswaan/lomba" onClick={() => { setIsMobileMenuOpen(false); setIsKesiswaanOpen(false); }} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Kegiatan Lomba <BadgeNotif count={badges.lomba} /></span></Link>
-                                     <Link href="/kesiswaan/kegiatan" onClick={() => { setIsMobileMenuOpen(false); setIsKesiswaanOpen(false); }} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Kegiatan Kesiswaan <BadgeNotif count={badges.kesiswaan} /></span></Link>
+                                     <Link href="/kesiswaan/lomba" onClick={() => {
+ setIsMobileMenuOpen(false); setIsKesiswaanOpen(false); 
+}} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Kegiatan Lomba <BadgeNotif count={badges.lomba} /></span></Link>
+                                     <Link href="/kesiswaan/kegiatan" onClick={() => {
+ setIsMobileMenuOpen(false); setIsKesiswaanOpen(false); 
+}} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Kegiatan Kesiswaan <BadgeNotif count={badges.kesiswaan} /></span></Link>
                                  </div>
                              )}
                         </div>
@@ -258,9 +306,29 @@ return url === '/dashboard';
                         <Link href="/jurnal-refleksi" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/jurnal-refleksi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
                             <span className="inline-flex items-center">Refleksi <BadgeNotif count={badges.refleksi} /></span>
                         </Link>
-                        <Link href="/observasi" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/observasi') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
-                            <span className="inline-flex items-center">Observasi <BadgeNotif count={badges.observasi} /></span>
-                        </Link>
+
+                        {/* Observasi Dropdown Mobile */}
+                        <div ref={observasiMobileRef} className="border-2 border-transparent">
+                            <button 
+                                onClick={() => setIsObservasiOpen(!isObservasiOpen)} 
+                                className={`w-full flex justify-between items-center px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/observasi') ? 'bg-gray-100 text-gray-900 border-gray-300' : 'border-transparent text-gray-600'}`}
+                            >
+                                <span>Observasi</span>
+                                <svg className={`w-3 h-3 transform transition ${isObservasiOpen ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                            {isObservasiOpen && (
+                                <div className="pl-4 bg-gray-50 border-l-4 border-gray-900 my-1 space-y-1 py-1">
+                                    <Link href="/observasi" onClick={() => {
+ setIsMobileMenuOpen(false); setIsObservasiOpen(false); 
+}} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Pra Observasi <BadgeNotif count={badges.observasi} /></span></Link>
+                                    <Link href="/observasi/pelaksanaan" onClick={() => {
+ setIsMobileMenuOpen(false); setIsObservasiOpen(false); 
+}} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Observasi Pelaksanaan</span></Link>
+                                </div>
+                            )}
+                        </div>
 
                         {user?.role === 'admin' && (
                             <Link href="/admin/users" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/admin/users') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
