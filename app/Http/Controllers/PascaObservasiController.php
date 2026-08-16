@@ -151,11 +151,12 @@ class PascaObservasiController extends Controller
         );
 
         $tableStyle = ['borderSize' => 4, 'borderColor' => '000000', 'cellMargin' => 120];
+        $noBorder = ['borderSize' => 0, 'borderColor' => 'FFFFFF', 'cellMargin' => 120];
         $labelStyle = ['bold' => true, 'size' => 11];
         $valueStyle = ['size' => 11];
 
-        // Tabel identitas grid 2 kolom (mengikuti Lampiran 6)
-        $table = $section->addTable($tableStyle);
+        // Tabel identitas grid 2 kolom (tanpa border)
+        $table = $section->addTable($noBorder);
         $identRows = [
             ['Hari/Tanggal', $pascaObservasi->hari_tanggal?->format('d-m-Y') ?? '-', 'Sekolah', 'SMP Negeri 1 Candimulyo'],
             ['Nama Guru', $pascaObservasi->nama_guru, 'Kelas', $pascaObservasi->kelas],
@@ -163,10 +164,10 @@ class PascaObservasiController extends Controller
         ];
         foreach ($identRows as $r) {
             $table->addRow();
-            $table->addCell(1900)->addText($r[0], $labelStyle);
-            $table->addCell(2900)->addText($r[1], $valueStyle);
-            $table->addCell(2000)->addText($r[2], $labelStyle);
-            $table->addCell(2200)->addText($r[3], $valueStyle);
+            $table->addCell(1900, $noBorder)->addText($r[0], $labelStyle);
+            $table->addCell(2900, $noBorder)->addText($r[1], $valueStyle);
+            $table->addCell(2000, $noBorder)->addText($r[2], $labelStyle);
+            $table->addCell(2200, $noBorder)->addText($r[3], $valueStyle);
         }
 
         $section->addTextBreak();
@@ -186,7 +187,6 @@ class PascaObservasiController extends Controller
         }
 
         // Footer tanda tangan (tanpa border)
-        $noBorder = ['borderSize' => 0, 'borderColor' => 'FFFFFF', 'cellMargin' => 120];
         $footer = $section->addTable($noBorder);
         $footer->addRow();
         $footer->addCell(9000, ['gridSpan' => 2])->addText('Disepakati bersama', $labelStyle, ['alignment' => Jc::CENTER]);
