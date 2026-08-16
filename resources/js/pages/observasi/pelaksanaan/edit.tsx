@@ -2,7 +2,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import TopNavLayout from '@/layouts/top-nav-layout';
 
-export default function PelaksanaanEdit({ observasi, definisi }: { observasi: any; definisi: any }) {
+export default function PelaksanaanEdit({ observasi, definisi, itemUtama }: { observasi: any; definisi: any; itemUtama: any[] }) {
     const { data, setData, post, processing, errors } = useForm({
         _method: 'PUT',
         hari_tanggal: observasi.hari_tanggal || '',
@@ -140,54 +140,43 @@ export default function PelaksanaanEdit({ observasi, definisi }: { observasi: an
                                     </div>
 
                                     {expandedSeksi === seksiKey &&
-                                        seksi.indikator.map((ind: any, indIdx: number) => (
-                                            <div key={ind.kode}>
-                                                <div className="grid grid-cols-12 gap-0 border-t-2 border-gray-200 p-2">
-                                                    <div className="lg:col-span-1 col-span-12 px-2 text-center text-xs font-bold">{indIdx + 1}</div>
-                                                    <div className="lg:col-span-5 col-span-12 px-2 text-xs font-bold">{ind.teks}</div>
-                                                    <div className="lg:col-span-3 col-span-12 px-1">
-                                                        <textarea
-                                                            rows={2}
-                                                            className="border-2 border-gray-300 p-2 text-xs w-full focus:border-gray-900 focus:ring-0"
-                                                            value={data.bukti[ind.kode] || ''}
-                                                            onChange={(e) => setBukti(ind.kode, e.target.value)}
-                                                        />
-                                                    </div>
-                                                    <div className="lg:col-span-3 col-span-12 px-1">
-                                                        <textarea
-                                                            rows={2}
-                                                            className="border-2 border-gray-300 p-2 text-xs w-full focus:border-gray-900 focus:ring-0"
-                                                            value={data.catatan[ind.kode] || ''}
-                                                            onChange={(e) => setCatatan(ind.kode, e.target.value)}
-                                                        />
-                                                    </div>
-                                                </div>
-
-                                                {ind.sub &&
-                                                    ind.sub.map((sub: any, subIdx: number) => (
-                                                        <div key={sub.kode} className="grid grid-cols-12 gap-0 border-t border-gray-200 p-2 bg-gray-50">
-                                                            <div className="lg:col-span-1 col-span-12 px-2 text-center text-xs font-bold">{indIdx + 1}.{String.fromCharCode(97 + subIdx)}</div>
-                                                            <div className="lg:col-span-5 col-span-12 px-2 text-xs">    {sub.teks}</div>
-                                                            <div className="lg:col-span-3 col-span-12 px-1">
-                                                                <textarea
-                                                                    rows={2}
-                                                                    className="border-2 border-gray-300 p-2 text-xs w-full focus:border-gray-900 focus:ring-0"
-                                                                    value={data.bukti[sub.kode] || ''}
-                                                                    onChange={(e) => setBukti(sub.kode, e.target.value)}
-                                                                />
-                                                            </div>
-                                                            <div className="lg:col-span-3 col-span-12 px-1">
-                                                                <textarea
-                                                                    rows={2}
-                                                                    className="border-2 border-gray-300 p-2 text-xs w-full focus:border-gray-900 focus:ring-0"
-                                                                    value={data.catatan[sub.kode] || ''}
-                                                                    onChange={(e) => setCatatan(sub.kode, e.target.value)}
-                                                                />
-                                                            </div>
+                                        seksi.indikator.map((ind: any) => {
+                                            const no = itemUtama.findIndex((it: any) => it.kode === ind.kode) + 1;
+                                            return (
+                                                <div key={ind.kode}>
+                                                    <div className="grid grid-cols-12 gap-0 border-t-2 border-gray-200 p-2">
+                                                        <div className="lg:col-span-1 col-span-12 px-2 text-center text-xs font-bold">{no}</div>
+                                                        <div className="lg:col-span-5 col-span-12 px-2 text-xs font-bold">{ind.teks}</div>
+                                                        <div className="lg:col-span-3 col-span-12 px-1">
+                                                            <textarea
+                                                                rows={2}
+                                                                className="border-2 border-gray-300 p-2 text-xs w-full focus:border-gray-900 focus:ring-0"
+                                                                value={data.bukti[ind.kode] || ''}
+                                                                onChange={(e) => setBukti(ind.kode, e.target.value)}
+                                                            />
                                                         </div>
-                                                    ))}
-                                            </div>
-                                        ))}
+                                                        <div className="lg:col-span-3 col-span-12 px-1">
+                                                            <textarea
+                                                                rows={2}
+                                                                className="border-2 border-gray-300 p-2 text-xs w-full focus:border-gray-900 focus:ring-0"
+                                                                value={data.catatan[ind.kode] || ''}
+                                                                onChange={(e) => setCatatan(ind.kode, e.target.value)}
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    {ind.sub &&
+                                                        ind.sub.map((sub: any, subIdx: number) => (
+                                                            <div key={sub.kode} className="grid grid-cols-12 gap-0 border-t border-gray-200 p-2 bg-gray-50">
+                                                                <div className="lg:col-span-1 col-span-12 px-2 text-center text-xs font-bold text-gray-400">{no}.{String.fromCharCode(97 + subIdx)}</div>
+                                                                <div className="lg:col-span-5 col-span-12 px-2 text-xs">    {sub.teks}</div>
+                                                                <div className="lg:col-span-3 col-span-12 px-2 text-[10px] text-gray-400 uppercase">Bukti & catatan di atas</div>
+                                                                <div className="lg:col-span-3 col-span-12 px-2"></div>
+                                                            </div>
+                                                        ))}
+                                                </div>
+                                            );
+                                        })}
                                 </div>
                             )
                         ))}

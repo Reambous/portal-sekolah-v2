@@ -11,6 +11,7 @@ use App\Http\Controllers\Kesiswaan\LombaController;
 use App\Http\Controllers\Kurikulum\KurikulumKegiatanController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ObservasiPelaksanaanController;
+use App\Http\Controllers\PascaObservasiController;
 use App\Http\Controllers\PraObservasiController;
 use App\Http\Controllers\Sarpras\SarprasKegiatanController;
 use App\Http\Middleware\AdminMiddleware;
@@ -165,6 +166,16 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/observasi/pelaksanaan/{id}', [ObservasiPelaksanaanController::class, 'update'])->name('observasi.pelaksanaan.update');
     Route::delete('/observasi/pelaksanaan/{id}', [ObservasiPelaksanaanController::class, 'destroy'])->name('observasi.pelaksanaan.destroy');
     Route::get('/observasi/pelaksanaan/{id}/export/excel', [ObservasiPelaksanaanController::class, 'exportExcel'])->name('observasi.pelaksanaan.exportExcel');
+
+    // Form D: Pasca Observasi (Lembar Catatan Percakapan Pasca-Observasi)
+    Route::get('/pasca-observasi', [PascaObservasiController::class, 'index'])->name('pasca-observasi.index');
+    Route::get('/pasca-observasi/create', [PascaObservasiController::class, 'create'])->name('pasca-observasi.create');
+    Route::post('/pasca-observasi', [PascaObservasiController::class, 'store'])->name('pasca-observasi.store');
+    Route::get('/pasca-observasi/{id}', [PascaObservasiController::class, 'show'])->name('pasca-observasi.show');
+    Route::get('/pasca-observasi/{id}/edit', [PascaObservasiController::class, 'edit'])->name('pasca-observasi.edit');
+    Route::put('/pasca-observasi/{id}', [PascaObservasiController::class, 'update'])->name('pasca-observasi.update');
+    Route::delete('/pasca-observasi/{id}', [PascaObservasiController::class, 'destroy'])->name('pasca-observasi.destroy');
+    Route::get('/pasca-observasi/{id}/export/word', [PascaObservasiController::class, 'exportWord'])->name('pasca-observasi.exportWord');
 });
 
 // ==========================================

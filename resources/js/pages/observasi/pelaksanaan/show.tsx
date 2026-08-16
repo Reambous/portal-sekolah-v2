@@ -130,24 +130,25 @@ return null;
     );
 };
 
-const FragmentRow = ({ ind, bukti, catatan }: { ind: any; bukti: any; catatan: any }) => (
-    <>
-        <tr className="border-t border-gray-200">
-            <td className="p-4 text-center font-bold text-xs bg-gray-50">{ind.kode}</td>
-            <td className="p-4 text-xs font-bold text-gray-900">{ind.teks}</td>
-            <td className="p-4 text-xs text-gray-700 whitespace-pre-wrap">{bukti[ind.kode] || '-'}</td>
-            <td className="p-4 text-xs text-gray-700 whitespace-pre-wrap">{catatan[ind.kode] || '-'}</td>
-        </tr>
-        {ind.sub &&
-            ind.sub.map((sub: any) => (
-                <tr key={sub.kode} className="border-t border-gray-200 bg-gray-50">
-                    <td className="p-4 text-center font-bold text-xs text-gray-500"></td>
-                    <td className="p-4 text-xs text-gray-600 pl-8">    {sub.teks}</td>
-                    <td className="p-4 text-xs text-gray-700 whitespace-pre-wrap">{bukti[sub.kode] || '-'}</td>
-                    <td className="p-4 text-xs text-gray-700 whitespace-pre-wrap">{catatan[sub.kode] || '-'}</td>
-                </tr>
-            ))}
-    </>
-);
+const FragmentRow = ({ ind, bukti, catatan }: { ind: any; bukti: any; catatan: any }) => {
+    const rowCount = 1 + (ind.sub ? ind.sub.length : 0);
+
+    return (
+        <>
+            <tr className="border-t border-gray-200">
+                <td rowSpan={rowCount} className="p-4 text-center font-bold text-xs bg-gray-50 align-top">{ind.kode.replace('i', '')}</td>
+                <td className="p-4 text-xs font-bold text-gray-900">{ind.teks}</td>
+                <td rowSpan={rowCount} className="p-4 text-xs text-gray-700 whitespace-pre-wrap align-top">{bukti[ind.kode] || '-'}</td>
+                <td rowSpan={rowCount} className="p-4 text-xs text-gray-700 whitespace-pre-wrap align-top">{catatan[ind.kode] || '-'}</td>
+            </tr>
+            {ind.sub &&
+                ind.sub.map((sub: any, subIdx: number) => (
+                    <tr key={sub.kode} className="border-t border-gray-200 bg-gray-50">
+                        <td className="p-4 text-xs text-gray-600 pl-8">    {sub.teks}</td>
+                    </tr>
+                ))}
+        </>
+    );
+};
 
 PelaksanaanShow.layout = (page: any) => <TopNavLayout>{page}</TopNavLayout>;

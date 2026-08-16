@@ -135,7 +135,7 @@ class ObservasiPelaksanaan extends Model
     }
 
     /**
-     * Daftar semua item (indikator + sub) yang memiliki input bukti & catatan.
+     * Daftar semua item (indikator + sub) untuk render tampilan.
      *
      * @return array<int, array{kode: string, teks: string}>
      */
@@ -157,10 +157,41 @@ class ObservasiPelaksanaan extends Model
     }
 
     /**
-     * Total item yang punya bukti & catatan (untuk validasi).
+     * Daftar indikator utama (i1-i15) yang memiliki input bukti & catatan.
+     * Sub-indikator tidak memiliki input sendiri (mengikuti struktur observasi.xlsx).
+     *
+     * @return array<int, array{kode: string, teks: string}>
+     */
+    public static function itemUtama(): array
+    {
+        $items = [];
+        foreach (static::definisi()['seksi'] as $seksiKey => $seksi) {
+            if ($seksiKey === 'refleksi') {
+                continue;
+            }
+            foreach ($seksi['indikator'] as $ind) {
+                $items[] = ['kode' => $ind['kode'], 'teks' => $ind['teks']];
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Daftar kode indikator utama.
+     *
+     * @return array<int, string>
+     */
+    public static function kodeUtama(): array
+    {
+        return array_column(static::itemUtama(), 'kode');
+    }
+
+    /**
+     * Total indikator utama yang punya bukti & catatan.
      */
     public static function totalItems(): int
     {
-        return count(static::itemList());
+        return count(static::itemUtama());
     }
 }
