@@ -155,19 +155,20 @@ class PascaObservasiController extends Controller
         $labelStyle = ['bold' => true, 'size' => 11];
         $valueStyle = ['size' => 11];
 
-        // Tabel identitas grid 2 kolom (tanpa border)
+        // Tabel identitas vertikal (sekolah paling atas, kebawah, dengan titik dua)
         $table = $section->addTable($noBorder);
         $identRows = [
-            ['Hari/Tanggal', $pascaObservasi->hari_tanggal?->format('d-m-Y') ?? '-', 'Sekolah', 'SMP Negeri 1 Candimulyo'],
-            ['Nama Guru', $pascaObservasi->nama_guru, 'Kelas', $pascaObservasi->kelas],
-            ['Mata Pelajaran', $pascaObservasi->mata_pelajaran, 'Waktu Percakapan', $pascaObservasi->waktu_percakapan],
+            ['Sekolah', 'SMP Negeri 1 Candimulyo'],
+            ['Hari/Tanggal', $pascaObservasi->hari_tanggal?->format('d-m-Y') ?? '-'],
+            ['Nama Guru', $pascaObservasi->nama_guru],
+            ['Kelas', $pascaObservasi->kelas],
+            ['Mata Pelajaran', $pascaObservasi->mata_pelajaran],
+            ['Waktu Percakapan', $pascaObservasi->waktu_percakapan],
         ];
         foreach ($identRows as $r) {
             $table->addRow();
-            $table->addCell(1900, $noBorder)->addText($r[0], $labelStyle);
-            $table->addCell(2900, $noBorder)->addText($r[1], $valueStyle);
-            $table->addCell(2000, $noBorder)->addText($r[2], $labelStyle);
-            $table->addCell(2200, $noBorder)->addText($r[3], $valueStyle);
+            $table->addCell(2900, $noBorder)->addText($r[0].':', $labelStyle);
+            $table->addCell(6100, $noBorder)->addText($r[1], $valueStyle);
         }
 
         $section->addTextBreak();
