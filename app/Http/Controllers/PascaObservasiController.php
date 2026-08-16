@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
-use PhpOffice\PhpWord\Shared\Inches;
 use PhpOffice\PhpWord\SimpleType\Jc;
 
 class PascaObservasiController extends Controller
@@ -138,10 +137,10 @@ class PascaObservasiController extends Controller
 
         $phpWord = new PhpWord;
         $section = $phpWord->addSection([
-            'marginTop' => Inches(0.75),
-            'marginBottom' => Inches(0.75),
-            'marginLeft' => Inches(0.75),
-            'marginRight' => Inches(0.75),
+            'marginTop' => 1134,
+            'marginBottom' => 1134,
+            'marginLeft' => 1134,
+            'marginRight' => 1134,
         ]);
 
         $section->addText('LEMBAR CATATAN PERCAKAPAN PASCA-OBSERVASI KELAS', [
