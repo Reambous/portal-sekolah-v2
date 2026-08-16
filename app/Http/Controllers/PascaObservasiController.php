@@ -143,72 +143,66 @@ class PascaObservasiController extends Controller
             'marginRight' => 1134,
         ]);
 
-        $section->addText('LEMBAR CATATAN PERCAKAPAN PASCA-OBSERVASI KELAS', [
-            'bold' => true,
-            'size' => 14,
-            'align' => Jc::CENTER,
-        ]);
-        $section->addTextRun()->addText('');
+        // Judul
+        $section->addText(
+            'LEMBAR CATATAN PERCAKAPAN PASCA-OBSERVASI KELAS',
+            ['bold' => true, 'size' => 15, 'color' => '000000'],
+            ['alignment' => Jc::CENTER, 'spaceAfter' => 360]
+        );
 
-        $table = $section->addTable(['borderSize' => 6, 'borderColor' => '000000']);
-        $table->setWidth(9000);
+        $tableStyle = ['borderSize' => 4, 'borderColor' => '000000', 'cellMargin' => 120];
+        $labelStyle = ['bold' => true, 'size' => 11];
+        $valueStyle = ['size' => 11];
 
-        $rows = [
-            ['Sekolah', 'SMP Negeri 1 Candimulyo'],
-            ['Hari / Tanggal', $pascaObservasi->hari_tanggal->format('d-m-Y')],
-            ['Nama Guru', $pascaObservasi->nama_guru],
-            ['Kelas', $pascaObservasi->kelas],
-            ['Mata Pelajaran', $pascaObservasi->mata_pelajaran],
-            ['Waktu Percakapan', $pascaObservasi->waktu_percakapan],
-            ['Supervisor', $pascaObservasi->supervisor],
+        // Tabel identitas (sekolah di baris paling atas)
+        $table = $section->addTable($tableStyle);
+        $header = ['Sekolah', 'Hari / Tanggal', 'Nama Guru', 'Kelas', 'Mata Pelajaran', 'Waktu Percakapan', 'Supervisor'];
+        $values = [
+            'SMP Negeri 1 Candimulyo',
+            $pascaObservasi->hari_tanggal?->format('d-m-Y') ?? '-',
+            $pascaObservasi->nama_guru,
+            $pascaObservasi->kelas,
+            $pascaObservasi->mata_pelajaran,
+            $pascaObservasi->waktu_percakapan,
+            $pascaObservasi->supervisor,
         ];
-
-        foreach ($rows as $row) {
-            $tr = $table->addRow();
-            $tr->addCell(2500)->addText($row[0], ['bold' => true]);
-            $tr->addCell(6500)->addText($row[1]);
+        foreach ($header as $i => $label) {
+            $table->addRow();
+            $table->addCell(3200)->addText($label, $labelStyle);
+            $table->addCell(5800)->addText($values[$i], $valueStyle);
         }
 
-        $section->addTextRun()->addText('');
+        $section->addTextBreak();
 
-        $table = $section->addTable(['borderSize' => 6, 'borderColor' => '000000']);
-        $table->setWidth(9000);
+        // Kotak isian utama
+        $blocks = [
+            'CATATAN REFLEKSI GURU' => $pascaObservasi->catatan_refleksi_guru,
+            'TOPIK PERCAKAPAN DAN CATATAN' => $pascaObservasi->topik_percakapan_catatan,
+            'RENCANA TINDAK LANJUT' => $pascaObservasi->rencana_tindak_lanjut,
+        ];
+        foreach ($blocks as $label => $isi) {
+            $box = $section->addTable($tableStyle);
+            $cell = $box->addRow()->addCell(9000);
+            $cell->addText($label, $labelStyle);
+            $cell->addText($isi ?: '-', $valueStyle);
+            $section->addTextBreak();
+        }
 
-        $tr = $table->addRow();
-        $tr->addCell(9000)->addText('Catatan Refleksi Guru', ['bold' => true]);
-        $tr = $table->addRow();
-        $tr->addCell(9000)->addText($pascaObservasi->catatan_refleksi_guru ?? '-');
-
-        $tr = $table->addRow();
-        $tr->addCell(9000)->addText('Topik Percakapan dan Catatan', ['bold' => true]);
-        $tr = $table->addRow();
-        $tr->addCell(9000)->addText($pascaObservasi->topik_percakapan_catatan ?? '-');
-
-        $tr = $table->addRow();
-        $tr->addCell(9000)->addText('Rencana Tindak Lanjut', ['bold' => true]);
-        $tr = $table->addRow();
-        $tr->addCell(9000)->addText($pascaObservasi->rencana_tindak_lanjut ?? '-');
-
-        $section->addTextRun()->addText('');
-        $section->addTextRun()->addText('');
-
-        $signTable = $section->addTable(['borderSize' => 0]);
-        $signTable->setWidth(9000);
-        $tr = $signTable->addRow();
-        $cell1 = $tr->addCell(4500);
-        $cell1->addText('Supervisor:', ['bold' => true]);
-        $cell1->addTextRun()->addText('');
-        $cell1->addTextRun()->addText('_______________');
-        $cell1->addTextRun()->addText('');
-        $cell1->addText('Rusman As\'ari, S.Pd., M.Pd.');
-        $cell1->addText('NIP. 19751222 200604 1 006', ['size' => 9]);
-
-        $cell2 = $tr->addCell(4500);
-        $cell2->addText('Guru yang diobservasi:', ['bold' => true]);
-        $cell2->addTextRun()->addText('');
-        $cell2->addTextRun()->addText('_______________');
-        $cell2->addTextRun()->addText('');
-        $cell2->addText($pascaObservasi->nama_guru);
+        // Footer tanda tangan (border invisible)
+        $noBorder = ['borderSize' => 0, 'borderColor' => 'FFFFFF'];
+        $footer = $section->addTable(array_merge(['cellMargin' => 80], $noBorder));
+        $footer->addRow();
+        $footer->addCell(4500, $noBorder)->addText('Supervisor', $labelStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500, $noBorder)->addText('Guru yang diobservasi', $labelStyle, ['alignment' => Jc::CENTER]);
+        $footer->addRow();
+        $footer->addCell(4500, $noBorder)->addText('', []);
+        $footer->addCell(4500, $noBorder)->addText('', []);
+        $footer->addRow();
+        $footer->addCell(4500, $noBorder)->addText($pascaObservasi->supervisor, $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500, $noBorder)->addText($pascaObservasi->nama_guru, $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addRow();
+        $footer->addCell(4500, $noBorder)->addText('NIP. ............................................', $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500, $noBorder)->addText('NIP. ............................................', $valueStyle, ['alignment' => Jc::CENTER]);
 
         $fileName = 'Pasca_Observasi_'.$pascaObservasi->id.'.docx';
 

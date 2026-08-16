@@ -8,25 +8,25 @@ export default function PascaObservasiShow({ record }: { record: any }) {
     const canManage = isAdmin || isOwner;
 
     const handleDelete = () => {
-        if (confirm('YAKIN INGIN MENGHAPUS PASCA OBSERVASI INI?')) {
+        if (confirm('YAKIN INGIN MENGHAPUS LEMBAR CATATAN PASCA-OBSERVASI INI?')) {
             router.delete(`/pasca-observasi/${record.id}`);
         }
     };
 
+    const row = 'border-b border-gray-300';
+    const label = 'p-3 text-xs font-black uppercase tracking-widest text-gray-500 bg-gray-100 w-56';
+    const value = 'p-3 text-sm font-medium text-gray-800';
+
     return (
         <div className="py-8 bg-white min-h-screen font-sans text-gray-900">
-            <Head title="Detail Pasca Observasi" />
-            <div className="max-w-[95%] mx-auto max-w-6xl">
+            <Head title="Detail Lembar Catatan Pasca-Observasi" />
+            <div className="max-w-[95%] mx-auto max-w-4xl">
                 <div className="border-b-4 border-gray-900 mb-8 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                     <div>
-                        <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-1">
-                            Detail Pasca Observasi
-                        </h2>
-                        <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">{record.nama_guru}</p>
+                        <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tighter mb-1">Lembar Catatan Percakapan Pasca-Observasi Kelas</h2>
+                        <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">Sekolah: SMP Negeri 1 Candimulyo</p>
                     </div>
-                    <Link href="/pasca-observasi" className="bg-white text-gray-900 border-2 border-gray-900 px-4 py-2 text-xs font-bold uppercase hover:bg-gray-100 transition">
-                        Kembali
-                    </Link>
+                    <Link href="/pasca-observasi" className="bg-white text-gray-900 border-2 border-gray-900 px-4 py-2 text-xs font-bold uppercase hover:bg-gray-100 transition">Kembali</Link>
                 </div>
 
                 {flash?.success && (
@@ -39,7 +39,7 @@ export default function PascaObservasiShow({ record }: { record: any }) {
                 <div className="mb-8 flex flex-wrap gap-2">
                     <a
                         href={`/pasca-observasi/${record.id}/export/word`}
-                        className="bg-green-700 text-white px-6 py-3 text-xs font-black uppercase tracking-widest hover:bg-green-800 border-2 border-gray-900 transition shadow-md"
+                        className="bg-blue-700 text-white px-6 py-3 text-xs font-black uppercase tracking-widest hover:bg-blue-800 border-2 border-gray-900 transition shadow-md"
                     >
                         ⬇ EXPORT WORD (.DOCX)
                     </a>
@@ -61,57 +61,70 @@ export default function PascaObservasiShow({ record }: { record: any }) {
                     )}
                 </div>
 
-                {/* IDENTITAS */}
-                <div className="border-2 border-gray-900 bg-gray-50 p-5 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Sekolah</span>
-                        <p className="text-sm font-bold">SMP Negeri 1 Candimulyo</p>
+                {/* DOKUMEN */}
+                <div className="border-4 border-gray-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
+                    <div className="border-b-4 border-gray-900 p-6 text-center">
+                        <h3 className="text-xl font-black uppercase tracking-tighter">Lembar Catatan Percakapan Pasca-Observasi Kelas</h3>
+                        <p className="text-sm font-bold text-gray-600 mt-1">Sekolah: SMP Negeri 1 Candimulyo</p>
                     </div>
-                    <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Hari / Tanggal</span>
-                        <p className="text-sm font-bold">{new Date(record.hari_tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                    </div>
-                    <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Nama Guru</span>
-                        <p className="text-sm font-bold">{record.nama_guru}</p>
-                    </div>
-                    <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Kelas</span>
-                        <p className="text-sm font-bold">{record.kelas}</p>
-                    </div>
-                    <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Mata Pelajaran</span>
-                        <p className="text-sm font-bold">{record.mata_pelajaran}</p>
-                    </div>
-                    <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Waktu Percakapan</span>
-                        <p className="text-sm font-bold">{record.waktu_percakapan}</p>
-                    </div>
-                    <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Supervisor</span>
-                        <p className="text-sm font-bold">{record.supervisor}</p>
-                    </div>
-                </div>
 
-                {/* ISIAN UTAMA */}
-                <div className="border-4 border-gray-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-6">
-                    <div className="bg-gray-900 text-white text-xs font-black uppercase tracking-widest px-4 py-2">Catatan Refleksi Guru</div>
-                    <div className="p-5">
-                        <p className="text-sm text-gray-800 whitespace-pre-wrap break-words font-medium">{record.catatan_refleksi_guru || '-'}</p>
-                    </div>
-                </div>
+                    <table className="w-full border-collapse">
+                        <tbody>
+                            <tr className={row}>
+                                <td className={label}>Sekolah</td>
+                                <td className={value}>SMP Negeri 1 Candimulyo</td>
+                            </tr>
+                            <tr className={row}>
+                                <td className={label}>Hari / Tanggal</td>
+                                <td className={value}>{new Date(record.hari_tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</td>
+                            </tr>
+                            <tr className={row}>
+                                <td className={label}>Nama Guru</td>
+                                <td className={value}>{record.nama_guru}</td>
+                            </tr>
+                            <tr className={row}>
+                                <td className={label}>Kelas</td>
+                                <td className={value}>{record.kelas}</td>
+                            </tr>
+                            <tr className={row}>
+                                <td className={label}>Mata Pelajaran</td>
+                                <td className={value}>{record.mata_pelajaran}</td>
+                            </tr>
+                            <tr className={row}>
+                                <td className={label}>Waktu Percakapan</td>
+                                <td className={value}>{record.waktu_percakapan}</td>
+                            </tr>
+                            <tr>
+                                <td className={label}>Supervisor</td>
+                                <td className={value}>{record.supervisor}</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                <div className="border-4 border-gray-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-6">
-                    <div className="bg-gray-900 text-white text-xs font-black uppercase tracking-widest px-4 py-2">Topik Percakapan dan Catatan</div>
-                    <div className="p-5">
-                        <p className="text-sm text-gray-800 whitespace-pre-wrap break-words font-medium">{record.topik_percakapan_catatan || '-'}</p>
+                    <div className="border-t-4 border-gray-900">
+                        {[
+                            ['CATATAN REFLEKSI GURU', record.catatan_refleksi_guru],
+                            ['TOPIK PERCAKAPAN DAN CATATAN', record.topik_percakapan_catatan],
+                            ['RENCANA TINDAK LANJUT', record.rencana_tindak_lanjut],
+                        ].map(([judul, isi]) => (
+                            <div key={judul} className="border-b-2 border-gray-200 p-5">
+                                <h4 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-2">{judul}</h4>
+                                <p className="text-sm text-gray-800 whitespace-pre-wrap break-words font-medium">{isi || '-'}</p>
+                            </div>
+                        ))}
                     </div>
-                </div>
 
-                <div className="border-4 border-gray-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                    <div className="bg-gray-900 text-white text-xs font-black uppercase tracking-widest px-4 py-2">Rencana Tindak Lanjut</div>
-                    <div className="p-5">
-                        <p className="text-sm text-gray-800 whitespace-pre-wrap break-words font-medium">{record.rencana_tindak_lanjut || '-'}</p>
+                    <div className="p-6 grid grid-cols-2 gap-8">
+                        <div className="text-center">
+                            <p className="text-xs font-black uppercase tracking-widest mb-10">Supervisor</p>
+                            <p className="text-sm font-bold">{record.supervisor}</p>
+                            <p className="text-xs text-gray-500 mt-1">NIP. ............................................</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-xs font-black uppercase tracking-widest mb-10">Guru yang diobservasi</p>
+                            <p className="text-sm font-bold">{record.nama_guru}</p>
+                            <p className="text-xs text-gray-500 mt-1">NIP. ............................................</p>
+                        </div>
                     </div>
                 </div>
             </div>
