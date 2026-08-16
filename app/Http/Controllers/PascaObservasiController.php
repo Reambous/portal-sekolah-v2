@@ -185,22 +185,23 @@ class PascaObservasiController extends Controller
             $section->addTextBreak();
         }
 
-        // Footer tanda tangan (mengikuti Lampiran 6)
-        $footer = $section->addTable($tableStyle);
+        // Footer tanda tangan (tanpa border)
+        $noBorder = ['borderSize' => 0, 'borderColor' => 'FFFFFF', 'cellMargin' => 120];
+        $footer = $section->addTable($noBorder);
         $footer->addRow();
         $footer->addCell(9000, ['gridSpan' => 2])->addText('Disepakati bersama', $labelStyle, ['alignment' => Jc::CENTER]);
         $footer->addRow();
-        $footer->addCell(4500)->addText('Supervisor', $labelStyle, ['alignment' => Jc::CENTER]);
-        $footer->addCell(4500)->addText('Guru Mapel', $labelStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500, $noBorder)->addText('Supervisor', $labelStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500, $noBorder)->addText('Guru Mapel', $labelStyle, ['alignment' => Jc::CENTER]);
         $footer->addRow();
-        $footer->addCell(4500)->addText('', []);
-        $footer->addCell(4500)->addText('', []);
+        $footer->addCell(4500, $noBorder)->addText('', []);
+        $footer->addCell(4500, $noBorder)->addText('', []);
         $footer->addRow();
-        $footer->addCell(4500)->addText('Rusman As\'ari, S.Pd. M.Pd.', $valueStyle, ['alignment' => Jc::CENTER]);
-        $footer->addCell(4500)->addText('(……………………………)', $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500, $noBorder)->addText('Rusman As\'ari, S.Pd. M.Pd.', $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500, $noBorder)->addText('(……………………………)', $valueStyle, ['alignment' => Jc::CENTER]);
         $footer->addRow();
-        $footer->addCell(4500)->addText('NIP. 19751222 200604 1 006', $valueStyle, ['alignment' => Jc::CENTER]);
-        $footer->addCell(4500)->addText('Guru', $labelStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500, $noBorder)->addText('NIP. 19751222 200604 1 006', $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500, $noBorder)->addText('Guru', $labelStyle, ['alignment' => Jc::CENTER]);
 
         $fileName = 'Pasca_Observasi_'.$pascaObservasi->id.'.docx';
 
