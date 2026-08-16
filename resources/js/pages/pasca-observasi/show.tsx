@@ -68,44 +68,35 @@ export default function PascaObservasiShow({ record }: { record: any }) {
                         <p className="text-sm font-bold text-gray-600 mt-1">Sekolah: SMP Negeri 1 Candimulyo</p>
                     </div>
 
+                    {/* Identitas grid 2 kolom (mengikuti Lampiran 6) */}
                     <table className="w-full border-collapse">
                         <tbody>
                             <tr className={row}>
+                                <td className={label}>Hari / Tanggal</td>
+                                <td className={value}>{new Date(record.hari_tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</td>
                                 <td className={label}>Sekolah</td>
                                 <td className={value}>SMP Negeri 1 Candimulyo</td>
                             </tr>
                             <tr className={row}>
-                                <td className={label}>Hari / Tanggal</td>
-                                <td className={value}>{new Date(record.hari_tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</td>
-                            </tr>
-                            <tr className={row}>
                                 <td className={label}>Nama Guru</td>
                                 <td className={value}>{record.nama_guru}</td>
-                            </tr>
-                            <tr className={row}>
                                 <td className={label}>Kelas</td>
                                 <td className={value}>{record.kelas}</td>
                             </tr>
-                            <tr className={row}>
+                            <tr>
                                 <td className={label}>Mata Pelajaran</td>
                                 <td className={value}>{record.mata_pelajaran}</td>
-                            </tr>
-                            <tr className={row}>
                                 <td className={label}>Waktu Percakapan</td>
                                 <td className={value}>{record.waktu_percakapan}</td>
-                            </tr>
-                            <tr>
-                                <td className={label}>Supervisor</td>
-                                <td className={value}>{record.supervisor}</td>
                             </tr>
                         </tbody>
                     </table>
 
                     <div className="border-t-4 border-gray-900">
                         {[
-                            ['CATATAN REFLEKSI GURU', record.catatan_refleksi_guru],
-                            ['TOPIK PERCAKAPAN DAN CATATAN', record.topik_percakapan_catatan],
-                            ['RENCANA TINDAK LANJUT', record.rencana_tindak_lanjut],
+                            ['Catatan Refleksi Guru:', record.catatan_refleksi_guru],
+                            ['Topik percakapan dan catatan:', record.topik_percakapan_catatan],
+                            ['Rencana Tindak Lanjut:', record.rencana_tindak_lanjut],
                         ].map(([judul, isi]) => (
                             <div key={judul} className="border-b-2 border-gray-200 p-5">
                                 <h4 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-2">{judul}</h4>
@@ -114,16 +105,24 @@ export default function PascaObservasiShow({ record }: { record: any }) {
                         ))}
                     </div>
 
-                    <div className="p-6 grid grid-cols-2 gap-8">
-                        <div className="text-center">
-                            <p className="text-xs font-black uppercase tracking-widest mb-10">Supervisor</p>
-                            <p className="text-sm font-bold">{record.supervisor}</p>
-                            <p className="text-xs text-gray-500 mt-1">NIP. ............................................</p>
+                    {/* Tanda tangan (mengikuti Lampiran 6) */}
+                    <div className="border-t-4 border-gray-900">
+                        <div className="p-4 text-center border-b-2 border-gray-300">
+                            <p className="text-xs font-black uppercase tracking-widest text-gray-500">Disepakati bersama</p>
                         </div>
-                        <div className="text-center">
-                            <p className="text-xs font-black uppercase tracking-widest mb-10">Guru yang diobservasi</p>
-                            <p className="text-sm font-bold">{record.nama_guru}</p>
-                            <p className="text-xs text-gray-500 mt-1">NIP. ............................................</p>
+                        <div className="p-6 grid grid-cols-2 gap-8">
+                            <div className="text-center">
+                                <p className="text-xs font-black uppercase tracking-widest mb-10">Supervisor</p>
+                                <p className="text-sm font-bold">{record.supervisor}</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-xs font-black uppercase tracking-widest mb-10">Guru Mapel</p>
+                                <p className="text-sm font-bold">(………………)</p>
+                            </div>
+                        </div>
+                        <div className="border-t-2 border-gray-200 p-4 grid grid-cols-2 gap-8 text-center">
+                            <p className="text-xs font-bold text-gray-500">NIP. 19751222 200604 1 006</p>
+                            <p className="text-xs font-black uppercase tracking-widest text-gray-500">Guru</p>
                         </div>
                     </div>
                 </div>

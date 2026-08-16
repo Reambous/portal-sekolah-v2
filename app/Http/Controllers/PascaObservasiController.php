@@ -25,7 +25,7 @@ class PascaObservasiController extends Controller
         $records = $query->orderByDesc('hari_tanggal')->paginate(15);
 
         return Inertia::render('pasca-observasi/index', [
-            'records' => $records,
+            'data' => $records,
         ]);
     }
 
@@ -154,55 +154,53 @@ class PascaObservasiController extends Controller
         $labelStyle = ['bold' => true, 'size' => 11];
         $valueStyle = ['size' => 11];
 
-        // Tabel identitas (sekolah di baris paling atas)
+        // Tabel identitas grid 2 kolom (mengikuti Lampiran 6)
         $table = $section->addTable($tableStyle);
-        $header = ['Sekolah', 'Hari / Tanggal', 'Nama Guru', 'Kelas', 'Mata Pelajaran', 'Waktu Percakapan', 'Supervisor'];
-        $values = [
-            'SMP Negeri 1 Candimulyo',
-            $pascaObservasi->hari_tanggal?->format('d-m-Y') ?? '-',
-            $pascaObservasi->nama_guru,
-            $pascaObservasi->kelas,
-            $pascaObservasi->mata_pelajaran,
-            $pascaObservasi->waktu_percakapan,
-            $pascaObservasi->supervisor,
+        $identRows = [
+            ['Hari/Tanggal', $pascaObservasi->hari_tanggal?->format('d-m-Y') ?? '-', 'Sekolah', 'SMP Negeri 1 Candimulyo'],
+            ['Nama Guru', $pascaObservasi->nama_guru, 'Kelas', $pascaObservasi->kelas],
+            ['Mata Pelajaran', $pascaObservasi->mata_pelajaran, 'Waktu Percakapan', $pascaObservasi->waktu_percakapan],
         ];
-        foreach ($header as $i => $label) {
+        foreach ($identRows as $r) {
             $table->addRow();
-            $table->addCell(3200)->addText($label, $labelStyle);
-            $table->addCell(5800)->addText($values[$i], $valueStyle);
+            $table->addCell(1900)->addText($r[0], $labelStyle);
+            $table->addCell(2900)->addText($r[1], $valueStyle);
+            $table->addCell(2000)->addText($r[2], $labelStyle);
+            $table->addCell(2200)->addText($r[3], $valueStyle);
         }
 
         $section->addTextBreak();
 
         // Kotak isian utama
         $blocks = [
-            'CATATAN REFLEKSI GURU' => $pascaObservasi->catatan_refleksi_guru,
-            'TOPIK PERCAKAPAN DAN CATATAN' => $pascaObservasi->topik_percakapan_catatan,
-            'RENCANA TINDAK LANJUT' => $pascaObservasi->rencana_tindak_lanjut,
+            'Catatan Refleksi Guru:' => $pascaObservasi->catatan_refleksi_guru,
+            'Topik percakapan dan catatan:' => $pascaObservasi->topik_percakapan_catatan,
+            'Rencana Tindak Lanjut:' => $pascaObservasi->rencana_tindak_lanjut,
         ];
         foreach ($blocks as $label => $isi) {
             $box = $section->addTable($tableStyle);
             $cell = $box->addRow()->addCell(9000);
             $cell->addText($label, $labelStyle);
-            $cell->addText($isi ?: '-', $valueStyle);
+            $cell->addText($isi ?: '', $valueStyle);
             $section->addTextBreak();
         }
 
-        // Footer tanda tangan (border invisible)
-        $noBorder = ['borderSize' => 0, 'borderColor' => 'FFFFFF'];
-        $footer = $section->addTable(array_merge(['cellMargin' => 80], $noBorder));
+        // Footer tanda tangan (mengikuti Lampiran 6)
+        $footer = $section->addTable($tableStyle);
         $footer->addRow();
-        $footer->addCell(4500, $noBorder)->addText('Supervisor', $labelStyle, ['alignment' => Jc::CENTER]);
-        $footer->addCell(4500, $noBorder)->addText('Guru yang diobservasi', $labelStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(9000, ['gridSpan' => 2])->addText('Disepakati bersama', $labelStyle, ['alignment' => Jc::CENTER]);
         $footer->addRow();
-        $footer->addCell(4500, $noBorder)->addText('', []);
-        $footer->addCell(4500, $noBorder)->addText('', []);
+        $footer->addCell(4500)->addText('Supervisor', $labelStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500)->addText('Guru Mapel', $labelStyle, ['alignment' => Jc::CENTER]);
         $footer->addRow();
-        $footer->addCell(4500, $noBorder)->addText($pascaObservasi->supervisor, $valueStyle, ['alignment' => Jc::CENTER]);
-        $footer->addCell(4500, $noBorder)->addText($pascaObservasi->nama_guru, $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500)->addText('', []);
+        $footer->addCell(4500)->addText('', []);
         $footer->addRow();
-        $footer->addCell(4500, $noBorder)->addText('NIP. ............................................', $valueStyle, ['alignment' => Jc::CENTER]);
-        $footer->addCell(4500, $noBorder)->addText('NIP. ............................................', $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500)->addText('Rusman As\'ari, S.Pd. M.Pd.', $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500)->addText('(……………………………)', $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addRow();
+        $footer->addCell(4500)->addText('NIP. 19751222 200604 1 006', $valueStyle, ['alignment' => Jc::CENTER]);
+        $footer->addCell(4500)->addText('Guru', $labelStyle, ['alignment' => Jc::CENTER]);
 
         $fileName = 'Pasca_Observasi_'.$pascaObservasi->id.'.docx';
 
