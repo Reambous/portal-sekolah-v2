@@ -10,8 +10,6 @@ class ModulAjar extends Model
     protected $fillable = [
         'user_id',
         'judul',
-        'mata_pelajaran',
-        'kelas_semester',
         'file_path',
         'file_name',
         'file_size',

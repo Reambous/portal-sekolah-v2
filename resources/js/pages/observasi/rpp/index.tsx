@@ -66,18 +66,16 @@ export default function RppIndex({ data }: { data: any }) {
                                 <tr className="bg-gray-900 text-white text-xs uppercase tracking-widest">
                                     <th className="p-4 border-r border-gray-700 w-16 text-center whitespace-nowrap">NO</th>
                                     <th className="p-4 border-r border-gray-700 whitespace-nowrap">GURU</th>
-                                    <th className="p-4 border-r border-gray-700 whitespace-nowrap">JUDUL / MATERI</th>
-                                    <th className="p-4 border-r border-gray-700 whitespace-nowrap">MAPEL</th>
-                                    <th className="p-4 border-r border-gray-700 whitespace-nowrap">KELAS / SEMESTER</th>
+                                    <th className="p-4 border-r border-gray-700 whitespace-nowrap">JUDUL</th>
                                     <th className="p-4 border-r border-gray-700 whitespace-nowrap">UKURAN</th>
                                     <th className="p-4 border-r border-gray-700 whitespace-nowrap">TANGGAL</th>
-                                    <th className="p-4 w-40 text-center whitespace-nowrap">AKSI</th>
+                                    <th className="p-4 w-56 text-center whitespace-nowrap">AKSI</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {rows.length === 0 ? (
                                     <tr>
-                                        <td colSpan={8} className="p-10 text-center text-gray-500 font-bold uppercase tracking-widest border-t-2 border-gray-900">
+                                        <td colSpan={6} className="p-10 text-center text-gray-500 font-bold uppercase tracking-widest border-t-2 border-gray-900">
                                             Belum ada RPP / Modul Ajar di-upload.
                                         </td>
                                     </tr>
@@ -86,7 +84,7 @@ export default function RppIndex({ data }: { data: any }) {
                                         <tr key={item.id} className="border-t-2 border-gray-200 hover:bg-gray-50 transition">
                                             <td className="p-4 border-r-2 border-gray-200 text-center font-bold text-xs">{data.from + index}</td>
                                             <td className="p-4 border-r-2 border-gray-200 text-xs max-w-xs">
-                                                <div className="font-black text-gray-900 uppercase truncate">{item.nama_guru || item.user?.name || '-'}</div>
+                                                <div className="font-black text-gray-900 uppercase truncate">{item.user?.name || '-'}</div>
                                             </td>
                                             <td className="p-4 border-r-2 border-gray-200 text-xs max-w-xs">
                                                 <div className="font-black text-gray-900 uppercase truncate">{item.judul}</div>
@@ -94,24 +92,30 @@ export default function RppIndex({ data }: { data: any }) {
                                                     <div className="text-[10px] text-gray-400 font-medium line-clamp-2">{item.keterangan}</div>
                                                 )}
                                             </td>
-                                            <td className="p-4 border-r-2 border-gray-200 text-xs font-medium text-gray-700 uppercase">{item.mata_pelajaran}</td>
-                                            <td className="p-4 border-r-2 border-gray-200 text-xs text-gray-700 uppercase">{item.kelas_semester}</td>
                                             <td className="p-4 border-r-2 border-gray-200 text-xs font-bold text-gray-600 whitespace-nowrap">{item.size_label}</td>
                                             <td className="p-4 border-r-2 border-gray-200 text-xs font-bold text-gray-500 whitespace-nowrap">
                                                 {new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                                             </td>
                                             <td className="p-3 text-center">
                                                 <div className="flex gap-1 justify-center">
+                                                    <Link href={`/observasi/rpp/${item.id}`} className="bg-blue-600 text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider hover:bg-blue-700 transition inline-block">
+                                                        DETAIL
+                                                    </Link>
                                                     <a
                                                         href={`/observasi/rpp/${item.id}/download`}
                                                         className="bg-green-600 text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider hover:bg-green-700 transition inline-block"
                                                     >
-                                                        DOWNLOAD
+                                                        UNDUH
                                                     </a>
                                                     {(isAdmin || auth?.user?.id === item.user_id) && (
-                                                        <button onClick={() => handleDelete(item.id)} className="bg-red-600 text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider hover:bg-red-700 transition inline-block">
-                                                            HAPUS
-                                                        </button>
+                                                        <>
+                                                            <Link href={`/observasi/rpp/${item.id}/edit`} className="bg-yellow-500 text-black px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider hover:bg-yellow-600 transition inline-block">
+                                                                EDIT
+                                                            </Link>
+                                                            <button onClick={() => handleDelete(item.id)} className="bg-red-600 text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider hover:bg-red-700 transition inline-block">
+                                                                HAPUS
+                                                            </button>
+                                                        </>
                                                     )}
                                                 </div>
                                             </td>

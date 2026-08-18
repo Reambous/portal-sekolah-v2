@@ -182,6 +182,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/observasi/rpp', [ModulAjarController::class, 'index'])->name('observasi.rpp.index');
     Route::get('/observasi/rpp/create', [ModulAjarController::class, 'create'])->name('observasi.rpp.create');
     Route::post('/observasi/rpp', [ModulAjarController::class, 'store'])->name('observasi.rpp.store');
+    Route::get('/observasi/rpp/{id}', [ModulAjarController::class, 'show'])->name('observasi.rpp.show');
+    Route::get('/observasi/rpp/{id}/edit', [ModulAjarController::class, 'edit'])->name('observasi.rpp.edit');
+    Route::put('/observasi/rpp/{id}', [ModulAjarController::class, 'update'])->name('observasi.rpp.update');
     Route::get('/observasi/rpp/{id}/download', [ModulAjarController::class, 'download'])->name('observasi.rpp.download');
     Route::delete('/observasi/rpp/{id}', [ModulAjarController::class, 'destroy'])->name('observasi.rpp.destroy');
 });
