@@ -5,13 +5,24 @@ import { renderKutipan } from '@/lib/kutipan';
 
 export default function Pengaturan({ kutipan, slider }: { kutipan: string; slider: string[] }) {
     const { flash } = usePage().props as any;
-    const { data, setData, put, processing, errors } = useForm({
-        kutipan: kutipan || '',
-        slider: [] as File[],
-    });
-
     const [previews, setPreviews] = useState<string[]>([]);
     const kutipanRef = useRef<HTMLTextAreaElement>(null);
+
+    const { data, setData, put, processing, errors, transform, clearErrors } = useForm({
+        kutipan: kutipan || '',
+        slider: [] as (string | File)[],
+    });
+
+    transform((payload) => {
+        const files = Array.isArray(payload.slider) ? payload.slider.filter((f) => f instanceof File) : [];
+        const form = new FormData();
+        form.append('kutipan', String(payload.kutipan ?? ''));
+        files.forEach((file) => {
+            form.append('slider[]', file as File);
+        });
+
+        return form;
+    });
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,7 +32,7 @@ export default function Pengaturan({ kutipan, slider }: { kutipan: string; slide
     const handleFiles = (files: FileList | null) => {
         if (!files) return;
         const list = Array.from(files).slice(0, 6);
-        setData('slider', list);
+        setData('slider', [...data.slider, ...list]);
         setPreviews(list.map((f) => URL.createObjectURL(f)));
     };
 
