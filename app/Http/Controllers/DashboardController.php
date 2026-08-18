@@ -48,11 +48,14 @@ class DashboardController extends Controller
         }
 
         // 🔑 KIRIM DATA DENGAN NAMA VARIABEL YANG COCOK 100% DENGAN TSX
+        $kutipanDefault = '"Setiap hari adalah kesempatan baru untuk membentuk masa depan. Ingatlah bahwa di tangan Bapak/Ibu Guru, terdapat harapan dan mimpi ratusan siswa. Mari kita terus bersinergi menciptakan inovasi pembelajaran."';
+
         return Inertia::render('dashboard', [
             'juara_terbaru' => $juaraTerbaru,
             'berita_terbaru' => $beritaTerbaru,
             'refleksi_terbaru' => $refleksiTerbaru,
-            'kutipan_dashboard' => Setting::get('kutipan_dashboard', '"Setiap hari adalah kesempatan baru untuk membentuk masa depan. Ingatlah bahwa di tangan Bapak/Ibu Guru, terdapat harapan dan mimpi ratusan siswa. Mari kita terus bersinergi menciptakan inovasi pembelajaran."'),
+            'kutipan_dashboard' => (string) Setting::get('kutipan_dashboard', $kutipanDefault),
+            'kutipan_style' => (string) Setting::get('kutipan_style', 'normal'),
             'slider_images' => $slider,
         ]);
     }

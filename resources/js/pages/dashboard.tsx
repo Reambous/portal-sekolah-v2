@@ -29,6 +29,7 @@ type DashboardProps = {
     berita_terbaru?: Berita[];
     refleksi_terbaru?: Refleksi[];
     kutipan_dashboard?: string;
+    kutipan_style?: string;
     slider_images?: string[];
 };
 
@@ -37,11 +38,21 @@ export default function Dashboard({
     berita_terbaru = [], 
     refleksi_terbaru = [],
     kutipan_dashboard = '"Setiap hari adalah kesempatan baru untuk membentuk masa depan. Ingatlah bahwa di tangan Bapak/Ibu Guru, terdapat harapan dan mimpi ratusan siswa. Mari kita terus bersinergi menciptakan inovasi pembelajaran."',
+    kutipan_style = 'normal',
     slider_images = ['/images/slide1.jpg', '/images/slide2.jpg', '/images/slide3.jpg', '/images/slide4.jpg']
 }: DashboardProps) {
     
     const { auth } = usePage().props as any;
     const userName = auth?.user?.name || 'User';
+
+    const kutipanClassName = [
+        'text-xs md:text-sm text-gray-800 leading-relaxed font-black uppercase tracking-tight',
+        kutipan_style === 'bold' ? 'font-extrabold' : '',
+        kutipan_style === 'italic' ? 'italic' : '',
+        kutipan_style === 'bold-italic' ? 'font-extrabold italic' : '',
+    ]
+        .filter(Boolean)
+        .join(' ');
 
     // 1. LOGIKA CAROUSEL HERO SLIDER
     const [activeSlide, setActiveSlide] = useState(0);
@@ -143,7 +154,7 @@ export default function Dashboard({
 
                         {/* KOLOM 2: KUTIPAN DINAMIS (TENGAH) */}
                         <div className="bg-blue-50 border-4 border-gray-900 p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col justify-center items-center text-center">
-                            <p className="text-xs md:text-sm text-gray-800 leading-relaxed font-black uppercase tracking-tight">
+                            <p className={kutipanClassName}>
                                 {kutipan_dashboard}
                             </p>
                         </div>

@@ -2,10 +2,11 @@ import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import TopNavLayout from '@/layouts/top-nav-layout';
 
-export default function Pengaturan({ kutipan, slider }: { kutipan: string; slider: string[] }) {
+export default function Pengaturan({ kutipan, kutipan_style, slider }: { kutipan: string; kutipan_style: string; slider: string[] }) {
     const { flash } = usePage().props as any;
     const { data, setData, put, processing, errors } = useForm({
-        kutipan,
+        kutipan: kutipan || '',
+        kutipan_style: kutipan_style || 'normal',
         slider: [] as File[],
     });
 
@@ -24,6 +25,13 @@ export default function Pengaturan({ kutipan, slider }: { kutipan: string; slide
     };
 
     const field = 'border-2 border-gray-300 p-3 text-sm focus:border-gray-900 focus:ring-0 font-medium w-full';
+
+    const styleOptions = [
+        { value: 'normal', label: 'Normal' },
+        { value: 'bold', label: 'Bold' },
+        { value: 'italic', label: 'Italic' },
+        { value: 'bold-italic', label: 'Bold + Italic' },
+    ];
 
     return (
         <div className="py-8 bg-white min-h-screen font-sans text-gray-900">
@@ -51,16 +59,42 @@ export default function Pengaturan({ kutipan, slider }: { kutipan: string; slide
                     {/* KUTIPAN */}
                     <div className="border-2 border-gray-900 bg-white shadow-sm">
                         <div className="bg-gray-900 text-white text-xs font-black uppercase tracking-widest px-4 py-2">Kotak Tengah (Kutipan)</div>
-                        <div className="p-5">
-                            <label className="block text-xs font-black uppercase tracking-widest text-gray-700 mb-2">Teks Kutipan Dashboard</label>
-                            <textarea
-                                rows={5}
-                                className={field}
-                                value={data.kutipan}
-                                onChange={(e) => setData('kutipan', e.target.value)}
-                                required
-                            />
-                            {errors.kutipan && <p className="text-red-600 text-[10px] font-bold mt-1 uppercase">⚠️ {errors.kutipan}</p>}
+                        <div className="p-5 space-y-4">
+                            <div>
+                                <label className="block text-xs font-black uppercase tracking-widest text-gray-700 mb-2">Teks Kutipan Dashboard</label>
+                                <textarea
+                                    rows={5}
+                                    className={field}
+                                    value={data.kutipan}
+                                    onChange={(e) => setData('kutipan', e.target.value)}
+                                    required
+                                />
+                                {errors.kutipan && <p className="text-red-600 text-[10px] font-bold mt-1 uppercase">⚠️ {errors.kutipan}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-xs font-black uppercase tracking-widest text-gray-700 mb-2">Gaya Teks</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {styleOptions.map((opt) => (
+                                        <button
+                                            key={opt.value}
+                                            type="button"
+                                            onClick={() => setData('kutipan_style', opt.value)}
+                                            className={`px-4 py-2 border-2 text-xs font-bold uppercase tracking-wider transition ${
+                                                data.kutipan_style === opt.value
+                                                    ? 'bg-gray-900 text-white border-gray-900'
+                                                    : 'bg-white text-gray-700 border-gray-300 hover:border-gray-900'
+                                            }`}
+                                            style={{
+                                                fontWeight: opt.value.includes('bold') ? 800 : 400,
+                                                fontStyle: opt.value.includes('italic') ? 'italic' : 'normal',
+                                            }}
+                                        >
+                                            {opt.label}
+                                        </button>
+                                    ))}
+                                </div>
+                                {errors.kutipan_style && <p className="text-red-600 text-[10px] font-bold mt-1 uppercase">⚠️ {errors.kutipan_style}</p>}
+                            </div>
                         </div>
                     </div>
 
