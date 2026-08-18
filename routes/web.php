@@ -9,6 +9,7 @@ use App\Http\Controllers\JurnalRefleksiController;
 use App\Http\Controllers\Kesiswaan\KegiatanController;
 use App\Http\Controllers\Kesiswaan\LombaController;
 use App\Http\Controllers\Kurikulum\KurikulumKegiatanController;
+use App\Http\Controllers\ModulAjarController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ObservasiPelaksanaanController;
 use App\Http\Controllers\PascaObservasiController;
@@ -176,6 +177,13 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/pasca-observasi/{id}', [PascaObservasiController::class, 'update'])->name('pasca-observasi.update');
     Route::delete('/pasca-observasi/{id}', [PascaObservasiController::class, 'destroy'])->name('pasca-observasi.destroy');
     Route::get('/pasca-observasi/{id}/export/word', [PascaObservasiController::class, 'exportWord'])->name('pasca-observasi.exportWord');
+
+    // RPP / Modul Ajar (upload file, guru upload, admin lihat semua)
+    Route::get('/observasi/rpp', [ModulAjarController::class, 'index'])->name('observasi.rpp.index');
+    Route::get('/observasi/rpp/create', [ModulAjarController::class, 'create'])->name('observasi.rpp.create');
+    Route::post('/observasi/rpp', [ModulAjarController::class, 'store'])->name('observasi.rpp.store');
+    Route::get('/observasi/rpp/{id}/download', [ModulAjarController::class, 'download'])->name('observasi.rpp.download');
+    Route::delete('/observasi/rpp/{id}', [ModulAjarController::class, 'destroy'])->name('observasi.rpp.destroy');
 });
 
 // ==========================================

@@ -200,8 +200,11 @@ return url === '/dashboard';
                                             <Link href="/observasi/pelaksanaan" onClick={() => setIsObservasiOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide border-b-2 border-gray-100 last:border-0">
                                                 🎯 Observasi Pelaksanaan
                                             </Link>
-                                            <Link href="/pasca-observasi" onClick={() => setIsObservasiOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide">
+                                            <Link href="/pasca-observasi" onClick={() => setIsObservasiOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide border-b-2 border-gray-100 last:border-0">
                                                 📝 Pasca Observasi
+                                            </Link>
+                                            <Link href="/observasi/rpp" onClick={() => setIsObservasiOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide">
+                                                📚 RPP / Modul Ajar
                                             </Link>
                                         </div>
                                     )}
@@ -332,6 +335,9 @@ return url === '/dashboard';
                                     <Link href="/pasca-observasi" onClick={() => {
  setIsMobileMenuOpen(false); setIsObservasiOpen(false); 
 }} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Pasca Observasi</span></Link>
+                                    <Link href="/observasi/rpp" onClick={() => {
+ setIsMobileMenuOpen(false); setIsObservasiOpen(false); 
+}} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- RPP / Modul Ajar</span></Link>
                                 </div>
                             )}
                         </div>
