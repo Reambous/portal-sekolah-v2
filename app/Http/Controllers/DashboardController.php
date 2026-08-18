@@ -55,7 +55,6 @@ class DashboardController extends Controller
             'berita_terbaru' => $beritaTerbaru,
             'refleksi_terbaru' => $refleksiTerbaru,
             'kutipan_dashboard' => (string) Setting::get('kutipan_dashboard', $kutipanDefault),
-            'kutipan_style' => (string) Setting::get('kutipan_style', 'normal'),
             'slider_images' => $slider,
         ]);
     }

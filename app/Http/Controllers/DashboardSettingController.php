@@ -13,7 +13,6 @@ class DashboardSettingController extends Controller
     {
         return Inertia::render('admin/pengaturan', [
             'kutipan' => (string) Setting::get('kutipan_dashboard', '"Setiap hari adalah kesempatan baru untuk membentuk masa depan. Ingatlah bahwa di tangan Bapak/Ibu Guru, terdapat harapan dan mimpi ratusan siswa. Mari kita terus bersinergi menciptakan inovasi pembelajaran."'),
-            'kutipan_style' => (string) Setting::get('kutipan_style', 'normal'),
             'slider' => Setting::getJson('slider_images', []),
         ]);
     }
@@ -22,13 +21,11 @@ class DashboardSettingController extends Controller
     {
         $validated = $request->validate([
             'kutipan' => 'required|string',
-            'kutipan_style' => 'required|in:normal,bold,italic,bold-italic',
             'slider' => 'nullable|array|max:6',
             'slider.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
         Setting::set('kutipan_dashboard', $validated['kutipan']);
-        Setting::set('kutipan_style', $validated['kutipan_style']);
 
         if ($request->hasFile('slider')) {
             // Hapus gambar slider lama dari server (replace total)
