@@ -101,6 +101,12 @@ export default function DokumentasiIndex({ data }: { data: any }) {
                                                     <Link href={`/observasi/dokumentasi/${item.id}`} className="bg-blue-600 text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider hover:bg-blue-700 transition inline-block">
                                                         DETAIL
                                                     </Link>
+                                                    <a
+                                                        href={`/observasi/dokumentasi/${item.id}/download/semua`}
+                                                        className="bg-green-600 text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider hover:bg-green-700 transition inline-block"
+                                                    >
+                                                        UNDUH SEMUA
+                                                    </a>
                                                     {(isAdmin || auth?.user?.id === item.user_id) && (
                                                         <>
                                                             <Link href={`/observasi/dokumentasi/${item.id}/edit`} className="bg-yellow-500 text-black px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider hover:bg-yellow-600 transition inline-block">

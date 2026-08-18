@@ -37,6 +37,12 @@ export default function DokumentasiShow({ record }: { record: any }) {
 
                 {/* TOMBOL AKSI */}
                 <div className="mb-8 flex flex-wrap gap-2">
+                    <a
+                        href={`/observasi/dokumentasi/${record.id}/download/semua`}
+                        className="bg-green-700 text-white px-6 py-3 text-xs font-black uppercase tracking-widest hover:bg-green-800 border-2 border-gray-900 transition shadow-md"
+                    >
+                        ⬇ UNDUH SEMUA ({record.gambar?.length ?? 0} GAMBAR)
+                    </a>
                     {canManage && (
                         <>
                             <Link

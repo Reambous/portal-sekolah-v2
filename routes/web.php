@@ -199,6 +199,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/observasi/dokumentasi/{id}', [DokumentasiController::class, 'destroy'])->name('observasi.dokumentasi.destroy');
     Route::delete('/observasi/dokumentasi/gambar/{id}', [DokumentasiController::class, 'hapusGambar'])->name('observasi.dokumentasi.gambar.destroy');
     Route::get('/observasi/dokumentasi/gambar/{id}/download', [DokumentasiController::class, 'downloadGambar'])->name('observasi.dokumentasi.gambar.download');
+    Route::get('/observasi/dokumentasi/{id}/download/semua', [DokumentasiController::class, 'downloadSemua'])->name('observasi.dokumentasi.downloadSemua');
 });
 
 // ==========================================

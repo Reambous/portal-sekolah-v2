@@ -146,6 +146,42 @@ class DokumentasiController extends Controller
         return Storage::disk('public')->download($gambar->path, $gambar->name);
     }
 
+    public function downloadSemua($id)
+    {
+        $dokumentasi = Dokumentasi::with('gambar')->findOrFail($id);
+
+        $this->authorizeOwner($dokumentasi);
+
+        if ($dokumentasi->gambar->isEmpty()) {
+            abort(404, 'Tidak ada gambar untuk diunduh.');
+        }
+
+        $zipName = 'Dokumentasi_'.$dokumentasi->id.'.zip';
+        $zipPath = tempnam(sys_get_temp_dir(), 'dokum');
+
+        $zip = new \ZipArchive;
+        if ($zip->open($zipPath, \ZipArchive::CREATE) !== true) {
+            abort(500, 'Gagal membuat file ZIP.');
+        }
+
+        foreach ($dokumentasi->gambar as $i => $gambar) {
+            $absolute = Storage::disk('public')->path($gambar->path);
+            if (! is_file($absolute)) {
+                continue;
+            }
+            $nama = (count($dokumentasi->gambar) > 1 ? ($i + 1).' - ' : '').$gambar->name;
+            $zip->addFile($absolute, $nama);
+        }
+        $zip->close();
+
+        return response()->streamDownload(function () use ($zipPath) {
+            echo file_get_contents($zipPath);
+            @unlink($zipPath);
+        }, $zipName, [
+            'Content-Type' => 'application/zip',
+        ]);
+    }
+
     private function simpanGambar(Dokumentasi $dokumentasi, array $gambar): void
     {
         foreach ($gambar as $file) {
