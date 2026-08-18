@@ -203,8 +203,11 @@ return url === '/dashboard';
                                             <Link href="/pasca-observasi" onClick={() => setIsObservasiOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide border-b-2 border-gray-100 last:border-0">
                                                 📝 Pasca Observasi
                                             </Link>
-                                            <Link href="/observasi/rpp" onClick={() => setIsObservasiOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide">
+                                            <Link href="/observasi/rpp" onClick={() => setIsObservasiOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide border-b-2 border-gray-100 last:border-0">
                                                 📚 RPP / Modul Ajar
+                                            </Link>
+                                            <Link href="/observasi/dokumentasi" onClick={() => setIsObservasiOpen(false)} className="block px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-150 uppercase tracking-wide">
+                                                📷 Dokumentasi
                                             </Link>
                                         </div>
                                     )}
@@ -338,6 +341,9 @@ return url === '/dashboard';
                                     <Link href="/observasi/rpp" onClick={() => {
  setIsMobileMenuOpen(false); setIsObservasiOpen(false); 
 }} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- RPP / Modul Ajar</span></Link>
+                                    <Link href="/observasi/dokumentasi" onClick={() => {
+ setIsMobileMenuOpen(false); setIsObservasiOpen(false); 
+}} className="block py-2 text-xs font-bold uppercase text-gray-600 hover:text-black"><span className="inline-flex items-center">- Dokumentasi</span></Link>
                                 </div>
                             )}
                         </div>

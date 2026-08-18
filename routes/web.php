@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\Humas\HumasKegiatanController;
 use App\Http\Controllers\IjinController;
 use App\Http\Controllers\JurnalRefleksiController;
@@ -187,6 +188,17 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/observasi/rpp/{id}', [ModulAjarController::class, 'update'])->name('observasi.rpp.update');
     Route::get('/observasi/rpp/{id}/download', [ModulAjarController::class, 'download'])->name('observasi.rpp.download');
     Route::delete('/observasi/rpp/{id}', [ModulAjarController::class, 'destroy'])->name('observasi.rpp.destroy');
+
+    // Dokumentasi (multi-gambar, guru upload, admin lihat semua)
+    Route::get('/observasi/dokumentasi', [DokumentasiController::class, 'index'])->name('observasi.dokumentasi.index');
+    Route::get('/observasi/dokumentasi/create', [DokumentasiController::class, 'create'])->name('observasi.dokumentasi.create');
+    Route::post('/observasi/dokumentasi', [DokumentasiController::class, 'store'])->name('observasi.dokumentasi.store');
+    Route::get('/observasi/dokumentasi/{id}', [DokumentasiController::class, 'show'])->name('observasi.dokumentasi.show');
+    Route::get('/observasi/dokumentasi/{id}/edit', [DokumentasiController::class, 'edit'])->name('observasi.dokumentasi.edit');
+    Route::put('/observasi/dokumentasi/{id}', [DokumentasiController::class, 'update'])->name('observasi.dokumentasi.update');
+    Route::delete('/observasi/dokumentasi/{id}', [DokumentasiController::class, 'destroy'])->name('observasi.dokumentasi.destroy');
+    Route::delete('/observasi/dokumentasi/gambar/{id}', [DokumentasiController::class, 'hapusGambar'])->name('observasi.dokumentasi.gambar.destroy');
+    Route::get('/observasi/dokumentasi/gambar/{id}/download', [DokumentasiController::class, 'downloadGambar'])->name('observasi.dokumentasi.gambar.download');
 });
 
 // ==========================================
