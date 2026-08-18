@@ -1,6 +1,7 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import TopNavLayout from '@/layouts/top-nav-layout';
+import { renderKutipan } from '@/lib/kutipan';
 
 export default function Pengaturan({ kutipan, slider }: { kutipan: string; slider: string[] }) {
     const { flash } = usePage().props as any;
@@ -14,9 +15,7 @@ export default function Pengaturan({ kutipan, slider }: { kutipan: string; slide
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        put('/admin/pengaturan', {
-            forceFormData: true,
-        });
+        put('/admin/pengaturan');
     };
 
     const handleFiles = (files: FileList | null) => {
@@ -114,7 +113,7 @@ export default function Pengaturan({ kutipan, slider }: { kutipan: string; slide
                             <div>
                                 <p className="text-xs font-black uppercase tracking-widest text-gray-700 mb-2">Pratinjau</p>
                                 <div className="border-2 border-gray-200 bg-blue-50 p-4 text-xs text-gray-800 leading-relaxed lowercase tracking-tight min-h-[60px]">
-                                    {data.kutipan}
+                                    {renderKutipan(data.kutipan)}
                                 </div>
                             </div>
                         </div>
