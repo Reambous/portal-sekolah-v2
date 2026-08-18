@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardSettingController;
 use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\Humas\HumasKegiatanController;
 use App\Http\Controllers\IjinController;
@@ -207,6 +208,8 @@ Route::middleware(['auth'])->group(function () {
 // ==========================================
 // 👇 Tambahkan AdminMiddleware di dalam array middleware ini:
 Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/pengaturan', [DashboardSettingController::class, 'edit'])->name('pengaturan.edit');
+    Route::put('/pengaturan', [DashboardSettingController::class, 'update'])->name('pengaturan.update');
     Route::post('/berita/bulk-delete', [BeritaController::class, 'bulkDelete'])->name('berita.bulk_delete');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');

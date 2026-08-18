@@ -214,9 +214,14 @@ return url === '/dashboard';
                                 </div>
 
                                 {user?.role === 'admin' && (
-                                    <Link href="/admin/users" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/admin/users') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>
-                                        Kelola Akun
-                                    </Link>
+                                    <>
+                                        <Link href="/admin/pengaturan" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/admin/pengaturan') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>
+                                            Pengaturan
+                                        </Link>
+                                        <Link href="/admin/users" className={`inline-flex items-center px-3 py-2 text-xs font-black uppercase tracking-wider border-2 transition ${isActive('/admin/users') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-900'}`}>
+                                            Kelola Akun
+                                        </Link>
+                                    </>
                                 )}
                             </div>
                         </div>
@@ -349,9 +354,14 @@ return url === '/dashboard';
                         </div>
 
                         {user?.role === 'admin' && (
-                            <Link href="/admin/users" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/admin/users') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
-                                Kelola Akun
-                            </Link>
+                            <>
+                                <Link href="/admin/pengaturan" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/admin/pengaturan') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                                    Pengaturan
+                                </Link>
+                                <Link href="/admin/users" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-xs font-black uppercase tracking-wide border-2 ${isActive('/admin/users') ? 'bg-gray-900 text-white border-gray-900' : 'border-transparent text-gray-600'}`}>
+                                    Kelola Akun
+                                </Link>
+                            </>
                         )}
 
                         {/* Profile & Logout Info Mobile */}

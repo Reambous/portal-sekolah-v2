@@ -28,25 +28,24 @@ type DashboardProps = {
     juara_terbaru?: Juara[];
     berita_terbaru?: Berita[];
     refleksi_terbaru?: Refleksi[];
+    kutipan_dashboard?: string;
+    slider_images?: string[];
 };
 
 export default function Dashboard({ 
     juara_terbaru = [], 
     berita_terbaru = [], 
-    refleksi_terbaru = [] 
+    refleksi_terbaru = [],
+    kutipan_dashboard = '"Setiap hari adalah kesempatan baru untuk membentuk masa depan. Ingatlah bahwa di tangan Bapak/Ibu Guru, terdapat harapan dan mimpi ratusan siswa. Mari kita terus bersinergi menciptakan inovasi pembelajaran."',
+    slider_images = ['/images/slide1.jpg', '/images/slide2.jpg', '/images/slide3.jpg', '/images/slide4.jpg']
 }: DashboardProps) {
     
     const { auth } = usePage().props as any;
     const userName = auth?.user?.name || 'User';
 
-    // 1. LOGIKA CAROUSEL HERO SLIDER (Menggantikan Alpine.js)
+    // 1. LOGIKA CAROUSEL HERO SLIDER
     const [activeSlide, setActiveSlide] = useState(0);
-    const slides = [
-        '/images/slide1.jpg',
-        '/images/slide2.jpg',
-        '/images/slide3.jpg',
-        '/images/slide4.jpg'
-    ];
+    const slides = slider_images;
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -75,7 +74,7 @@ export default function Dashboard({
                                 activeSlide === index ? 'opacity-100 z-0' : 'opacity-0 z-0'
                             }`}
                         >
-                            <img src={slide} className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-luminosity" alt="School Environment" />
+                            <img src={slide.startsWith('/') ? slide : `/storage/${slide}`} className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-luminosity" alt="School Environment" />
                         </div>
                     ))}
 
@@ -110,8 +109,8 @@ export default function Dashboard({
                 </div>
 
                 {/* TEKS MOTIVASI UTAMA */}
-                <div className="text-center px-6 md:px-32 pb-10 text-sm md:text-base font-bold uppercase tracking-wide text-gray-600 max-w-5xl mx-auto leading-relaxed">
-                    📢 Dashboard Portal Utama. Platform ini dirancang untuk mempermudah administrasi operasional agar Bapak/Ibu bisa lebih fokus pada hal yang paling penting: <span className="text-gray-900 border-b-2 border-gray-900">Mengajar</span>. Mari bersama wujudkan lingkungan sekolah yang disiplin, bersih, dan terus berprestasi!
+                <div className="text-center px-6 md:px-32 pb-10 text-lg md:text-2xl font-black uppercase tracking-tighter text-gray-900 max-w-5xl mx-auto leading-relaxed">
+                    SMP Negeri 1 Candimulyo
                 </div>
 
                 {/* CONTAINER KONTEN GRID */}
@@ -145,7 +144,7 @@ export default function Dashboard({
                         {/* KOLOM 2: KUTIPAN DINAMIS (TENGAH) */}
                         <div className="bg-blue-50 border-4 border-gray-900 p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col justify-center items-center text-center">
                             <p className="text-xs md:text-sm text-gray-800 leading-relaxed font-black uppercase tracking-tight">
-                                "Setiap hari adalah kesempatan baru untuk membentuk masa depan. Ingatlah bahwa di tangan Bapak/Ibu Guru, terdapat harapan dan mimpi ratusan siswa. Mari kita terus bersinergi menciptakan inovasi pembelajaran."
+                                {kutipan_dashboard}
                             </p>
                         </div>
 
