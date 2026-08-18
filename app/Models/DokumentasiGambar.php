@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DokumentasiGambar extends Model
 {
+    protected $table = 'dokumentasi_gambar';
+
     protected $fillable = [
         'dokumentasi_id',
         'path',
