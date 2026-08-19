@@ -5,34 +5,23 @@ import { renderKutipan } from '@/lib/kutipan';
 
 export default function Pengaturan({ kutipan, slider }: { kutipan: string; slider: string[] }) {
     const { flash } = usePage().props as any;
+    const { data, setData, post, processing, errors } = useForm({
+        kutipan: kutipan || '',
+        slider: [] as File[],
+    });
+
     const [previews, setPreviews] = useState<string[]>([]);
     const kutipanRef = useRef<HTMLTextAreaElement>(null);
 
-    const { data, setData, put, processing, errors, transform, clearErrors } = useForm({
-        kutipan: kutipan || '',
-        slider: [] as (string | File)[],
-    });
-
-    transform((payload) => {
-        const files = Array.isArray(payload.slider) ? payload.slider.filter((f) => f instanceof File) : [];
-        const form = new FormData();
-        form.append('kutipan', String(payload.kutipan ?? ''));
-        files.forEach((file) => {
-            form.append('slider[]', file as File);
-        });
-
-        return form;
-    });
-
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        put('/admin/pengaturan');
+        post('/admin/pengaturan');
     };
 
     const handleFiles = (files: FileList | null) => {
         if (!files) return;
         const list = Array.from(files).slice(0, 6);
-        setData('slider', [...data.slider, ...list]);
+        setData('slider', list);
         setPreviews(list.map((f) => URL.createObjectURL(f)));
     };
 

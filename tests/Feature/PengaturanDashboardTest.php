@@ -16,7 +16,7 @@ it('admin dapat menyimpan kutipan dashboard', function () {
     ]);
 
     $this->actingAs($user)
-        ->put('/admin/pengaturan', [
+        ->post('/admin/pengaturan', [
             'kutipan' => 'Setiap [b]hari[/b] adalah [i]kesempatan[/i] baru.',
             'slider' => [],
         ], ['X-Inertia' => 'true'])
@@ -33,7 +33,7 @@ it('mengembalikan error bila kutipan kosong', function () {
     ]);
 
     $this->actingAs($user)
-        ->put('/admin/pengaturan', [
+        ->post('/admin/pengaturan', [
             'kutipan' => '',
             'slider' => [],
         ], ['X-Inertia' => 'true'])
@@ -51,15 +51,17 @@ it('menyimpan kutipan + upload gambar slider (multipart nyata)', function () {
     $gambar2 = UploadedFile::fake()->image('slider2.png', 100, 100);
 
     $response = $this->actingAs($user)
-        ->call('PUT', '/admin/pengaturan', [
+        ->post('/admin/pengaturan', [
             'kutipan' => 'Salam [b]sehat[/b] dari foto',
-        ], [], ['slider' => [$gambar, $gambar2]], [
+            'slider' => [$gambar, $gambar2],
+        ], [
             'HTTP_ACCEPT' => 'text/html',
         ]);
 
     $response->assertSessionHasNoErrors();
 
     expect(Setting::get('kutipan_dashboard'))->toBe('Salam [b]sehat[/b] dari foto');
+    expect(Setting::getJson('slider_images'))->toHaveCount(2);
 });
 
 it('mengembalikan error kutipan required ketika kosong', function () {
@@ -70,7 +72,7 @@ it('mengembalikan error kutipan required ketika kosong', function () {
     ]);
 
     $this->actingAs($user)
-        ->put('/admin/pengaturan', [
+        ->post('/admin/pengaturan', [
             'kutipan' => '   ',
             'slider' => [],
         ], ['X-Inertia' => 'true'])
